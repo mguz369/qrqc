@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Current e-Alerts</title>
+    
+    <!-- Load CSS -->  
+    <link rel="stylesheet" href="css/oc-modal.full.css">
+    <link rel="stylesheet" href="css/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Load JavaScript files -->
+    <script src='js/jquery.min.js'></script>
+    <script src='js/core.js'></script>
+  </head>
+
+
+  <body id="index_page">
+    <div class="page-header">
+      <section class="user-logged-in"> </section>
+      <section class="page-title">
+        <h2>i-QRQC - Grand Rapids</h2>
+      </section>      
+      <section class="log-button ng-scope"> </section>
+    </div>
+    
+
+    <table id="issues_table">
+      <tr>
+        <td class="days_column">Monday</td>    
+        <td class="days_column">Tuesday</td>    
+        <td class="days_column">Wednesday</td>    
+        <td class="days_column">Thursday</td>
+        <td class="days_column">Friday</td>
+      </tr>
+
+    </table>      
+    
+
+    <div class="mycontainer">
+        <h3 class="h_format">i-Notes Categories</h3>
+    </div>
+    <table id="category_table">
+      <tr >
+          <td > 
+              <p class="categories" id="Safety"   >Safety/ Environment</p>
+              <p class="categories" id="Quality"  >Quality</p>
+              <p class="categories" id="Activity" >Activity (Sales)</p>
+              <p class="categories" id="Inventory">Inventory</p>
+              <p class="categories" id="Scrap"    >Scrap</p>
+          </td>
+      </tr>
+      <tr>
+          <td >
+              <p class="categories" id="Hr"       >HR/ Labor</p>
+              <p class="categories" id="Delivery" >Delivery</p>
+              <p class="categories" id="Operation">Operations Efficiency</p>
+              <p class="categories" id="Supply"   >Supply Chain</p>
+              <p class="categories" id="Misc"     >Miscellaneaous</p>
+          </td>
+      </tr>
+    </table>
+
+    <div class="mycontainer">
+      <span class="page-footer">
+        <span id="new-alert-p">Create a new alert:</span>
+        <div class="btn btn-white" id="new_alert_redirect">New Alert</div>
+      </span>
+    </div>
+
+    <div class="">
+      <span class="page-footer">
+        <p id="new-alert-p">Mixing Page</h3>
+        <a href="mixing.html"class="btn btn-blue">Mixing</a>
+      </span>
+    </div>
+  </body>
+</html>

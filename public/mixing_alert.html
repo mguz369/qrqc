@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>e-Alert</title>
+    
+    <!-- Load CSS -->  
+    <link rel="stylesheet" href="css/oc-modal.full.css">
+    <link rel="stylesheet" href="css/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Load JavaScript files -->
+    <script src='js/jquery.min.js'></script>
+    <script src='js/core.js'></script>
+  </head>
+
+
+  <body id="create_page">
+    <section class="user-logged-in"> </section>
+    <section class="page-title">
+      <h2 >I-QRQC - Mixing- e-Alert</h2>
+    </section>
+    <section class="log-button ng-scope"> </section>
+    
+
+    <form id="gen_info">
+      <table id="header_table">
+        <tr>
+            <td id="info_header"><h3 class="mycontainer">Information</h3></td>        
+            <td id="info_alert">
+              <span >Alert ID:</span>
+              <span type="text" id="id_number"></span> 
+            </td>
+        </tr>      
+      </table>
+
+      <table class="inline_table" id="info_table">        
+        <tr >
+            <td class="left_column">
+              I-Notes Category:
+            </td>
+            <td class="right_column">
+              <p class="box_length" id="alert_type"> </p>    
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >   
+            <td class="left_column">
+              Date posted:
+            </td>
+            <td class="right_column">
+              <p class="box_length" id="date_initial" type="date"> </p>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Department:
+            </td>
+            <td class="right_column">
+              <p class="box_length" id="department"> </p>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Location Details:
+            </td>
+            <td class="right_column">
+              <input class="box_length" id="location" type="text"></input>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Part Number:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="part_num">
+                
+              </select>              
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Customer:
+            </td>
+            <td class="right_column">
+              <p class="box_length" id="customer"> </p>              
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr>
+            <td class="left_column">
+              Repeat:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="recur">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </td>
+        </tr>          
+      </table>
+
+      <table class="inline_table" id="issue_table">
+        <tr>
+            <td class="title_descript">
+              Issue Description:
+            </td>
+        </tr>
+        <tr>
+            <td class="text_area">
+              <textarea class="description" id="issue_desc" type="text"></textarea>
+            </td>
+        </tr>
+      </table>
+
+      <table class="inline_table" id="cause_table">
+        <tr>
+            <td class="title_descript">
+              Cause:
+            </td>
+        </tr>
+        <tr>
+            <td class="text_area">
+              <textarea class="description" id="cause_desc" type="text"></textarea>
+            </td>
+        </tr>
+      </table>
+    </form>
+
+
+    <form id="info_rows">
+      <div class="mycontainer">
+        <h3 class="h_format">Action Plan</h3>
+      </div>
+
+      <table id="action_table">
+          <tr>
+              <td class="action_column" id="">
+                Type
+              </td>
+              <td class="action_column" id="">
+                Description
+              </td>
+              <td class="action_column" id="">
+                Owner
+              </td>
+              <td class="action_column" id="">
+                Start
+              </td>
+              <td class="action_column" id="">
+                Deadline
+              </td>
+              <td class="action_column" id="">
+                Completed
+              </td>
+              <td class="action_column" id="">
+                State
+              </td>              
+          </tr>
+
+          <tr class="hidden_element">
+              <td class="hidden_element"> </td>              
+              <td class="hidden_element"> </td>
+              <td class="hidden_element">
+                <select class="added_row" id='responsible'> </select>
+              </td>
+              <td class="hidden_element"> </td>                
+              <td class="hidden_element"> </td>
+              <td class="hidden_element"> </td>
+              <td class="hidden_element"> </td>
+          </tr>
+        </table>      
+    </form>
+    
+    <div>
+      <!--<button class="btn btn-blue" id="add_row" type="button">Add Row</button>
+      <button class="btn btn-blue" id="submit_btn">Submit</button>-->
+    </div> 
+  </body>
+</html>
