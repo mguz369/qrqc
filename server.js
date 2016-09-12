@@ -47,7 +47,6 @@ String.prototype.formatSQL = function() {
 app.get('/create.html', (req, res) => {
     res.sendFile(path.join(__dirname, dir_path + '/create.html'));
 });
-
 app.get('/mixing.html', (req, res) => {
     res.sendFile(path.join(__dirname, dir_path + '/mixing.html'));
 });
@@ -151,11 +150,10 @@ app.post('/show_current_alerts', (req, res) => {
     //var sql = "SELECT DATE_FORMAT(`date`, '%d/%m/%y') FROM `post_it`";      //Format the resulting date as dd/mm/yy
     var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1'; ");//SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d') AS today;");
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
 
-    /*connectionQRQC.query(select_max_id, (err, result) => {
-        if(err) throw err;
-    });*/
+    var current_date = " SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d') AS today;";
+
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         res.send(JSON.stringify(result));

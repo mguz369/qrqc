@@ -54,7 +54,23 @@ $(document).ready(function () {
       type        : "POST",
       contentType : "application/json",
       processData : false,
-      complete    : loadAlerts,
+      complete    : function(data){
+        var date = new Date();
+
+        //Format the date
+        var day = date.getDate();
+        var month = (date.getMonth() + 1);
+        var year = date.getFullYear();
+
+        if(day < 10)
+          day = '0' + day;
+        if(month < 10)
+          month = '0' + month;
+
+
+        var today = (year + "-" + month + "-" + day);
+        loadAlerts(data, today);
+      }
     });
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
@@ -373,11 +389,9 @@ $(document).ready(function () {
 //
 // Used by $('#index_page')
 //************************************************************************
-function loadAlerts(data, textStatus){
+function loadAlerts(data, today){
   var d = JSON.parse(data.responseText);
-  console.log(d);
-  //var today = d[1][0].today;
- //debugger;
+
   //Grabs the name of the day based on the deadline date in the DB
   for (var i = 0; i < d.length; i++){
     var day = whichDay(d[i].deadline);
@@ -390,20 +404,29 @@ function loadAlerts(data, textStatus){
 
   for (var i = 0; i < list.length; i++){
     var day = list[i];    //Get the day
-    
+
     if (!rg[day])         //If there aren't any days that have an entry continue on
-      continue;
-    
+      continue;    
+
     for (var j = 0; j < rg[day].length; j++){
       while ($(".row").length < rg[day].length){
         $('#issues_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
           + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
         rows++;
       }
+      var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
 
-      var e = $('#row_'+j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
 
-      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:;'>{deadline}</td>" + 
+      if(d[i].deadline <= today){
+        console.log("Today: ", today);
+        console.log(d[i].deadline + " is late");
+      }
+      else{
+        //console.log("Today: ", today);
+        //console.log(day + " " + d[i].deadline + " is ok");
+      }
+    
+      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{deadline}</td>" + 
                 "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
 
       e.promise().done(function(){
@@ -412,7 +435,7 @@ function loadAlerts(data, textStatus){
         });
       });
     }
-  }
+  }  
 }//End loadAlerts
 
 function loadMixingAlerts(data, textStatus){
