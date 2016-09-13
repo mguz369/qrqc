@@ -11,6 +11,7 @@ var path        = require('path');
 var bodyParser  = require('body-parser');
 var mysql       = require('mysql');
 var net         = require('net');
+var favicon     = require('static-favicon');
 
 var app = express();
 app.use( bodyParser.json() );
@@ -310,6 +311,8 @@ var each = ["images", "css", "js", "datetimepicker"];
 for (var i = 0; i < each.length; i++){
         app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));
 }
+
+app.use(favicon(path.join(__dirname, dir_path + '/images' + 'favicon.ico')));
 
 app.get('/', (req, res, next) => {
     if(req.path == '/'){

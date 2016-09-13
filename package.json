@@ -1,17 +1,15 @@
 {
-    "version"       : "0.0.1",
+    "version"       : "1.0.0",
     "main"          : "main.js",
     "description"   : "Qlik Prototype",
-
-    "scripts": {
-        "start" : "electron start.js start forever.json"
-    },
+    "author"        : "Mike Guzior",
     
     "dependencies": {
         "mysql"             : "x",
         "domino-nsf"        : "^0.0.3",
         "express"           : "x",
         "path"              : "x",
+        "static-favicon"    : "1.0.2",
         "body-parser"       : "x"
     }
 }
