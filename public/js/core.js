@@ -74,7 +74,7 @@ $(document).ready(function () {
     });
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
-    $('#new_alert_redirect').on('click touchstart', function(){ 
+    $('#new_alert_redirect').on('click touchstart', () => { 
       $.ajax({
         url         : "/create_post_it",
         type        : "POST",
@@ -87,23 +87,11 @@ $(document).ready(function () {
       });
     });
 
-    $('#mixing_alert_redirect').on('click touchstart', function(){ 
-      $.ajax({
-        url         : "/mixing_alerts",
-        type        : "POST",
-        contentType : "application/json",
-        processData : false,
-        complete    : function(data){
-            var parsed_data = JSON.parse(data.responseText);
-            window.location.href = 'mixing_alert.html?id=' + parsed_data[0].id;
-        }
-      });      
-    });
   });//End index_page
 
 
   //************************************************************************
-  // When the "New Alert" button is clicked, load the create_post_it page
+  // 
   //************************************************************************
   $('#create_page').exists(function(){    
     $.ajax({
@@ -153,6 +141,16 @@ $(document).ready(function () {
       contentType : "application/json",
       processData : false,
       complete    : loadMixingAlerts,
+    });
+  });
+
+  $('#incomplete_page').exists(function(){
+    $.ajax({
+      url         : "/show_incomplete_alerts",
+      type        : "POST",
+      contentType : "application/json",
+      processData : false,
+      complete    : loadIncompleteAlerts,
     });
   });
 
@@ -228,6 +226,9 @@ $(document).ready(function () {
         date_ending = null;
         active = '0';
       }
+      if(date_completed != ""){
+        state = "Closed";
+      }
       
       var payload2 = {
         item_id       : item_id,
@@ -259,6 +260,7 @@ $(document).ready(function () {
   // Add an addition info row for an alert.
   //************************************************************************
   function Add_Alert(){
+    add_row_counter++;  //Increment i
     $("#action_table").append(
         " <tr class='info_rows'>" +
         " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
@@ -271,11 +273,7 @@ $(document).ready(function () {
         " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
         " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
         " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <select class='added_row' id='state_" + add_row_counter + "'>"+ 
-        "   <option value='Empty'>---</option>" + 
-        "   <option value='1'>Open</option>" +
-        "   <option value='2'>Closed</option>" +
-        "   <option value='3'>Late</option> </select></td>" +
+        " <td> <div class='added_row' id='state_" + add_row_counter + "'> </div></td>" +
         " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
     );    
 
@@ -299,7 +297,6 @@ $(document).ready(function () {
       }
     });
 
-    add_row_counter++;  //Increment i
   }//End Add_alert()
 
   //************************************************************************
@@ -344,7 +341,7 @@ $(document).ready(function () {
               $('#department').val(dept);
               $('#location').val(location);
               $('#part_num').val(part_num);
-              $('#customer').delay(200).val(customer);
+              $('#customer').val(customer);
               $('#recur').val(repeat);
               $('#issue_desc').html(issue);
               $('#cause_desc').html(cause);
@@ -369,7 +366,7 @@ $(document).ready(function () {
               $('#date_start_' + j).val(date_start);
               $('#date_ending_' + j).val(date_ending);
               $('#date_completed_' + j).val(date_completed);
-              $('#state_' + j).val(state);
+              $('#state_' + j).html(state);
               $('#item_id_' + j).val(i_id);
             }          
           }
@@ -391,6 +388,10 @@ $(document).ready(function () {
 //************************************************************************
 function loadAlerts(data, today){
   var d = JSON.parse(data.responseText);
+  console.log(data)
+
+  console.log(d);
+
 
   //Grabs the name of the day based on the deadline date in the DB
   for (var i = 0; i < d.length; i++){
@@ -467,12 +468,53 @@ function loadMixingAlerts(data, textStatus){
 
       var e = $('#row_'+j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
 
-      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:;'>{deadline}</td>" + 
+      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style=>{deadline}</td>" + 
                 "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
 
       e.promise().done(function(){
         $(".btn", this).on('click touchstart', function(){ 
           window.location.href = 'mixing_alert.html?id=' + jQuery.attr(this, "data-part_num");
+        });
+      });
+    }
+  }
+}// End loadMixingAlerts
+
+function loadIncompleteAlerts(data, textStatus){
+  var d = JSON.parse(data.responseText);
+  //var today = d[1][0].today;
+
+  //Grabs the name of the day based on the deadline date in the DB
+  for (var i = 0; i < d.length; i++){
+    var day = whichDay(d[i].deadline);
+    d[i]['day']= day;
+  }
+
+  var rg = regroup_list_by(d, 'day');
+  var rows = 0;
+  var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+  for (var i = 0; i < list.length; i++){
+    var day = list[i];    //Get the day
+    
+    if (!rg[day])         //If there aren't any days that have an entry continue on
+      continue;
+    
+    for (var j = 0; j < rg[day].length; j++){
+      while ($(".row").length < rg[day].length){
+        $('#issues_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
+          + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
+        rows++;
+      }
+
+      var e = $('#row_'+j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
+
+      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style=>{deadline}</td>" + 
+                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
+
+      e.promise().done(function(){
+        $(".btn", this).on('click touchstart', function(){ 
+          window.location.href = 'incomplete.html?id=' + jQuery.attr(this, "data-part_num");
         });
       });
     }

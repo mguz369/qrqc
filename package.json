@@ -8,11 +8,9 @@
     },
     
     "dependencies": {
-        "electron-prebuilt" : "x",
         "mysql"             : "x",
         "domino-nsf"        : "^0.0.3",
         "express"           : "x",
-        "http"              : "x",
         "path"              : "x",
         "body-parser"       : "x"
     }

@@ -53,6 +53,9 @@ app.get('/mixing.html', (req, res) => {
 app.get('/mixing_alert.html', (req, res) => {
     res.sendFile(path.join(__dirname, dir_path + '/mixing_alert.html'));
 });
+app.get('/incomplete.html', (req, res) => {
+    res.sendFile(path.join(__dirname, dir_path + '/incomplete.html'));
+});
 
 //************************************************************************
 // Deploy the webserver to listen to webpage requests
@@ -73,7 +76,7 @@ function ConnectToQRQC(){
         user                : 'qrqc',
         password            : 'Paulstra1',
         database            : 'qrqc',
-        multipleStatements   : true
+        multipleStatements  : true
     });
 
     //Establish connection
@@ -147,12 +150,11 @@ ConnectToSp();
 // Query any current alerts 
 //************************************************************************
 app.post('/show_current_alerts', (req, res) => {
-    //var sql = "SELECT DATE_FORMAT(`date`, '%d/%m/%y') FROM `post_it`";      //Format the resulting date as dd/mm/yy
     var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
 
-    var current_date = " SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d') AS today;";
+    var current_date = " ";
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
@@ -160,19 +162,28 @@ app.post('/show_current_alerts', (req, res) => {
     });       
 });
 
-app.post('/show_mixing_alerts', (req, res) => {
-    //var sql = "SELECT DATE_FORMAT(`date`, '%d/%m/%y') FROM `post_it`";      //Format the resulting date as dd/mm/yy
-    var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
-        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t2.`department` = 'Mixing' AND t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1'; ");//SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d') AS today;");
 
-    /*connectionQRQC.query(select_max_id, (err, result) => {
-        if(err) throw err;
-    });*/
+app.post('/show_mixing_alerts', (req, res) => {
+    var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
+        "FROM `post_it_items` AS t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
+        "WHERE t2.`department` = 'Mixing' AND t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1'; ");
+
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         res.send(JSON.stringify(result));
     });       
+});
+
+
+app.post('/show_incomplete_alerts', (req, res) => {
+    var select_dates = ("SELECT t1.id, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
+        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
+
+    connectionQRQC.query(select_dates, (err, result) => {
+        if(err) throw err;
+        res.send(JSON.stringify(result));
+    });
 });
 
 //************************************************************************
@@ -241,7 +252,7 @@ app.post('/update_post_it_items', (req, res) => {
         " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
         ).formatSQL(req.body);
 
-    console.log("Update into Items: ", sql_update);
+    console.log("Update into Items: %s\n", sql_update);
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
 
@@ -294,7 +305,8 @@ app.post('/mixing_alerts', (req, res) => {
 // Get paths setup, load css, js, etc for the browser
 //************************************************************************
 var dir_path = 'public/';
-var each = ["images", "css", "js"];
+var each = ["images", "css", "js", "datetimepicker"];
+//var each = ['flot','reveal.js','snap','sparkline','jquery','d3','work_instructions', 'work_videos']
 for (var i = 0; i < each.length; i++){
         app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));
 }

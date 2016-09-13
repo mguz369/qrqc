@@ -466,7 +466,7 @@ textarea {
   display: inline-block;
   padding: 10px 15px;
   text-decoration: none;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   font-size: 0.8em;
 }
 
@@ -730,7 +730,7 @@ section#main-page-header > div.logo img {
 
 section#main-page-header > div.startup-section {
   color: #fff;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   width: 25%;
   width: max-content;
   text-align: center;
@@ -789,13 +789,13 @@ section#main-page-header div.user-information {
 }
 
 section#main-page-header div.user-information > p.user-name {
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   color: #fff;
   font-size: 1.2em;
 }
 
 section#main-page-header div.user-information > p.user-position {
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   font-style: italic;
   color: #fff;
   font-size: 0.8em;
@@ -893,7 +893,7 @@ section.page-title {
 
 section.page-title > h2 {
   color: #dd002a;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   margin-left: -23%;
 }
 
@@ -1142,7 +1142,8 @@ section.log-button {
   width: 100%;
 }
 
-.alert{
-
+.table_button{
+  margin-left: 10px;
+  margin-right: 10px;
 }
 /**************************************/
