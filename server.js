@@ -43,22 +43,6 @@ String.prototype.formatSQL = function() {
 }
 
 //************************************************************************
-// Fetch other pages
-//************************************************************************
-app.get('/create.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/create.html'));
-});
-app.get('/mixing.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/mixing.html'));
-});
-app.get('/mixing_alert.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/mixing_alert.html'));
-});
-app.get('/incomplete.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/incomplete.html'));
-});
-
-//************************************************************************
 // Deploy the webserver to listen to webpage requests
 //************************************************************************
 var myPort = 8090;
@@ -73,6 +57,7 @@ var server = app.listen(myPort, () => {
 var connectionQRQC;
 function ConnectToQRQC(){
     connectionQRQC = mysql.createConnection({
+        //host                : 'localhost',
         host                : '172.24.253.4',
         user                : 'qrqc',
         password            : 'Paulstra1',
@@ -113,11 +98,12 @@ ConnectToQRQC();
 var connectionSp;
 function ConnectToSp(){
     connectionSp = mysql.createConnection({
+        //host                : 'localhost',
         host                : '172.24.253.4',
         user                : 'ind_maint',
         password            : 'zJC2LKjN6XHq5ETX',
         database            : 'smartplant',
-        multipleStatements   : true
+        multipleStatements  : true
     });
 
     //Establish connection
@@ -154,8 +140,6 @@ app.post('/show_current_alerts', (req, res) => {
     var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
-
-    var current_date = " ";
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
@@ -199,10 +183,10 @@ app.post('/pull_qrqc_data', (req, res) => {
                "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id}"
                ).formatSQL(req.body);
 
-    console.log(sql);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
+        
         console.log(result);
         res.send(JSON.stringify(result));
     });
@@ -244,7 +228,6 @@ app.post('/update_post_it', (req, res) => {
     });
 });
 
-
 app.post('/update_post_it_items', (req, res) => {
     var sql_update = (
         "INSERT INTO `post_it_items`(`id`, `post_it_id`, `term`, `description`, `owner`, `initial_date`, `deadline`, `completed`, `state`, `active`) " +
@@ -261,9 +244,8 @@ app.post('/update_post_it_items', (req, res) => {
     });
 });
 
-
 app.post('/get_part_nums', (req, res) => {
-    var sql = ("SELECT `number` FROM `smartplant`.`test_part`");
+    var sql = ("SELECT `number` FROM `part`");
 
     connectionSp.query(sql, (err, result) => {
         if (err) throw err;
@@ -292,7 +274,6 @@ app.post('/get_users', (req, res) => {
     });
 });
 
-
 app.post('/mixing_alerts', (req, res) => {
     var sql = "SELECT * FROM `post_it` WHERE `department` = 'mixing'";
 
@@ -314,7 +295,7 @@ for (var i = 0; i < each.length; i++){
 
 app.use(favicon(path.join(__dirname, dir_path + '/images' + 'favicon.ico')));
 
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
     if(req.path == '/'){
         res.locals.query = req.query;
         res.sendFile(path.join(__dirname, dir_path + 'index.html'));    
@@ -322,4 +303,20 @@ app.get('/', (req, res, next) => {
     else{
         res.sendFile(path.join(__dirname, dir_path + req.path));
     }   
+});
+
+//************************************************************************
+// Fetch other pages
+//************************************************************************
+app.get('/create.html', (req, res) => {
+    res.sendFile(path.join(__dirname, dir_path + '/create.html'));
+});
+app.get('/mixing.html', (req, res) => {
+    res.sendFile(path.join(__dirname, dir_path + '/mixing.html'));
+});
+app.get('/mixing_alert.html', (req, res) => {
+    res.sendFile(path.join(__dirname, dir_path + '/mixing_alert.html'));
+});
+app.get('/incomplete.html', (req, res) => {
+    res.sendFile(path.join(__dirname, dir_path + '/incomplete.html'));
 });

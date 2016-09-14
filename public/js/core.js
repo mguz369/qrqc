@@ -42,7 +42,7 @@ $.urlParam = function(name){
 //************************************************************************
 $(document).ready(function () {
   var add_row_counter = '0';  //Yeah it's a global, used for Add_alert()
-
+  var users;
   //************************************************************************
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
@@ -86,17 +86,19 @@ $(document).ready(function () {
         }
       });
     });
-
   });//End index_page
 
-
-  //************************************************************************
-  // 
-  //************************************************************************
   $('#create_page').exists(function(){    
     $.ajax({
-      url   : "/get_part_nums",
-      type  : "POST",
+      url         : "/get_users",
+      type        : "POST",
+      contentType : "application/json",
+      complete    : function(data){ users = JSON.parse(data.responseText); }
+    });
+
+    $.ajax({
+      url         : "/get_part_nums",
+      type        : "POST",
       contentType : "application/json",
       complete    : function(data){
           var parsed_data = JSON.parse(data.responseText);
@@ -106,14 +108,12 @@ $(document).ready(function () {
 
             $('#part_num').append("<option value='" + part + "'>" + part + "</option>" );
           }
-
-          console.log("Done with parts");
       }
     });
 
     $.ajax({
-      url   : "/get_customers",
-      type  : "POST",
+      url         : "/get_customers",
+      type        : "POST",
       contentType : "application/json",
       complete    : function(data){
           var parsed_data = JSON.parse(data.responseText);
@@ -124,15 +124,15 @@ $(document).ready(function () {
             $('#customer').append("<option value='" + customer + "'>" + customer + "</option>" );
           }
 
-           console.log("Done with customers");
+           Pull_Data($.urlParam('id'));
       }
-    });
-
+    });    
     
-    Pull_Data($.urlParam('id'));
     $('#id_number').html($.urlParam('id'));
+    $('#return_home').on('click touchstart', () => {
+      window.location.href = '/';
+    });
   });//End create_page
-
 
   $('#mixing_page').exists(function(){
     $.ajax({
@@ -142,7 +142,11 @@ $(document).ready(function () {
       processData : false,
       complete    : loadMixingAlerts,
     });
-  });
+
+    $('#return_home').on('click touchstart', () => {
+      window.location.href = '/';
+    });
+  });// End mixing
 
   $('#incomplete_page').exists(function(){
     $.ajax({
@@ -152,7 +156,12 @@ $(document).ready(function () {
       processData : false,
       complete    : loadIncompleteAlerts,
     });
-  });
+
+    $('#return_home').on('click touchstart', () => {
+      window.location.href = '/';
+    });
+  });// End incomplete
+
 
   //************************************************************************
   // Adds another row to the Additional Info section
@@ -160,7 +169,36 @@ $(document).ready(function () {
   $('#add_row').click(function(){
     Add_Alert();  
   });//End add_row
+  
+  //************************************************************************
+  // Add an addition info row for an alert.
+  //************************************************************************
+  function Add_Alert(){
+    $("#action_table").append(
+        " <tr class='info_rows'>" +
+        " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+        "   <option value='Empty'>---</option>" + 
+        "   <option value='1'>Immediate</option>" +
+        "   <option value='2'>Temporary</option>" +
+        "   <option value='3'>Permanent</option> </select></td>" +
+        " <td> <input class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+        " <td> <select class='added_row' id='responsible_" + add_row_counter + "' type='text'> </select> </td>" +
+        " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
+        " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
+        " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
+        " <td> <div class='added_row' id='state_" + add_row_counter + "'> </div></td>" +
+        " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
+    );
 
+    for(var i = 0; i < users.length; i++){
+      for(var j = add_row_counter; j <= add_row_counter; j++){
+        var owner = users[i].name;
+        $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
+      }
+    }
+
+    add_row_counter++;  //Increment
+  }//End Add_alert()
 
   //************************************************************************
   // Creates a new aletry entry into the DB
@@ -183,6 +221,11 @@ $(document).ready(function () {
     cause       = $('#cause_desc').val();
     post_id     = $('#id_number').text();
     active      = 1;
+
+    if(a_type == null || date_posted == "" || dept == null || cust == null){
+      alert("Please fill in all Information fields");
+      return false;
+    } 
 
     var payload = {
       type        : a_type,
@@ -220,16 +263,26 @@ $(document).ready(function () {
       active          = 1;
       item_id         = $('#item_id_' + i).val();
   
+
+      //*****************************************************
+      // Formatting and error checking
       if(date_completed == "")
         date_completed = null;
-      if(date_ending == ""){
-        date_ending = null;
-        active = '0';
-      }
-      if(date_completed != ""){
+      else if(date_completed != "")
         state = "Closed";
-      }
+
+      if(state == "")
+        state = "Open"
       
+      if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
+        alert("Please make sure all fields are filled in for action " + (i + 1));
+        return false;
+      }
+
+      var weekend_day = new Date(date_ending).getUTCDay(); 
+      console.log(weekend_day);
+
+
       var payload2 = {
         item_id       : item_id,
         post_id       : post_id,
@@ -254,50 +307,8 @@ $(document).ready(function () {
 
     //Redirect after all is done
     window.location.href = '/';      
-  });//End submit_btn
+  });//End submit_btn 
 
-  //************************************************************************
-  // Add an addition info row for an alert.
-  //************************************************************************
-  function Add_Alert(){
-    add_row_counter++;  //Increment i
-    $("#action_table").append(
-        " <tr class='info_rows'>" +
-        " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
-        "   <option value='Empty'>---</option>" + 
-        "   <option value='1'>Immediate</option>" +
-        "   <option value='2'>Temporary</option>" +
-        "   <option value='3'>Permanent</option> </select></td>" +
-        " <td> <input class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-        " <td> <select class='added_row' id='responsible_" + add_row_counter + "' type='text'> </select> </td>" +
-        " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <div class='added_row' id='state_" + add_row_counter + "'> </div></td>" +
-        " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
-    );    
-
-
-    $.ajax({
-      url   : "/get_users",
-      type  : "POST",
-      contentType : "application/json",
-      complete    : function(data){
-        var parsed_data = JSON.parse(data.responseText);
-
-        console.log(parsed_data);
-        
-        
-        for(var i = 0; i < parsed_data.length; i++){
-          for(var j = 0; j < add_row_counter; j++){
-          var owner = parsed_data[i].name;
-          $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
-          }
-        }
-      }
-    });
-
-  }//End Add_alert()
 
   //************************************************************************
   // When an alert is clicked from the home page, pull data from the DB
@@ -345,6 +356,9 @@ $(document).ready(function () {
               $('#recur').val(repeat);
               $('#issue_desc').html(issue);
               $('#cause_desc').html(cause);
+
+               if(a_type != null && date_posted != null)
+                document.getElementById('date_initial').disabled=true;
             }
             else{
               i_id           = parsed_data[i][j].id;
@@ -368,13 +382,17 @@ $(document).ready(function () {
               $('#date_completed_' + j).val(date_completed);
               $('#state_' + j).html(state);
               $('#item_id_' + j).val(i_id);
+
+              if (date_completed != null)
+                document.getElementById('date_completed_' + j).disabled=true;
+              if(date_start != null)
+                document.getElementById('date_start_' + j).disabled=true;
             }          
           }
         }
       }//End complete*/
     });
 
-        console.log("Pulled data");
   }// End Pull_Data()
 });//End document.ready
 //************************************************************************
@@ -388,9 +406,6 @@ $(document).ready(function () {
 //************************************************************************
 function loadAlerts(data, today){
   var d = JSON.parse(data.responseText);
-  console.log(data)
-
-  console.log(d);
 
 
   //Grabs the name of the day based on the deadline date in the DB
@@ -403,11 +418,11 @@ function loadAlerts(data, today){
   var rows = 0;
   var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-  for (var i = 0; i < list.length; i++){
+  for (var i = 0; i < list.length; i++){    //list is 
     var day = list[i];    //Get the day
 
-    if (!rg[day])         //If there aren't any days that have an entry continue on
-      continue;    
+    if (!rg[day]) continue;        //If there aren't any days that have an entry continue on
+          
 
     for (var j = 0; j < rg[day].length; j++){
       while ($(".row").length < rg[day].length){
@@ -415,20 +430,18 @@ function loadAlerts(data, today){
           + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
         rows++;
       }
+      
+
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
-
-
-      if(d[i].deadline <= today){
-        console.log("Today: ", today);
-        console.log(d[i].deadline + " is late");
+      if(rg[day][j].deadline <= today){
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{deadline}</td>" + 
+                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
       }
       else{
-        //console.log("Today: ", today);
-        //console.log(day + " " + d[i].deadline + " is ok");
-      }
-    
-      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{deadline}</td>" + 
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{deadline}</td>" + 
                 "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
+      }
+      
 
       e.promise().done(function(){
         $(".btn", this).on('click touchstart', function(){ 
@@ -525,7 +538,7 @@ function loadIncompleteAlerts(data, textStatus){
 // Used by loadAlerts() to format that way the data will be
 // displayed in the table element
 //************************************************************************
-function regroup_list_by(list,categorize) {  
+function regroup_list_by(list, categorize) {  
   var map = {};
   for (var i = 0; i < list.length; ++i) {
     var category = list[i][categorize];
