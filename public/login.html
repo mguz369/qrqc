@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>iQRQC Login</title>
+
+        <link rel="stylesheet" href="css/style.css">
+
+        <!-- Load JavaScript files -->
+        <script src='js/jquery.min.js'></script>
+        <script src='js/core.js'></script>
+    </head>
+        
+
+
+    <body id="page-id-index" class="blue_background">
+        <div id="logo" class="login-logo">
+            <img src="../public/images/hutchinson_logo.png" alt="Hutchinson Logo" />
+        </div>
+
+         <div class="admin-login-form">
+                    <div class="error-message">
+                <p class="error"></p>
+            </div>
+            <form id="login_form" ng-submit="handleLoginForm()">
+                <div>
+                    <input type="text" id="username" name="username" placeholder="Username" required />
+                </div>
+                <div>
+                    <input type="password" id="password" name="password" placeholder="Password" required />
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-white">Login</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

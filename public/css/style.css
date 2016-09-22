@@ -924,9 +924,47 @@ section.log-button {
   100% {left:0px;}
 }
 
-/* Admin Styles - Quality Alerts
+/* Admin Styles - Login
    ========================================================================== */
-/*****************************************************************************************************/
+#page-id-index .login-logo img {
+  margin: 0 auto;
+  display: block;
+}
+
+#page-id-index .admin-login-form {
+  margin-top: 35px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#page-id-index .admin-login-form div {
+  margin-bottom: 15px;
+}
+
+#page-id-index .admin-login-form input {
+  width: 300px;
+  height: 40px;
+  padding: 5px 10px;
+  font-family: monospace;
+}
+
+#page-id-index .admin-login-form button {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+
+#page-id-index .admin-login-form .error {
+  display: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #fff;
+  max-width: 300px;
+  text-align: center;
+}
 
 /*----------------------------------------------------*/
 /*Everything that I'm adding*/
@@ -990,10 +1028,24 @@ section.log-button {
 }
 
 
+/* FORMATTING FOR LOGIN.HTML */
+#logo{
+  margin-top: 10%;
+}
+
+.blue_background{
+  background-color: #132057;
+}
 
 /* FORMATTING FOR INDEX.HTML  */
 #issues_table{
-  width: 100%
+  width: 90%;
+  border-style: inset;
+  border-color: #132057;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 #category_table{
@@ -1019,7 +1071,7 @@ section.log-button {
   position: relative;
   border-style: solid;
   border-color: black;
-  width: 20%;
+  width: 10%;
   height: 50px;
   background-color: #4d4d4d;
   text-align: center;
@@ -1034,6 +1086,7 @@ section.log-button {
 
 .date{
   width: 35%;
+  height: 100%;
 }
 
 .alert{
@@ -1066,14 +1119,6 @@ section.log-button {
   width: 100px;
   color: white;
   text-indent: 10px;
-}
-
-#issues_table{
-  width: 100%;
-  border-style: inset;
-  border-color: #132057;
-  margin-top: 20px;
-  margin-bottom: 20px;
 }
 
 #description{

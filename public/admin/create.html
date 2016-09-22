@@ -5,9 +5,7 @@
     <title>e-Alert</title>
     
     <!-- Load CSS -->  
-    <link rel="stylesheet" href="css/oc-modal.full.css">
-    <link rel="stylesheet" href="css/jquery.datetimepicker.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <!-- Load JavaScript files -->
     <script src='js/jquery.min.js'></script>
@@ -18,7 +16,7 @@
   <body id="create_page">
     <section class="user-logged-in"> </section>
     <section class="page-title">
-      <h2 >i-QRQC - Grand Rapids - e-Lert</h2>
+      <h2 >iQRQC - Grand Rapids - e-Lert</h2>
     </section>
     <section class="log-button ng-scope"> </section>
     
@@ -67,7 +65,7 @@
         <!-- ############################################################################ -->
         <tr >
             <td class="left_column">
-              i-QRQC Level:
+              iQRQC Level:
             </td>
             <td class="right_column">
               <select class="box_length" id="department">
@@ -77,9 +75,17 @@
                 <option value="Automation"  >Automation</option>
                 <option value="Office"      >Office</option>
                 <option value="Ship_Receive">Shipping/Receiving</option>
-                <option value="Mixing"      >Plant</option>
+                <option value="Plant"       >Plant</option>
               </select>
             </td>
+        </tr>
+        <tr>
+          <td class="left_column">
+            Start Level
+          </td>
+          <td class="right_column">
+            <p class="box_length" id="start_department"></p>
+          </td>
         </tr>
         <!-- ############################################################################ -->
         <tr >

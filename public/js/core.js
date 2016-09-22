@@ -43,6 +43,7 @@ $.urlParam = function(name){
 $(document).ready(function () {
   var add_row_counter = '0';  //Yeah it's a global, used for Add_alert()
   var users;
+  
   //************************************************************************
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
@@ -69,7 +70,8 @@ $(document).ready(function () {
 
 
         var today = (year + "-" + month + "-" + day);
-        loadAlerts(data, today);
+        var url = "create.html?id=";
+        loadAlerts(data, today, url);
       }
     });
 
@@ -86,9 +88,12 @@ $(document).ready(function () {
         }
       });
     });
+  
   });//End index_page
 
-  $('#create_page').exists(function(){    
+  $('#create_page').exists(function(){ 
+    Press_Enter();
+
     $.ajax({
       url         : "/get_users",
       type        : "POST",
@@ -130,8 +135,13 @@ $(document).ready(function () {
     
     $('#id_number').html($.urlParam('id'));
     $('#return_home').on('click touchstart', () => {
-      window.location.href = '/';
+      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
+      if(option == true)
+        window.location.href = '/';
+      else
+        return false;
     });
+
   });//End create_page
 
   $('#mixing_page').exists(function(){
@@ -140,12 +150,30 @@ $(document).ready(function () {
       type        : "POST",
       contentType : "application/json",
       processData : false,
-      complete    : loadMixingAlerts,
+      complete    : function(data){
+        var date = new Date();
+
+        //Format the date
+        var day = date.getDate();
+        var month = (date.getMonth() + 1);
+        var year = date.getFullYear();
+
+        if(day < 10)
+          day = '0' + day;
+        if(month < 10)
+          month = '0' + month;
+
+
+        var today = (year + "-" + month + "-" + day);
+        var url = "mixing_alert.html?id=";
+        loadAlerts(data, today, url);
+      }
     });
 
     $('#return_home').on('click touchstart', () => {
       window.location.href = '/';
     });
+  
   });// End mixing
 
   $('#incomplete_page').exists(function(){
@@ -160,6 +188,7 @@ $(document).ready(function () {
     $('#return_home').on('click touchstart', () => {
       window.location.href = '/';
     });
+  
   });// End incomplete
 
 
@@ -170,35 +199,7 @@ $(document).ready(function () {
     Add_Alert();  
   });//End add_row
   
-  //************************************************************************
-  // Add an addition info row for an alert.
-  //************************************************************************
-  function Add_Alert(){
-    $("#action_table").append(
-        " <tr class='info_rows'>" +
-        " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
-        "   <option value='Empty'>---</option>" + 
-        "   <option value='1'>Immediate</option>" +
-        "   <option value='2'>Temporary</option>" +
-        "   <option value='3'>Permanent</option> </select></td>" +
-        " <td> <input class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-        " <td> <select class='added_row' id='responsible_" + add_row_counter + "' type='text'> </select> </td>" +
-        " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
-        " <td> <div class='added_row' id='state_" + add_row_counter + "'> </div></td>" +
-        " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
-    );
-
-    for(var i = 0; i < users.length; i++){
-      for(var j = add_row_counter; j <= add_row_counter; j++){
-        var owner = users[i].name;
-        $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
-      }
-    }
-
-    add_row_counter++;  //Increment
-  }//End Add_alert()
+  
 
   //************************************************************************
   // Creates a new aletry entry into the DB
@@ -231,6 +232,7 @@ $(document).ready(function () {
       type        : a_type,
       date        : date_posted,
       department  : dept,
+      start_dept  : dept,
       location    : location,
       part        : part_num,
       customer    : cust,
@@ -280,7 +282,7 @@ $(document).ready(function () {
       }
 
       var weekend_day = new Date(date_ending).getUTCDay(); 
-      console.log(weekend_day);
+      console.log("Week Day number: %s", weekend_day);
 
 
       var payload2 = {
@@ -303,12 +305,65 @@ $(document).ready(function () {
         processData : false,
         data        : JSON.stringify(payload2),
       });
+
+      //Send the email out
+      var payload3 = {
+        owner     : responsible,
+        department : dept,
+      };
+
+      console.log('%s,  %s', payload3.owner, payload3.department);
+      $.ajax({
+        url         : "/get_email",
+        type        : "POST",
+        contentType : "application/json",
+        processData : false,
+        data        : JSON.stringify(payload3),
+        complete    : function(data){
+          var parsed_data = JSON.parse(data.responseText);
+
+          console.log(parsed_data);
+          debugger;
+        }
+      });
+      
     }
 
     //Redirect after all is done
     window.location.href = '/';      
+  
   });//End submit_btn 
+  //************************************************************************
+  // Add an addition info row for an alert.
+  //************************************************************************
+  function Add_Alert(){
+    $("#action_table").append(
+      " <tr class='info_rows'>" +
+      " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      "   <option value='Empty'>---</option>" + 
+      "   <option value='1'>Immediate</option>" +
+      "   <option value='2'>Temporary</option>" +
+      "   <option value='3'>Permanent</option> </select></td>" +
+      " <td> <input class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td> <select class='added_row' id='responsible_" + add_row_counter + "' type='text'> </select> </td>" +
+      " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <div class='added_row' id='state_" + add_row_counter + "'> </div></td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
+    );
 
+    //Populate the 'Owners' dropdown box
+    for(var i = 0; i < users.length; i++){
+      for(var j = add_row_counter; j <= add_row_counter; j++){
+        var owner = users[i].name;
+        $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
+      }
+    }
+
+    add_row_counter++;  //Increment
+  
+  }// End Add_alert()
 
   //************************************************************************
   // When an alert is clicked from the home page, pull data from the DB
@@ -327,7 +382,6 @@ $(document).ready(function () {
       data        : JSON.stringify(payload),
       complete    : function(data){      
         var parsed_data = JSON.parse(data.responseText);
-
 
         var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause; //First section
         var t_length, t_descript, responsible, date_start, date_ending, date_completed, state, i_id;//Second section
@@ -358,7 +412,7 @@ $(document).ready(function () {
               $('#cause_desc').html(cause);
 
                if(a_type != null && date_posted != null)
-                document.getElementById('date_initial').disabled=true;
+               $('#date_initial').attr('disabled', 'disabled');
             }
             else{
               i_id           = parsed_data[i][j].id;
@@ -383,10 +437,18 @@ $(document).ready(function () {
               $('#state_' + j).html(state);
               $('#item_id_' + j).val(i_id);
 
-              if (date_completed != null)
-                document.getElementById('date_completed_' + j).disabled=true;
+              
               if(date_start != null)
-                document.getElementById('date_start_' + j).disabled=true;
+                $('#date_start_' + j).attr('disabled', 'disabled');
+              if(date_ending != null && date_completed != null)
+                $('#date_ending_' + j).attr('disabled', 'disabled');
+              //Disable an entire row if Action has been completed
+              if (date_completed != null){
+                $('#term_length_' + j).attr('disabled', 'disabled');
+                $('#term_description_' + j).attr('disabled', 'disabled');
+                $('#responsible_' + j).attr('disabled', 'disabled');
+                $('#date_completed_' + j).attr('disabled', 'disabled');
+              }
             }          
           }
         }
@@ -398,13 +460,17 @@ $(document).ready(function () {
 //************************************************************************
 
 
+
+
+
+
 //************************************************************************
 // Sort the queryed alerts based on the Deadline column and display
 // them based on the day-of-the-week they fall on.
 //
 // Used by $('#index_page')
 //************************************************************************
-function loadAlerts(data, today){
+function loadAlerts(data, today, url){
   var d = JSON.parse(data.responseText);
 
 
@@ -433,106 +499,29 @@ function loadAlerts(data, today){
       
 
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
-      if(rg[day][j].deadline <= today){
+      if(rg[day][j].deadline < today){
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{deadline}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
+                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
+      }
+      else if(rg[day][j].deadline == today){
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey;'>{deadline}</td>" + 
+                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{deadline}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
+                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       
 
       e.promise().done(function(){
         $(".btn", this).on('click touchstart', function(){ 
-          window.location.href = 'create.html?id=' + jQuery.attr(this, "data-part_num");
+          window.location.href = url + jQuery.attr(this, "data-part_num");
         });
       });
     }
   }  
-}//End loadAlerts
+}// End loadAlerts
 
-function loadMixingAlerts(data, textStatus){
-  var d = JSON.parse(data.responseText);
-  //var today = d[1][0].today;
-
-  //Grabs the name of the day based on the deadline date in the DB
-  for (var i = 0; i < d.length; i++){
-    var day = whichDay(d[i].deadline);
-    d[i]['day']= day;
-  }
-
-  var rg = regroup_list_by(d, 'day');
-  var rows = 0;
-  var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-  for (var i = 0; i < list.length; i++){
-    var day = list[i];    //Get the day
-    
-    if (!rg[day])         //If there aren't any days that have an entry continue on
-      continue;
-    
-    for (var j = 0; j < rg[day].length; j++){
-      while ($(".row").length < rg[day].length){
-        $('#issues_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
-          + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
-        rows++;
-      }
-
-      var e = $('#row_'+j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
-
-      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style=>{deadline}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
-
-      e.promise().done(function(){
-        $(".btn", this).on('click touchstart', function(){ 
-          window.location.href = 'mixing_alert.html?id=' + jQuery.attr(this, "data-part_num");
-        });
-      });
-    }
-  }
-}// End loadMixingAlerts
-
-function loadIncompleteAlerts(data, textStatus){
-  var d = JSON.parse(data.responseText);
-  //var today = d[1][0].today;
-
-  //Grabs the name of the day based on the deadline date in the DB
-  for (var i = 0; i < d.length; i++){
-    var day = whichDay(d[i].deadline);
-    d[i]['day']= day;
-  }
-
-  var rg = regroup_list_by(d, 'day');
-  var rows = 0;
-  var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-  for (var i = 0; i < list.length; i++){
-    var day = list[i];    //Get the day
-    
-    if (!rg[day])         //If there aren't any days that have an entry continue on
-      continue;
-    
-    for (var j = 0; j < rg[day].length; j++){
-      while ($(".row").length < rg[day].length){
-        $('#issues_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
-          + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
-        rows++;
-      }
-
-      var e = $('#row_'+j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
-
-      e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style=>{deadline}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{issue}</td>").format(rg[day][j]));
-
-      e.promise().done(function(){
-        $(".btn", this).on('click touchstart', function(){ 
-          window.location.href = 'incomplete.html?id=' + jQuery.attr(this, "data-part_num");
-        });
-      });
-    }
-  }
-}// End loadMixingAlerts
 
 //************************************************************************
 // Used by loadAlerts() to format that way the data will be
@@ -552,7 +541,7 @@ function regroup_list_by(list, categorize) {
     map[category].push(list[i]);
   }
   return map;
-}//End regroup_list_by()
+}// End regroup_list_by()
 
 
 //************************************************************************
@@ -562,3 +551,14 @@ function regroup_list_by(list, categorize) {
 function whichDay(dateString) {
     return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][new Date(dateString).getDay()];
 }
+
+function Press_Enter(){
+  $("form input").keypress(function (e) {
+    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+      $('button[type=submit] .default').click();
+      return false;
+    }
+    else 
+      return true;
+  });
+}// End Press_Enter
