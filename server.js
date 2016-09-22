@@ -7,14 +7,66 @@
 // Requires
 //************************************************************************
 var express     = require('express');
+var favicon     = require('static-favicon');
+var cookieParser= require('cookie-parser');
+var session     = require('express-session');
+
 var path        = require('path');
 var bodyParser  = require('body-parser');
+
 var mysql       = require('mysql');
 var net         = require('net');
-var favicon     = require('static-favicon');
+var nodemailer  = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
 
+// Set up express
 var app = express();
 app.use( bodyParser.json() );
+app.use( cookieParser() );
+/*app.use( session({
+    secret: '0eda241fc65ccf35d9743309ac395215',
+    resave: true,
+    saveUninitialized: true,
+    store: new mysql(options)
+    })
+);*/
+
+var transporter = nodemailer.createTransport(smtpTransport({
+    service     : 'gmail',
+    host        : 'smtp.gmail.com',
+    port        : 587,    
+    requireTLS  : true,
+    secure      : true,
+    logger      : true, // log to console
+    debug       : true, // include SMTP traffic in the logs
+    auth: {
+        user: 'smartplant3@gmail.com',
+        pass: 'Paulstra1'
+    }
+}));
+
+String.prototype.format = function() {
+    var args = arguments;
+    this.unkeyed_index = 0;
+    return this.replace(/\{(\w*)\}/g, function(match, key) {
+        if (key === '') {
+            key = this.unkeyed_index;
+            this.unkeyed_index++
+        }
+        if (key == +key) {
+            return args[key] !== 'undefined'
+                ? args[key]
+                : match;
+        } else {
+            for (var i = 0; i < args.length; i++) {
+                if (typeof args[i] === 'object' && typeof args[i][key] !== 'undefined') {
+                    return args[i][key];
+                }
+            }
+            return match;
+        }
+    }.bind(this));
+};
  
 //************************************************************************
 // DB query string formatting
@@ -50,6 +102,7 @@ var server = app.listen(myPort, () => {
     var host = server.address().address;
     var port = server.address().port;
 });
+
 
 //************************************************************************
 // Connect to the QRQC database
@@ -133,11 +186,12 @@ function ConnectToSp(){
 ConnectToSp();
 
 
+
 //************************************************************************
 // Query any current alerts 
 //************************************************************************
 app.post('/show_current_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
 
@@ -149,7 +203,11 @@ app.post('/show_current_alerts', (req, res) => {
 
 
 app.post('/show_mixing_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
+
+    var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t1.`description`, t1.`owner`, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
         "FROM `post_it_items` AS t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t2.`department` = 'Mixing' AND t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1'; ");
 
@@ -236,7 +294,7 @@ app.post('/update_post_it_items', (req, res) => {
         " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
         ).formatSQL(req.body);
 
-    console.log("Update into Items: %s\n", sql_update);
+    console.log("Update into Items: %s\n\n", sql_update);
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
 
@@ -265,9 +323,9 @@ app.post('/get_customers', (req, res) =>{
 });
 
 app.post('/get_users', (req, res) => {
-    var sql = "SELECT `name` FROM `user`";
+    var sql = "SELECT `name` FROM `owner`";
 
-    connectionSp.query(sql, (err, result) => {
+    connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
         res.send(JSON.stringify(result));
@@ -283,22 +341,66 @@ app.post('/mixing_alerts', (req, res) => {
         res.send(JSON.stringify(result));
     });
 });
+
+
+//************************************************************************
+// 1) Get the required email address based on the user
+// 2) Create the email transporter to send the email
+//************************************************************************
+app.post('/get_email', (req, res) => {
+    var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        console.log(result);
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/send_email', (req, res) => {
+    var recipient = ('{owner} <{email_addr}>').format(req.body);
+    var message = ('{email_text}').format(req.body);
+
+    var message = {
+        from    : 'iQRQC automated email',
+        to      : recipient,
+        subject : 'iQRQC Action Notification', 
+        text    : message
+    };
+
+    console.log("sent email");
+    transporter.sendMail(message, (error, info) => {
+        if (error) {
+            console.log('Error occurred');
+            console.log(error.message);
+            return;
+        }
+        console.log('Message sent successfully!');
+        console.log('Server responded with "%s"', info.response);
+    });
+});
+
 //************************************************************************
 // Get paths setup, load css, js, etc for the browser
 //************************************************************************
 var dir_path = 'public/';
-var each = ["images", "css", "js", "datetimepicker"];
-//var each = ['flot','reveal.js','snap','sparkline','jquery','d3','work_instructions', 'work_videos']
+var admin_path = 'public/admin/'
+var each = ["images", "css", "js", "datetimepicker", "jquery"];
+//var each = ['flot','reveal.js','snap','sparkline','d3','work_instructions', 'work_videos']
+
 for (var i = 0; i < each.length; i++){
         app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));
 }
 
-app.use(favicon(path.join(__dirname, dir_path + '/images' + 'favicon.ico')));
+app.use(favicon(path.join(__dirname, dir_path + '/images' + '/favicon.ico')));
 
 app.get('/', (req, res) => {
     if(req.path == '/'){
+        console.log('Cookies', req.cookies);
         res.locals.query = req.query;
-        res.sendFile(path.join(__dirname, dir_path + 'index.html'));    
+        //res.sendFile(path.join(__dirname, dir_path + 'login.html'));
+        res.sendFile(path.join(__dirname, admin_path + '/index.html'));  
     }
     else{
         res.sendFile(path.join(__dirname, dir_path + req.path));
@@ -308,15 +410,19 @@ app.get('/', (req, res) => {
 //************************************************************************
 // Fetch other pages
 //************************************************************************
+app.get('/index.html', (req, res) => {
+
+    res.sendFile(path.join(__dirname, admin_path + '/index.html'));
+});
 app.get('/create.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/create.html'));
+    res.sendFile(path.join(__dirname, admin_path + '/create.html'));
 });
 app.get('/mixing.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/mixing.html'));
+    res.sendFile(path.join(__dirname, admin_path + '/mixing.html'));
 });
 app.get('/mixing_alert.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/mixing_alert.html'));
+    res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html'));
 });
 app.get('/incomplete.html', (req, res) => {
-    res.sendFile(path.join(__dirname, dir_path + '/incomplete.html'));
+    res.sendFile(path.join(__dirname, admin_path + '/incomplete.html'));
 });

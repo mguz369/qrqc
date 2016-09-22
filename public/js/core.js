@@ -206,132 +206,11 @@ $(document).ready(function () {
   // Stores data entered in the fields from the webpage and sends them
   // to the server as a JSON string
   //************************************************************************
-  $('#submit_btn').click(function() {      
-    var post_id, active;    
-
-    //Information write to DB
-    var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause;
-    a_type      = $('#alert_type').val();
-    date_posted = $('#date_initial').val();
-    dept        = $('#department').val();
-    location    = $('#location').val();
-    part_num    = $('#part_num').val();
-    cust        = $('#customer').val();
-    repeat      = $('#recur').val();
-    issue       = $('#issue_desc').val();
-    cause       = $('#cause_desc').val();
-    post_id     = $('#id_number').text();
-    active      = 1;
-
-    if(a_type == null || date_posted == "" || dept == null || cust == null){
-      alert("Please fill in all Information fields");
-      return false;
-    } 
-
-    var payload = {
-      type        : a_type,
-      date        : date_posted,
-      department  : dept,
-      start_dept  : dept,
-      location    : location,
-      part        : part_num,
-      customer    : cust,
-      recurrence  : repeat,
-      i_desc      : issue,
-      c_desc      : cause,      
-      post_id     : post_id,
-      is_active   : active,
-    };
-
-    $.ajax({
-      url         : "/update_post_it",
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      data        : JSON.stringify(payload),
-    });
-
-    //Action Plan row(s) write to DB
-    var t_length, t_descript, responsible, date_start, date_ending, date_completed, state, item_id;
-    for(var i = 0; i < add_row_counter; i++){
-      t_length        = $('#term_length_' + i).val();        
-      t_descript      = $('#term_description_' + i).val();
-      responsible     = $('#responsible_' + i).val();
-      date_start      = $('#date_start_' + i).val();
-      date_ending     = $('#date_ending_' + i).val();
-      date_completed  = $('#date_completed_' + i).val();
-      item_id         = $('#item_id_' + i).val();
-      state           = $('#state_' + i).val();
-      active          = 1;
-      item_id         = $('#item_id_' + i).val();
-  
-
-      //*****************************************************
-      // Formatting and error checking
-      if(date_completed == "")
-        date_completed = null;
-      else if(date_completed != "")
-        state = "Closed";
-
-      if(state == "")
-        state = "Open"
-      
-      if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
-        alert("Please make sure all fields are filled in for action " + (i + 1));
-        return false;
-      }
-
-      var weekend_day = new Date(date_ending).getUTCDay(); 
-      console.log("Week Day number: %s", weekend_day);
-
-
-      var payload2 = {
-        item_id       : item_id,
-        post_id       : post_id,
-        term          : t_length,
-        term_descript : t_descript,
-        owner         : responsible,
-        starting      : date_start,
-        ending        : date_ending,
-        completed     : date_completed,
-        state         : state,
-        is_active     : active,
-      };
-
-      $.ajax({
-        url         : "/update_post_it_items",
-        type        : "POST",
-        contentType : "application/json",
-        processData : false,
-        data        : JSON.stringify(payload2),
-      });
-
-      //Send the email out
-      var payload3 = {
-        owner     : responsible,
-        department : dept,
-      };
-
-      console.log('%s,  %s', payload3.owner, payload3.department);
-      $.ajax({
-        url         : "/get_email",
-        type        : "POST",
-        contentType : "application/json",
-        processData : false,
-        data        : JSON.stringify(payload3),
-        complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-
-          console.log(parsed_data);
-          debugger;
-        }
-      });
-      
-    }
+  $('#submit_btn').click(function(){
+    Submit_Data();
 
     //Redirect after all is done
-    window.location.href = '/';      
-  
+    window.location.href = '/';  
   });//End submit_btn 
   //************************************************************************
   // Add an addition info row for an alert.
@@ -456,6 +335,161 @@ $(document).ready(function () {
     });
 
   }// End Pull_Data()
+
+  function Submit_Data() {      
+    var post_id, active;    
+
+    //Information write to DB
+    var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause;
+    a_type      = $('#alert_type').val();
+    date_posted = $('#date_initial').val();
+    dept        = $('#department').val();
+    location    = $('#location').val();
+    part_num    = $('#part_num').val();
+    cust        = $('#customer').val();
+    repeat      = $('#recur').val();
+    issue       = $('#issue_desc').val();
+    cause       = $('#cause_desc').val();
+    post_id     = $('#id_number').text();
+    active      = 1;
+
+    if(a_type == null || date_posted == "" || dept == null || cust == null){
+      alert("Please fill in all Information fields");
+      return false;
+    } 
+
+    var payload = {
+      type        : a_type,
+      date        : date_posted,
+      department  : dept,
+      start_dept  : dept,
+      location    : location,
+      part        : part_num,
+      customer    : cust,
+      recurrence  : repeat,
+      i_desc      : issue,
+      c_desc      : cause,      
+      post_id     : post_id,
+      is_active   : active,
+    };
+
+    $.ajax({
+      url         : "/update_post_it",
+      type        : "POST",
+      contentType : "application/json",
+      processData : false,
+      data        : JSON.stringify(payload),
+    });
+
+    //Action Plan row(s) write to DB
+    var t_length, t_descript, responsible, date_start, date_ending, date_completed, state, item_id;
+    for(var i = 0; i < add_row_counter; i++){
+      t_length        = $('#term_length_' + i).val();        
+      t_descript      = $('#term_description_' + i).val();
+      responsible     = $('#responsible_' + i).val();
+      date_start      = $('#date_start_' + i).val();
+      date_ending     = $('#date_ending_' + i).val();
+      date_completed  = $('#date_completed_' + i).val();
+      item_id         = $('#item_id_' + i).val();
+      state           = $('#state_' + i).val();
+      active          = 1;
+      item_id         = $('#item_id_' + i).val();
+  
+
+      //*****************************************************
+      // Formatting and error checking
+      if(date_completed == "")
+        date_completed = null;
+      else if(date_completed != "")
+        state = "Closed";
+
+      if(state == "")
+        state = "Open"
+      
+      if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
+        alert("Please make sure all fields are filled in for action " + (i + 1));
+        return false;
+      }
+
+      var weekend_day = new Date(date_ending).getUTCDay(); 
+      console.log("Week Day number: %s", weekend_day);
+
+      var payload2 = {
+        item_id       : item_id,
+        post_id       : post_id,
+        term          : t_length,
+        term_descript : t_descript,
+        owner         : responsible,
+        starting      : date_start,
+        ending        : date_ending,
+        completed     : date_completed,
+        state         : state,
+        is_active     : active,
+      };
+
+      $.ajax({
+        url         : "/update_post_it_items",
+        type        : "POST",
+        contentType : "application/json",
+        processData : false,
+        data        : JSON.stringify(payload2),
+      });
+
+      console.log("Sending email ", i);
+          Format_Email(responsible, dept, t_descript, date_start, date_ending);
+    }
+  }// End Send_Data()
+  
+
+  function Format_Email(responsible, dept, t_descript, start_date, deadline){
+    var payload3 = {
+      owner     : responsible,
+      department : dept,
+    };
+
+    console.log("payload 3: ", payload3);
+
+    $.ajax({
+      url         : "/get_email",
+      type        : "POST",
+      contentType : "application/json",
+      processData : false,
+      data        : JSON.stringify(payload3),
+      complete    : function(data){
+        var parsed_data = JSON.parse(data.responseText);
+        console.log(parsed_data);
+
+
+        for(var i = 0; i < parsed_data.length; i++){
+          var email = parsed_data[i].email;
+          var message = ("You have been assigned a task for QRQC:\n\n" + t_descript +
+                         "\nTask assigned on: " + start_date +
+                         "\nTask deadline is: " + deadline);
+          
+          var email_body = {
+            owner      : responsible,
+            email_addr : email,
+            email_text : message,
+          };
+        }
+        
+        $.ajax({
+            url         : "/send_email",
+            type        : "POST",
+            contentType : "application/json",
+            processData : false,
+            data        : JSON.stringify(email_body),
+            complete    : function(){
+              return;
+            }
+          });
+          
+      
+
+      }//End/complete
+    });
+  }//End Format_Email()
+
 });//End document.ready
 //************************************************************************
 
