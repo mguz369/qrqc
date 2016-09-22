@@ -1,7 +1,7 @@
 {
     "version"       : "1.0.0",
     "main"          : "main.js",
-    "description"   : "Qlik Prototype",
+    "description"   : "iQRQC Notification System",
     "author"        : "Mike Guzior",
     
     "dependencies": {
@@ -10,6 +10,9 @@
         "express"           : "x",
         "path"              : "x",
         "static-favicon"    : "1.0.2",
-        "body-parser"       : "x"
+        "body-parser"       : "x",
+        "cookie-parser"     : "^1.4.3",
+        "nodemailer" 		: "^2.6.x",
+        "nodemailer-smtp-transport" : "x"
     }
 }
