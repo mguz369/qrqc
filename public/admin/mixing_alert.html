@@ -38,7 +38,19 @@
               iNotes Category:
             </td>
             <td class="right_column">
-              <p class="box_length" id="alert_type"> </p>    
+              <select class="box_length" id="alert_type">
+                <!--<option value="Empty"               >---</option>-->
+                <option value="Safety"    id="Safety"   >Safety/Environment</option>
+                <option value="Quality"   id="Quality"  >Quality</option>
+                <option value="Activity"  id="Activity" >Activity (Sales)</option>
+                <option value="Inventory" id="Inventory">Inventory</option>
+                <option value="Scrap"     id="Scrap"    >Scrap</option>
+                <option value="Hr"        id="Hr"       >HR/Labor</option>
+                <option value="Delivery"  id="Delivery" >Delivery</option>
+                <option value="Operation" id="Operation">Operations Efficiency</option>
+                <option value="Supply"    id="Supply"   >Supply Chain</option>
+                <option value="Misc"      id="Misc"     >Miscellaneaous</option>
+              </select>   
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -47,7 +59,7 @@
               Date posted:
             </td>
             <td class="right_column">
-              <p class="box_length" id="date_initial" type="date"> </p>
+              <input class="box_length" id="date_initial" type="date"> </input>
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -56,7 +68,10 @@
               Department:
             </td>
             <td class="right_column">
-              <p class="box_length" id="department"> </p>
+              <select class="box_length" id="department">
+                <option value="Mixing"      >Mixing</option>
+                <option value="Plant"       >Plant</option>
+              </select>
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -85,7 +100,8 @@
               Customer:
             </td>
             <td class="right_column">
-              <p class="box_length" id="customer"> </p>              
+              <select class="box_length" id="customer"> 
+              </select>              
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -174,9 +190,14 @@
         </table>      
     </form>
     
-    <div>
-      <!--<button class="btn btn-blue" id="add_row" type="button">Add Row</button>
-      <button class="btn btn-blue" id="submit_btn">Submit</button>-->
+    <div class="mycontainer">
+      <table class="page-footer">
+        <tr>
+          <td> <button class="btn btn-white table_button" id="add_row" type="button">Add Action</button></td>
+          <td> <button class="btn btn-white table_button" id="submit_btn">Submit</button></td>
+          <td> <button class="btn btn-white table_button" id="mixing home_home">Return to Main Page</button></td>          
+        </tr>
+      </table>
     </div> 
   </body>
 </html>

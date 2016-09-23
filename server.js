@@ -191,7 +191,7 @@ ConnectToSp();
 // Query any current alerts 
 //************************************************************************
 app.post('/show_current_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(`date`, '%m-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
 
@@ -236,8 +236,8 @@ app.post('/show_incomplete_alerts', (req, res) => {
 //************************************************************************
 app.post('/pull_qrqc_data', (req, res) => {
     var sql = ("SELECT `id`, `alert_type`, DATE_FORMAT(`date`, '%Y-%m-%d') AS `date`, `department`, `location`, `part`, `customer`, `recurrence`, `issue`, `cause`, `active` FROM `post_it` WHERE `id` = {id}; " +
-               "SELECT t2.id, t2.post_it_id, t2.term, t2.description, t2.owner, " +
-               "DATE_FORMAT(t2.initial_date, '%Y-%m-%d') AS `initial_date`, DATE_FORMAT(t2.deadline, '%Y-%m-%d') AS `deadline`, DATE_FORMAT(t2.completed, '%Y-%m-%d') AS `completed`, t2.state " +
+               "SELECT t2.id, t2.post_it_id, t2.term, t2.description, t2.owner, DATE_FORMAT(t2.initial_date, '%Y-%m-%d') AS `initial_date`," +
+               "DATE_FORMAT(t2.deadline, '%Y-%m-%d') AS `deadline`, DATE_FORMAT(t2.completed, '%Y-%m-%d') AS `completed`, t2.email_sent, t2.state " +
                "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id}"
                ).formatSQL(req.body);
 
@@ -288,8 +288,7 @@ app.post('/update_post_it', (req, res) => {
 
 app.post('/update_post_it_items', (req, res) => {
     var sql_update = (
-        "INSERT INTO `post_it_items`(`id`, `post_it_id`, `term`, `description`, `owner`, `initial_date`, `deadline`, `completed`, `state`, `active`) " +
-        "VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, {is_active}) " +
+        "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
         "ON DUPLICATE KEY UPDATE `term` = {term}, `description` = {term_descript}, `owner` = {owner}, `initial_date` = {starting}, `deadline` = {ending}, " +
         " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
         ).formatSQL(req.body);
@@ -323,7 +322,7 @@ app.post('/get_customers', (req, res) =>{
 });
 
 app.post('/get_users', (req, res) => {
-    var sql = "SELECT `name` FROM `owner`";
+    var sql = "SELECT `name`, `department` FROM `owner`";
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
@@ -353,7 +352,6 @@ app.post('/get_email', (req, res) => {
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
-        console.log(result);
         res.send(JSON.stringify(result));
     });
 });
@@ -369,7 +367,6 @@ app.post('/send_email', (req, res) => {
         text    : message
     };
 
-    console.log("sent email");
     transporter.sendMail(message, (error, info) => {
         if (error) {
             console.log('Error occurred');
@@ -379,6 +376,8 @@ app.post('/send_email', (req, res) => {
         console.log('Message sent successfully!');
         console.log('Server responded with "%s"', info.response);
     });
+
+    console.log("\n\nsent email");
 });
 
 //************************************************************************

@@ -1030,7 +1030,7 @@ section.log-button {
 
 /* FORMATTING FOR LOGIN.HTML */
 #logo{
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
 .blue_background{
@@ -1039,13 +1039,13 @@ section.log-button {
 
 /* FORMATTING FOR INDEX.HTML  */
 #issues_table{
-  width: 90%;
+  width: 95%;
   border-style: inset;
   border-color: #132057;
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 5%;
-  margin-right: 5%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
 }
 
 #category_table{
@@ -1055,7 +1055,7 @@ section.log-button {
   height: 150px;
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 20px;
+  margin-left: 2.5%;
 }
 
 .categories{
@@ -1063,8 +1063,9 @@ section.log-button {
   border-color: black;
   display: inline-block;
   height: 50px;
-  width: 19%;
+  width: 17%;
   word-wrap: break-word;
+  margin-left: 2%;
 }
 
 .days_column{
@@ -1085,15 +1086,15 @@ section.log-button {
 }
 
 .date{
-  width: 35%;
-  height: 100%;
+  width: 30%;
+  
 }
 
 .alert{
   border-style: solid;
   border-color: black;
   border-width: 1px;
-  width: 65%;
+  width: 70%;
   word-wrap: break-word;
 }
 

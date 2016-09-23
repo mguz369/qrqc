@@ -49,31 +49,14 @@ $(document).ready(function () {
   // based on the days of the week
   //************************************************************************
   $('#index_page').exists(function() {
-    //debugger;
-    $.ajax({
-      url         : "/show_current_alerts",
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      complete    : function(data){
-        var date = new Date();
-
-        //Format the date
-        var day = date.getDate();
-        var month = (date.getMonth() + 1);
-        var year = date.getFullYear();
-
-        if(day < 10)
-          day = '0' + day;
-        if(month < 10)
-          month = '0' + month;
-
-
-        var today = (year + "-" + month + "-" + day);
-        var url = "create.html?id=";
-        loadAlerts(data, today, url);
-      }
-    });
+    var url = "create.html?id=";
+    var query_url = "/show_current_alerts"
+    //Refresh the page every 5 minutes
+    Show_Current(query_url, url);
+    setInterval(function(){
+      location.reload();
+    }, 300000);
+   
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
     $('#new_alert_redirect').on('click touchstart', () => { 
@@ -84,7 +67,7 @@ $(document).ready(function () {
         processData : false,
         complete    : function(data){
             var parsed_data = JSON.parse(data.responseText);
-            window.location.href = 'create.html?id=' + parsed_data[0].insertId;
+            window.location.href = url + parsed_data[0].insertId;
         }
       });
     });
@@ -131,8 +114,8 @@ $(document).ready(function () {
 
            Pull_Data($.urlParam('id'));
       }
-    });    
-    
+    });
+
     $('#id_number').html($.urlParam('id'));
     $('#return_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
@@ -145,33 +128,30 @@ $(document).ready(function () {
   });//End create_page
 
   $('#mixing_page').exists(function(){
-    $.ajax({
-      url         : "/show_mixing_alerts",
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      complete    : function(data){
-        var date = new Date();
+    var url = "mixing_alert.html?id=";
+    var query_url = "/show_mixing_alerts"
 
-        //Format the date
-        var day = date.getDate();
-        var month = (date.getMonth() + 1);
-        var year = date.getFullYear();
+    Show_Current(query_url, url);
+    setInterval(function(){
+      Show_Current(query_url, url);
+    }, 300000);
 
-        if(day < 10)
-          day = '0' + day;
-        if(month < 10)
-          month = '0' + month;
-
-
-        var today = (year + "-" + month + "-" + day);
-        var url = "mixing_alert.html?id=";
-        loadAlerts(data, today, url);
-      }
-    });
 
     $('#return_home').on('click touchstart', () => {
       window.location.href = '/';
+    });
+
+    $('#mixing_alert_redirect').on('click touchstart', () => { 
+      $.ajax({
+        url         : "/create_post_it",
+        type        : "POST",
+        contentType : "application/json",
+        processData : false,
+        complete    : function(data){
+            var parsed_data = JSON.parse(data.responseText);
+            window.location.href = url + parsed_data[0].insertId;
+        }
+      });
     });
   
   });// End mixing
@@ -209,8 +189,10 @@ $(document).ready(function () {
   $('#submit_btn').click(function(){
     Submit_Data();
 
-    //Redirect after all is done
-    window.location.href = '/';  
+    // Wait 5 seconds before redirect so emails can be sent
+    setTimeout(function(){
+      window.location.href = '/';
+    }, 2000);   
   });//End submit_btn 
   //************************************************************************
   // Add an addition info row for an alert.
@@ -228,7 +210,8 @@ $(document).ready(function () {
       " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
       " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
       " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <div class='added_row' id='state_" + add_row_counter + "'> </div></td>" +
+      " <td> <div class='added_row' id='state_" + add_row_counter + "'>Open</div></td>" +
+      " <td> <input class='added_row' id='email_" + add_row_counter + "' type='checkbox'> </div></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
     );
 
@@ -243,6 +226,33 @@ $(document).ready(function () {
     add_row_counter++;  //Increment
   
   }// End Add_alert()
+
+  
+  function Show_Current(query_url, url){
+    $.ajax({
+      url         : query_url,
+      type        : "POST",
+      contentType : "application/json",
+      processData : false,
+      complete    : function(data){
+        var date = new Date();
+
+        //Format the date
+        var day = date.getDate();
+        var month = (date.getMonth() + 1);
+        var year = date.getFullYear();
+
+        if(day < 10)
+          day = '0' + day;
+        if(month < 10)
+          month = '0' + month;
+
+
+        var today = (year + "-" + month + "-" + day);        
+        loadAlerts(data, today, url);
+      }
+    });
+  }// End Show_Current();
 
   //************************************************************************
   // When an alert is clicked from the home page, pull data from the DB
@@ -263,7 +273,7 @@ $(document).ready(function () {
         var parsed_data = JSON.parse(data.responseText);
 
         var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause; //First section
-        var t_length, t_descript, responsible, date_start, date_ending, date_completed, state, i_id;//Second section
+        var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, i_id;//Second section
 
         for(var i = 0; i < parsed_data.length; i++){
           for(var j = 0; j < parsed_data[i].length; j++){
@@ -301,7 +311,9 @@ $(document).ready(function () {
               date_start     = parsed_data[i][j].initial_date;
               date_ending    = parsed_data[i][j].deadline;
               date_completed = parsed_data[i][j].completed;
+              email          = parsed_data[i][j].email_sent;
               state          = parsed_data[i][j].state;
+
               
 
               //Add a row to the additional info area
@@ -313,6 +325,8 @@ $(document).ready(function () {
               $('#date_start_' + j).val(date_start);
               $('#date_ending_' + j).val(date_ending);
               $('#date_completed_' + j).val(date_completed);
+              if (email == 1) 
+                $('#email_' + j).prop('checked', true);
               $('#state_' + j).html(state);
               $('#item_id_' + j).val(i_id);
 
@@ -328,6 +342,8 @@ $(document).ready(function () {
                 $('#responsible_' + j).attr('disabled', 'disabled');
                 $('#date_completed_' + j).attr('disabled', 'disabled');
               }
+              $('#email_' + j).attr('disabled', 'disabled');
+
             }          
           }
         }
@@ -336,7 +352,7 @@ $(document).ready(function () {
 
   }// End Pull_Data()
 
-  function Submit_Data() {      
+  function Submit_Data() {
     var post_id, active;    
 
     //Information write to DB
@@ -382,7 +398,7 @@ $(document).ready(function () {
     });
 
     //Action Plan row(s) write to DB
-    var t_length, t_descript, responsible, date_start, date_ending, date_completed, state, item_id;
+    var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, item_id;
     for(var i = 0; i < add_row_counter; i++){
       t_length        = $('#term_length_' + i).val();        
       t_descript      = $('#term_description_' + i).val();
@@ -392,19 +408,21 @@ $(document).ready(function () {
       date_completed  = $('#date_completed_' + i).val();
       item_id         = $('#item_id_' + i).val();
       state           = $('#state_' + i).val();
+      email           = 1;
       active          = 1;
       item_id         = $('#item_id_' + i).val();
-  
+        
 
       //*****************************************************
       // Formatting and error checking
-      if(date_completed == "")
+      if(date_completed == ""){
+        if(!$('#email_' + i).is(':checked'))
+          Format_Email(responsible, dept, t_descript, date_start, date_ending);
+        
         date_completed = null;
+      }
       else if(date_completed != "")
         state = "Closed";
-
-      if(state == "")
-        state = "Open"
       
       if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
         alert("Please make sure all fields are filled in for action " + (i + 1));
@@ -423,6 +441,7 @@ $(document).ready(function () {
         starting      : date_start,
         ending        : date_ending,
         completed     : date_completed,
+        emailed       : email,
         state         : state,
         is_active     : active,
       };
@@ -434,9 +453,6 @@ $(document).ready(function () {
         processData : false,
         data        : JSON.stringify(payload2),
       });
-
-      console.log("Sending email ", i);
-          Format_Email(responsible, dept, t_descript, date_start, date_ending);
     }
   }// End Send_Data()
   
@@ -463,7 +479,7 @@ $(document).ready(function () {
         for(var i = 0; i < parsed_data.length; i++){
           var email = parsed_data[i].email;
           var message = ("You have been assigned a task for QRQC:\n\n" + t_descript +
-                         "\nTask assigned on: " + start_date +
+                         "\n\nTask assigned on: " + start_date +
                          "\nTask deadline is: " + deadline);
           
           var email_body = {
@@ -483,19 +499,12 @@ $(document).ready(function () {
               return;
             }
           });
-          
-      
-
       }//End/complete
     });
   }//End Format_Email()
 
 });//End document.ready
 //************************************************************************
-
-
-
-
 
 
 //************************************************************************
@@ -507,7 +516,6 @@ $(document).ready(function () {
 function loadAlerts(data, today, url){
   var d = JSON.parse(data.responseText);
 
-
   //Grabs the name of the day based on the deadline date in the DB
   for (var i = 0; i < d.length; i++){
     var day = whichDay(d[i].deadline);
@@ -517,6 +525,7 @@ function loadAlerts(data, today, url){
   var rg = regroup_list_by(d, 'day');
   var rows = 0;
   var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
 
   for (var i = 0; i < list.length; i++){    //list is 
     var day = list[i];    //Get the day
@@ -534,15 +543,15 @@ function loadAlerts(data, today, url){
 
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
       if(rg[day][j].deadline < today){
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{deadline}</td>" + 
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{short}</td>" + 
                 "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else if(rg[day][j].deadline == today){
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey;'>{deadline}</td>" + 
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey;'>{short}</td>" + 
                 "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{deadline}</td>" + 
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
                 "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       
