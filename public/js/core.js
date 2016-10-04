@@ -76,12 +76,40 @@ $(document).ready(function () {
 
   $('#create_page').exists(function(){ 
     Press_Enter();
+    var dept = $('#department').val();
+    var payload = { department : dept };
+//debugger;
+    $('#department').on('change', function(){   
+      dept = $('#department').val();
+      payload = { department : dept };
+      console.log("Value changed to: ", dept);
+
+      $.ajax({
+        url         : "/get_users",
+        type        : "POST",
+        contentType : "application/json",
+        data        : JSON.stringify(payload),
+        complete    : function(data){ 
+          var parsed_data = JSON.parse(data.responseText); 
+          users = parsed_data;
+         
+          Update_Users(users.length);
+        }
+      });
+    });
+
 
     $.ajax({
       url         : "/get_users",
       type        : "POST",
       contentType : "application/json",
-      complete    : function(data){ users = JSON.parse(data.responseText); }
+      data        : JSON.stringify(payload),
+      complete    : function(data){ 
+        var parsed_data = JSON.parse(data.responseText); 
+        users = parsed_data;
+
+        Update_Users(users.length);
+      }
     });
 
     $.ajax({
@@ -104,15 +132,14 @@ $(document).ready(function () {
       type        : "POST",
       contentType : "application/json",
       complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
+        var parsed_data = JSON.parse(data.responseText);
 
-          for(var i = 0; i < parsed_data.length; i++){
-            var customer = parsed_data[i].name;
+        for(var i = 0; i < parsed_data.length; i++){
+          var customer = parsed_data[i].name;
+          $('#customer').append("<option value='" + customer + "'>" + customer + "</option>" );
+        }
 
-            $('#customer').append("<option value='" + customer + "'>" + customer + "</option>" );
-          }
-
-           Pull_Data($.urlParam('id'));
+         Pull_Data($.urlParam('id'));
       }
     });
 
@@ -214,19 +241,27 @@ $(document).ready(function () {
       " <td> <input class='added_row' id='email_" + add_row_counter + "' type='checkbox'> </div></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
     );
-
-    //Populate the 'Owners' dropdown box
-    for(var i = 0; i < users.length; i++){
-      for(var j = add_row_counter; j <= add_row_counter; j++){
-        var owner = users[i].name;
-        $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
-      }
-    }
-
+   
+    Update_Users(users.length);
     add_row_counter++;  //Increment
   
   }// End Add_alert()
 
+
+  function Update_Users(length){
+    for(var j = 0; j <= add_row_counter; j++){
+        $('#responsible_' + j).empty();
+      }
+
+    //Reset length, repopulate the 'Owners' dropdown box
+
+    for(var i = 0; i < length; i++){
+      for(var j = 0; j <= add_row_counter; j++){
+        var owner = users[i].name;
+        $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
+      }
+    }
+  }
   
   function Show_Current(query_url, url){
     $.ajax({
@@ -369,7 +404,7 @@ $(document).ready(function () {
     post_id     = $('#id_number').text();
     active      = 1;
 
-    if(a_type == null || date_posted == "" || dept == null || cust == null){
+    if(a_type == null || date_posted == "" || dept == null || cust == '---'){
       alert("Please fill in all Information fields");
       return false;
     } 

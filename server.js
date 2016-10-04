@@ -26,9 +26,8 @@ app.use( cookieParser() );
 /*app.use( session({
     secret: '0eda241fc65ccf35d9743309ac395215',
     resave: true,
-    saveUninitialized: true,
-    store: new mysql(options)
-    })
+    saveUninitialized: true,   store: new mysql(options)
+    })//
 );*/
 
 var transporter = nodemailer.createTransport(smtpTransport({
@@ -110,8 +109,8 @@ var server = app.listen(myPort, () => {
 var connectionQRQC;
 function ConnectToQRQC(){
     connectionQRQC = mysql.createConnection({
-        //host                : 'localhost',
-        host                : '172.24.253.4',
+        host                : 'localhost',
+        //host                : '172.24.253.4',
         user                : 'qrqc',
         password            : 'Paulstra1',
         database            : 'qrqc',
@@ -151,8 +150,8 @@ ConnectToQRQC();
 var connectionSp;
 function ConnectToSp(){
     connectionSp = mysql.createConnection({
-        //host                : 'localhost',
-        host                : '172.24.253.4',
+        host                : 'localhost',
+        //host                : '172.24.253.4',
         user                : 'ind_maint',
         password            : 'zJC2LKjN6XHq5ETX',
         database            : 'smartplant',
@@ -191,7 +190,7 @@ ConnectToSp();
 // Query any current alerts 
 //************************************************************************
 app.post('/show_current_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(`date`, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
 
@@ -257,7 +256,7 @@ app.post('/pull_qrqc_data', (req, res) => {
 app.post('/create_post_it', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
     
-    var sql_create = ("INSERT INTO `post_it`(`date`, `active`) VALUES (CURRENT_DATE, '0'); SELECT LAST_INSERT_ID();").formatSQL(req.body); 
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ('---', CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();").formatSQL(req.body); 
    
     //console.log("SQL: ", sql_create);
     connectionQRQC.query(sql_create, (err, result) => {
@@ -322,8 +321,9 @@ app.post('/get_customers', (req, res) =>{
 });
 
 app.post('/get_users', (req, res) => {
-    var sql = "SELECT `name`, `department` FROM `owner`";
+    var sql = ("SELECT `name` FROM `owner` WHERE `department` = {department}").formatSQL(req.body);
 
+    console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
