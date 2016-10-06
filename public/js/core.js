@@ -404,7 +404,7 @@ $(document).ready(function () {
     post_id     = $('#id_number').text();
     active      = 1;
 
-    if(a_type == null || date_posted == "" || dept == null || cust == '---'){
+    if(a_type == null || date_posted == "" || dept == null){
       alert("Please fill in all Information fields");
       return false;
     } 
@@ -497,8 +497,6 @@ $(document).ready(function () {
       owner     : responsible,
       department : dept,
     };
-
-    console.log("payload 3: ", payload3);
 
     $.ajax({
       url         : "/get_email",
