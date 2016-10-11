@@ -94,8 +94,9 @@ $(document).ready(function () {
         contentType : "application/json",
         processData : false,
         complete    : function(data){
-            var parsed_data = JSON.parse(data.responseText);
-            window.location.href = url + parsed_data[0].insertId;
+          var parsed_data = JSON.parse(data.responseText);
+          window.location.href = url + parsed_data[0].insertId;
+          //Add_Alert();
         }
       });
     });
@@ -139,7 +140,7 @@ $(document).ready(function () {
         var parsed_data = JSON.parse(data.responseText); 
         users = parsed_data;
 
-        Add_Alert();
+        Update_Owners(users.length);
       }
     });
 
@@ -215,7 +216,8 @@ $(document).ready(function () {
   // Adds another row to the Additional Info section
   //************************************************************************
   $('#add_row').click(function(){
-    Add_Alert();  
+    Add_Alert();
+    //Update_Owners(users.length);  
   });//End add_row
   
   
