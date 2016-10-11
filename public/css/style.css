@@ -464,7 +464,7 @@ textarea {
 
 .btn {
   display: inline-block;
-  padding: 10px 15px;
+  padding: 5px 10px;
   text-decoration: none;
   /*text-transform: uppercase;*/
   font-size: 0.8em;
@@ -1051,11 +1051,12 @@ section.log-button {
 #category_table{
   border-style: solid;
   border-color: black;
-  width: 75%;
+  width: 95%;
   height: 150px;
   margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 2.5%;
+  margin-right: 2.5%
 }
 
 .categories{
@@ -1167,11 +1168,15 @@ section.log-button {
 .action_column{
   border-style: solid;
   border-color: black;
-  width: 200px;
+  width: 14%;
   height: 50px;
   background-color: #4d4d4d;
   text-align: center;
   color: white;
+}
+
+.end{
+  width: 7%;
 }
 
 .text_area{
@@ -1186,6 +1191,9 @@ section.log-button {
 
 .added_row{
   width: 100%;
+  border-style: solid;
+  border-width: 1px;
+  height: 25px;
 }
 
 .table_button{

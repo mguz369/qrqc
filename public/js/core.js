@@ -43,7 +43,34 @@ $.urlParam = function(name){
 $(document).ready(function () {
   var add_row_counter = '0';  //Yeah it's a global, used for Add_alert()
   var users;
-  
+   
+  $('#login_button').click(() => {
+    var password = $('#password').val().trim();
+    var username = $('#username').val().trim();
+    
+    var login_info = {
+      user : username,
+      pass : password
+    };
+    
+    
+    $.ajax({
+      url         : "/login_user",
+      type        : "POST",
+      contentType : "application/json",
+      data        : JSON.stringify(login_info),
+      processData : false,
+      complete    : function(data){
+        console.log(data.responseText);
+        var is_valid = JSON.parse(data.responseText);
+        console.log("anything happenging?");
+        
+        console.log("is_valid: ", is_valid);
+      }
+    });
+  });
+
+
   //************************************************************************
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
@@ -53,6 +80,7 @@ $(document).ready(function () {
     var query_url = "/show_current_alerts"
     //Refresh the page every 5 minutes
     Show_Current(query_url, url);
+    
     setInterval(function(){
       location.reload();
     }, 300000);
@@ -78,8 +106,9 @@ $(document).ready(function () {
     Press_Enter();
     var dept = $('#department').val();
     var payload = { department : dept };
-//debugger;
-    $('#department').on('change', function(){   
+
+    //When department changes, change all owner boxes
+    $('#department').on('change', function(){
       dept = $('#department').val();
       payload = { department : dept };
       console.log("Value changed to: ", dept);
@@ -93,12 +122,14 @@ $(document).ready(function () {
           var parsed_data = JSON.parse(data.responseText); 
           users = parsed_data;
          
-          Update_Users(users.length);
+          Empty_Owners();
+          Repopulate_Owners(users.length);
         }
       });
     });
 
 
+    //preload users[] so that changing can be done
     $.ajax({
       url         : "/get_users",
       type        : "POST",
@@ -108,7 +139,7 @@ $(document).ready(function () {
         var parsed_data = JSON.parse(data.responseText); 
         users = parsed_data;
 
-        Update_Users(users.length);
+        Add_Alert();
       }
     });
 
@@ -147,7 +178,7 @@ $(document).ready(function () {
     $('#return_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/';
+        window.location.href = '/index.html';
       else
         return false;
     });
@@ -164,10 +195,6 @@ $(document).ready(function () {
     }, 300000);
 
 
-    $('#return_home').on('click touchstart', () => {
-      window.location.href = '/';
-    });
-
     $('#mixing_alert_redirect').on('click touchstart', () => { 
       $.ajax({
         url         : "/create_post_it",
@@ -182,21 +209,6 @@ $(document).ready(function () {
     });
   
   });// End mixing
-
-  $('#incomplete_page').exists(function(){
-    $.ajax({
-      url         : "/show_incomplete_alerts",
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      complete    : loadIncompleteAlerts,
-    });
-
-    $('#return_home').on('click touchstart', () => {
-      window.location.href = '/';
-    });
-  
-  });// End incomplete
 
 
   //************************************************************************
@@ -218,7 +230,7 @@ $(document).ready(function () {
 
     // Wait 5 seconds before redirect so emails can be sent
     setTimeout(function(){
-      window.location.href = '/';
+      window.location.href = '/index.html';
     }, 2000);   
   });//End submit_btn 
   //************************************************************************
@@ -232,36 +244,59 @@ $(document).ready(function () {
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td> <input class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td> <select class='added_row' id='responsible_" + add_row_counter + "' type='text'> </select> </td>" +
-      " <td> <input class='added_row' id='date_start_" + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input class='added_row' id='date_ending_" + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input class='added_row' id='date_completed_" + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <div class='added_row' id='state_" + add_row_counter + "'>Open</div></td>" +
-      " <td> <input class='added_row' id='email_" + add_row_counter + "' type='checkbox'> </div></td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
+      " <td> <input  class='added_row'              id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td> <select class='added_row'              id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td> <input  class='added_row'              id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row'              id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      //" <td> <button class='added_row btn btn-blue' id='delete_"           + add_row_counter + "'>Delete</button></td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
-   
-    Update_Users(users.length);
+    
+    Update_Owners(users.length);
     add_row_counter++;  //Increment
-  
   }// End Add_alert()
 
+  function Remove_Alert(row_num){
+    $("#action_table").remove(" <tr class='info_rows'>" +
+      " <td><select class='added_row' id='term_length_" + row_num + "'>"+ 
+      " <td> <input  class='added_row'              id='term_description_" + row_num + "' type='text'> </input> </td>" +
+      " <td> <select class='added_row'              id='responsible_"      + row_num + "' type='text'> </select> </td>" +
+      " <td> <input  class='added_row'              id='date_start_"       + row_num + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row'              id='date_ending_"      + row_num + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row end'          id='date_completed_"   + row_num + "' type='date'> </input> </td>" +
+      " <td> <div    class='added_row end'          id='state_"            + row_num + "'>Open</div></td>" +
+      " <td> <input  class='added_row end'          id='email_"            + row_num + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td> <button class='added_row btn btn-blue' id='delete_"           + row_num + "'>Delete</button></td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_"       + row_num + "'/></td></tr>"
+      );
+  }
 
-  function Update_Users(length){
+  function Empty_Owners(){
     for(var j = 0; j <= add_row_counter; j++){
-        $('#responsible_' + j).empty();
+      $('#responsible_' + j).empty();
+    }
+  }
+  
+  function Update_Owners(length){
+    for(var i = 0; i < length; i++){
+      for(var j = add_row_counter; j > add_row_counter - 1; j--){
+        var owner = users[i].name;
+        $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
       }
-
-    //Reset length, repopulate the 'Owners' dropdown box
-
+    }
+  }// End Update_Owners
+  
+  function Repopulate_Owners(length){
     for(var i = 0; i < length; i++){
       for(var j = 0; j <= add_row_counter; j++){
         var owner = users[i].name;
         $('#responsible_' + j).append("<option value='" + owner + "'>" + owner + "</option>" );
       }
     }
-  }
+  }// End Repopulate_Owners
   
   function Show_Current(query_url, url){
     $.ajax({

@@ -15,7 +15,7 @@
 
     <body id="page-id-index" class="blue_background">
         <div id="logo" class="login-logo">
-            <img src="../public/images/hutchinson_logo.png" alt="Hutchinson Logo" />
+            <img src="/images/hutchinson_logo.png" alt="Hutchinson Logo" />
         </div>
 
          <div class="admin-login-form">
@@ -24,13 +24,13 @@
             </div>
             <form id="login_form" ng-submit="handleLoginForm()">
                 <div>
-                    <input type="text" id="username" name="username" placeholder="Username" required />
+                    <input id="username" type="text" name="username" placeholder="Username" method="post" required />
                 </div>
                 <div>
-                    <input type="password" id="password" name="password" placeholder="Password" required />
+                    <input id="password" type="password" name="password" placeholder="Password" method="post" required />
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-white">Login</button>
+                    <button id="login_button" type="submit" class="btn btn-white" method="post">Login</button>
                 </div>
             </form>
         </div>

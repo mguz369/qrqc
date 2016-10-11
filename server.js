@@ -10,10 +10,10 @@ var express     = require('express');
 var favicon     = require('static-favicon');
 var cookieParser= require('cookie-parser');
 var session     = require('express-session');
-
-var path        = require('path');
 var bodyParser  = require('body-parser');
 
+var path        = require('path');
+var md5         = require('md5');
 var mysql       = require('mysql');
 var net         = require('net');
 var nodemailer  = require('nodemailer');
@@ -22,7 +22,7 @@ var smtpTransport = require('nodemailer-smtp-transport');
 // Set up express
 var app = express();
 app.use( bodyParser.json() );
-app.use( cookieParser() );
+//app.use( cookieParser() );
 /*app.use( session({
     secret: '0eda241fc65ccf35d9743309ac395215',
     resave: true,
@@ -185,6 +185,27 @@ function ConnectToSp(){
 ConnectToSp();
 
 
+//************************************************************************
+// Login - This does use HTTPS or TLS/SSL (yet)
+// It only check if the user is authorized
+//************************************************************************
+app.post('/login_user', (req, res) => {
+    var username = "{user}".format(req.body);
+    var password = "{pass}".format(req.body);
+
+    password = md5(password);
+    var validate_user = ("SELECT * FROM `executive_login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
+
+    connectionSp.query(validate_user, (err, result) => {
+        if (err) console.log(err);
+
+        if(result.length > 0)
+            res.send(JSON.stringify(1));
+        else
+            res.send(JSON.stringify(0));
+    });
+});
+
 
 //************************************************************************
 // Query any current alerts 
@@ -216,17 +237,6 @@ app.post('/show_mixing_alerts', (req, res) => {
     });       
 });
 
-
-app.post('/show_incomplete_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.id, t1.term, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
-        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
-
-    connectionQRQC.query(select_dates, (err, result) => {
-        if(err) throw err;
-        res.send(JSON.stringify(result));
-    });
-});
 
 //************************************************************************
 // Pull data from the DB
@@ -396,7 +406,7 @@ app.use(favicon(path.join(__dirname, dir_path + '/images' + '/favicon.ico')));
 
 app.get('/', (req, res) => {
     if(req.path == '/'){
-        console.log('Cookies', req.cookies);
+        //console.log('Cookies', req.cookies);
         res.locals.query = req.query;
         //res.sendFile(path.join(__dirname, dir_path + 'login.html'));
         res.sendFile(path.join(__dirname, admin_path + '/index.html'));  
@@ -409,19 +419,8 @@ app.get('/', (req, res) => {
 //************************************************************************
 // Fetch other pages
 //************************************************************************
-app.get('/index.html', (req, res) => {
-
-    res.sendFile(path.join(__dirname, admin_path + '/index.html'));
-});
-app.get('/create.html', (req, res) => {
-    res.sendFile(path.join(__dirname, admin_path + '/create.html'));
-});
-app.get('/mixing.html', (req, res) => {
-    res.sendFile(path.join(__dirname, admin_path + '/mixing.html'));
-});
-app.get('/mixing_alert.html', (req, res) => {
-    res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html'));
-});
-app.get('/incomplete.html', (req, res) => {
-    res.sendFile(path.join(__dirname, admin_path + '/incomplete.html'));
-});
+app.get('/index.html',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
+app.get('/create.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
+app.get('/mixing.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
+app.get('/mixing_alert.html', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
+//app.get('/incomplete.html',   (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/incomplete.html')); });

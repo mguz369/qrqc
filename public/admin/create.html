@@ -10,6 +10,7 @@
     <!-- Load JavaScript files -->
     <script src='js/jquery.min.js'></script>
     <script src='js/core.js'></script>
+    <script src='js/md5.js'></script>
   </head>
 
 
@@ -169,30 +170,33 @@
 
       <table id="action_table">
           <tr>
-              <td class="action_column" id="">
+              <td class="action_column" id="action_type">
                 Type
               </td>
-              <td class="action_column" id="">
+              <td class="action_column" id="action_desc">
                 Description
               </td>
-              <td class="action_column" id="">
+              <td class="action_column" id="action_owner">
                 Owner
               </td>
-              <td class="action_column" id="">
+              <td class="action_column" id="action_start">
                 Start
               </td>
-              <td class="action_column" id="">
+              <td class="action_column" id="action_deadline">
                 Deadline
               </td>
-              <td class="action_column" id="">
+              <td class="action_column end" id="action_complete">
                 Completed
               </td>
-              <td class="action_column" id="">
+              <td class="action_column end" id="action_state">
                 State
               </td>
-              <td class="action_column" id="">
+              <td class="action_column end" id="action_email">
                 Email Sent
-              </td>             
+              </td>
+              <!--<td class="action_column end">
+                Delete
+              </td>-->
           </tr>
 
           <tr class="hidden_element">
