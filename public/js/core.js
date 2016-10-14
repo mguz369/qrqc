@@ -219,9 +219,10 @@ $(document).ready(function () {
     Add_New_Alert("action_table");
   });//End add_row
 
-  $('#delete').click(() => {
-    console.log("remove");
-    Remove_Alert();
+  $(document).on('click', '#delete', () => {    
+    $('.' + (add_row_counter - 1)).closest('tr').remove();
+    add_row_counter--;
+    return false;
   });
   
 
@@ -244,19 +245,19 @@ $(document).ready(function () {
   function Add_Alert(){
     $("#action_table").append(
       " <tr class='info_rows'>" +
-      " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
       "   <option value='Empty'>---</option>" + 
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td> <input  class='added_row'              id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td> <select class='added_row'              id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td> <input  class='added_row'              id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row'              id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td> </td>" +
+      " <td class='table_data'> <input  class='added_row'     id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row'     id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row'     id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row'     id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row end' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row end' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row end' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td class='table_data'> </td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
     
@@ -267,43 +268,26 @@ $(document).ready(function () {
 
   function Add_New_Alert(tableID){
     $("#action_table").append(
-      " <tr class='info_rows'>" +
-      " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      " <tr class='info_rows "+ add_row_counter + "'>" +
+      " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
       "   <option value='Empty'>---</option>" + 
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td> <input  class='added_row'              id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td> <select class='added_row'              id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td> <input  class='added_row'              id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row'              id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      //" <td> <button class='added_row btn btn-blue' id='delete' type='button' >Delete</button></td>" +
+      " <td class='table_data'> <input  class='added_row'     id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row'     id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row'     id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row'     id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row end' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row end' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row end' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
     
     Update_Owners(users.length);
     add_row_counter++;  //Increment
-  }
-
-  function Remove_Alert(){
-    $(".info_rows>").remove(
-      " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
-      " <td> <input  class='added_row'              id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td> <select class='added_row'              id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td> <input  class='added_row'              id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row'              id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td> <button class='added_row btn btn-blue' id='delete'>Delete</button></td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-      );
-
     console.log(add_row_counter);
-    add_row_counter--;
   }
 
   function Empty_Owners(){
@@ -509,7 +493,7 @@ $(document).ready(function () {
       date_ending     = $('#date_ending_' + i).val();
       date_completed  = $('#date_completed_' + i).val();
       item_id         = $('#item_id_' + i).val();
-      state           = $('#state_' + i).val();
+      state           = $('#state_' + i).html();
       email           = 1;
       active          = 1;
       item_id         = $('#item_id_' + i).val();
