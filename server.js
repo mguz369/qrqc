@@ -213,7 +213,7 @@ app.post('/login_user', (req, res) => {
 app.post('/show_current_alerts', (req, res) => {
     var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' ORDER BY t1.deadline ASC;");
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Plant' ORDER BY t1.deadline ASC;");
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;

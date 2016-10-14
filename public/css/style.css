@@ -1030,7 +1030,7 @@ section.log-button {
 
 /* FORMATTING FOR LOGIN.HTML */
 #logo{
-  margin-top: 5%;
+  margin-top: 10%;
 }
 
 .blue_background{
@@ -1175,13 +1175,19 @@ section.log-button {
   color: white;
 }
 
+.info_rows{
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+}
+
 .end{
   width: 7%;
 }
 
 .text_area{
   border-style: solid;
-  border-width: 1px
+  border-width: 2px
 }
 
 .description{

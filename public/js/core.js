@@ -215,11 +215,14 @@ $(document).ready(function () {
   //************************************************************************
   // Adds another row to the Additional Info section
   //************************************************************************
-  $('#add_row').click(function(){
-    Add_Alert();
-    //Update_Owners(users.length);  
+  $('#add_row').click(() => {
+    Add_New_Alert("action_table");
   });//End add_row
-  
+
+  $('#delete').click(() => {
+    console.log("remove");
+    Remove_Alert();
+  });
   
 
   //************************************************************************
@@ -253,7 +256,7 @@ $(document).ready(function () {
       " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
       " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
       " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      //" <td> <button class='added_row btn btn-blue' id='delete_"           + add_row_counter + "'>Delete</button></td>" +
+      " <td> </td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
     
@@ -261,19 +264,46 @@ $(document).ready(function () {
     add_row_counter++;  //Increment
   }// End Add_alert()
 
-  function Remove_Alert(row_num){
-    $("#action_table").remove(" <tr class='info_rows'>" +
-      " <td><select class='added_row' id='term_length_" + row_num + "'>"+ 
-      " <td> <input  class='added_row'              id='term_description_" + row_num + "' type='text'> </input> </td>" +
-      " <td> <select class='added_row'              id='responsible_"      + row_num + "' type='text'> </select> </td>" +
-      " <td> <input  class='added_row'              id='date_start_"       + row_num + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row'              id='date_ending_"      + row_num + "' type='date'> </input> </td>" +
-      " <td> <input  class='added_row end'          id='date_completed_"   + row_num + "' type='date'> </input> </td>" +
-      " <td> <div    class='added_row end'          id='state_"            + row_num + "'>Open</div></td>" +
-      " <td> <input  class='added_row end'          id='email_"            + row_num + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td> <button class='added_row btn btn-blue' id='delete_"           + row_num + "'>Delete</button></td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_"       + row_num + "'/></td></tr>"
+
+  function Add_New_Alert(tableID){
+    $("#action_table").append(
+      " <tr class='info_rows'>" +
+      " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      "   <option value='Empty'>---</option>" + 
+      "   <option value='1'>Immediate</option>" +
+      "   <option value='2'>Temporary</option>" +
+      "   <option value='3'>Permanent</option> </select></td>" +
+      " <td> <input  class='added_row'              id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td> <select class='added_row'              id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td> <input  class='added_row'              id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row'              id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      //" <td> <button class='added_row btn btn-blue' id='delete' type='button' >Delete</button></td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+    );
+    
+    Update_Owners(users.length);
+    add_row_counter++;  //Increment
+  }
+
+  function Remove_Alert(){
+    $(".info_rows>").remove(
+      " <td><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      " <td> <input  class='added_row'              id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td> <select class='added_row'              id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td> <input  class='added_row'              id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row'              id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <input  class='added_row end'          id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td> <div    class='added_row end'          id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td> <input  class='added_row end'          id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td> <button class='added_row btn btn-blue' id='delete'>Delete</button></td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
       );
+
+    console.log(add_row_counter);
+    add_row_counter--;
   }
 
   function Empty_Owners(){
@@ -589,19 +619,24 @@ function loadAlerts(data, today, url){
   //Grabs the name of the day based on the deadline date in the DB
   for (var i = 0; i < d.length; i++){
     var day = whichDay(d[i].deadline);
+
+    if(day == "Saturday")
+      day = "Friday";
+    if(day == "Sunday")
+      day = "Monday";
+
     d[i]['day']= day;
   }
 
   var rg = regroup_list_by(d, 'day');
   var rows = 0;
-  var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  var list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 
   for (var i = 0; i < list.length; i++){    //list is 
     var day = list[i];    //Get the day
 
     if (!rg[day]) continue;        //If there aren't any days that have an entry continue on
-          
 
     for (var j = 0; j < rg[day].length; j++){
       while ($(".row").length < rg[day].length){
@@ -662,7 +697,7 @@ function regroup_list_by(list, categorize) {
 // based on an incoming date string
 //************************************************************************
 function whichDay(dateString) {
-    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][new Date(dateString).getDay()];
+    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][new Date(dateString).getDay()];
 }
 
 function Press_Enter(){
