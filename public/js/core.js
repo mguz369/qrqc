@@ -412,7 +412,8 @@ $(document).ready(function () {
               $('#date_completed_' + j).val(date_completed);
               if (email == 1) 
                 $('#email_' + j).prop('checked', true);
-
+              if (state == 'Late')
+                 $('#state_' + j).css('background-color', 'red');
               $('#state_' + j).html(state);              
               $('#item_id_' + j).val(i_id);
 
