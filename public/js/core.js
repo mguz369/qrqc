@@ -250,14 +250,14 @@ $(document).ready(function () {
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row'     id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row'     id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row'     id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row'     id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row end' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row end' id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td class='table_data'> <input  class='added_row end' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td class='table_data'> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td class='table_data' style='text-align: center'>X</td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
     
@@ -274,13 +274,13 @@ $(document).ready(function () {
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row'     id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row'     id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row'     id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row'     id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row end' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row end' id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td class='table_data'> <input  class='added_row end' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
       " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
@@ -399,11 +399,10 @@ $(document).ready(function () {
               date_completed = parsed_data[i][j].completed;
               email          = parsed_data[i][j].email_sent;
               state          = parsed_data[i][j].state;
-
               
 
-              //Add a row to the additional info area
-              Add_Alert();
+              
+              Add_Alert();//Add a row to the action area
 
               $('#term_length_' + j).val(t_length);
               $('#term_description_' + j).val(t_descript);
@@ -413,7 +412,8 @@ $(document).ready(function () {
               $('#date_completed_' + j).val(date_completed);
               if (email == 1) 
                 $('#email_' + j).prop('checked', true);
-              $('#state_' + j).html(state);
+
+              $('#state_' + j).html(state);              
               $('#item_id_' + j).val(i_id);
 
               
@@ -427,9 +427,13 @@ $(document).ready(function () {
                 $('#term_description_' + j).attr('disabled', 'disabled');
                 $('#responsible_' + j).attr('disabled', 'disabled');
                 $('#date_completed_' + j).attr('disabled', 'disabled');
-              }
-              $('#email_' + j).attr('disabled', 'disabled');
 
+                $('#term_length_' + j).css('background-color', '#ebebe4');
+                $('#responsible_' + j).css('background-color', '#ebebe4');
+                $('#state_' + j).css('background-color', 'green');
+              }
+
+              $('#email_' + j).attr('disabled', 'disabled');
             }          
           }
         }
