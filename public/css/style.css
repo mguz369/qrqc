@@ -1317,7 +1317,7 @@ section.log-button {
 .shorten_td{
   border-style: solid;
   border-color: black;
-  width: 8%;
+  width: 8.5%;
 }
 
 .date_td{
@@ -1346,9 +1346,5 @@ section.log-button {
 .table_button{
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.short_td{
-
 }
 /**************************************/
