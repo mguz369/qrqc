@@ -223,16 +223,13 @@ app.post('/show_current_alerts', (req, res) => {
 
 
 app.post('/show_mixing_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1';");
-
-    var select_dates = ("SELECT t1.id, DATE_FORMAT(t1.deadline, '%Y-%m-%d') AS deadline, t1.term, t1.`description`, t1.`owner`, t2.id AS post_it_id, t2.alert_type, t2.location, t2.issue " +
-        "FROM `post_it_items` AS t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t2.`department` = 'Mixing' AND t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1'; ");
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Mixing' ORDER BY t1.deadline ASC;");
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
+                console.log(result);
         res.send(JSON.stringify(result));
     });       
 });
@@ -263,12 +260,10 @@ app.post('/pull_qrqc_data', (req, res) => {
 //************************************************************************
 // Write a new alert to the QRQC DB
 //************************************************************************
-app.post('/create_post_it', (req, res) => {
+app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
-    
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ('---', CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();").formatSQL(req.body); 
    
-    //console.log("SQL: ", sql_create);
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
 
@@ -276,7 +271,15 @@ app.post('/create_post_it', (req, res) => {
     });
 });
 
+app.post('/create_mixing', (req, res) => {
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ('---', CURRENT_DATE, 'Mixing', '---', '---', '0'); SELECT LAST_INSERT_ID();").formatSQL(req.body); 
+   
+    connectionQRQC.query(sql_create, (err, result) => {
+        if (err) throw err;
 
+        res.send(JSON.stringify(result));
+    });
+});
 //************************************************************************
 // Update any changes made to an existing alert
 //************************************************************************
@@ -334,16 +337,6 @@ app.post('/get_users', (req, res) => {
     var sql = ("SELECT `name` FROM `owner` WHERE `department` = {department}").formatSQL(req.body);
 
     console.log(sql);
-    connectionQRQC.query(sql, (err, result) => {
-        if (err) throw err;
-
-        res.send(JSON.stringify(result));
-    });
-});
-
-app.post('/mixing_alerts', (req, res) => {
-    var sql = "SELECT * FROM `post_it` WHERE `department` = 'mixing'";
-
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
@@ -423,4 +416,3 @@ app.get('/index.html',        (req, res) => { res.sendFile(path.join(__dirname, 
 app.get('/create.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
 app.get('/mixing.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
 app.get('/mixing_alert.html', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
-//app.get('/incomplete.html',   (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/incomplete.html')); });

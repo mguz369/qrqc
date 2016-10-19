@@ -74,7 +74,6 @@ $(document).ready(function () {
   //************************************************************************
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
-  //************************************************************************
   $('#index_page').exists(function() {
     var url = "create.html?id=";
     var query_url = "/show_current_alerts"
@@ -89,7 +88,7 @@ $(document).ready(function () {
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
     $('#new_alert_redirect').on('click touchstart', () => { 
       $.ajax({
-        url         : "/create_post_it",
+        url         : "/create_plant",
         type        : "POST",
         contentType : "application/json",
         processData : false,
@@ -103,7 +102,145 @@ $(document).ready(function () {
   
   });//End index_page
 
+  //************************************************************************
+  // Mixing
+  $('#mixing_page').exists(function(){
+    var url = "mixing_alert.html?id=";
+    var query_url = "/show_mixing_alerts"
+
+    Show_Current(query_url, url);
+    setInterval(function(){
+      location.reload();
+    }, 300000);
+
+    $('#mixing_alert_redirect').on('click touchstart', () => { 
+      $.ajax({
+        url         : "/create_mixing",
+        type        : "POST",
+        contentType : "application/json",
+        processData : false,
+        complete    : function(data){
+            var parsed_data = JSON.parse(data.responseText);
+            window.location.href = url + parsed_data[0].insertId;
+        }
+      });
+    });
+  
+  });// End mixing
+
+  //************************************************************************
+  // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){ 
+    Load_Create();
+
+    $('#return_home').on('click touchstart', () => {
+      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
+      if(option == true)
+        window.location.href = '/index.html';
+      else
+        return false;
+    });
+
+    $('#mixing_home').on('click touchstart', () => {
+      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
+      if(option == true)
+        window.location.href = '/mixing.html';
+      else
+        return false;
+    });
+  });//End create_page
+
+
+ 
+  //************************************************************************
+  // Adds another row to the Additional Info section
+  //************************************************************************
+  $('#add_row').click(() => {
+    Add_New_Alert("action_table");
+  });//End add_row
+
+  $(document).on('click', '#delete', () => {    
+    $('.' + (add_row_counter - 1)).closest('tr').remove();
+    add_row_counter--;
+    return false;
+  });
+  
+
+  //************************************************************************
+  // Creates a new aletry entry into the DB
+  // Stores data entered in the fields from the webpage and sends them
+  // to the server as a JSON string
+  //************************************************************************
+  $('#submit_plant').click(function(){
+    Submit_Data();
+
+    console.log(this.id);
+    // Wait 5 seconds before redirect so emails can be sent
+    setTimeout(function(){
+      window.location.href = '/index.html';
+    }, 2000);  
+  });//End submit_plant
+
+  $('#submit_mix').click(function(){
+    Submit_Data();
+
+    console.log(this.id);
+    // Wait 5 seconds before redirect so emails can be sent
+    setTimeout(function(){
+      window.location.href = '/index.html';
+    }, 2000);  
+  });//End submit_plant
+  //************************************************************************
+  // Add an addition info row for an alert.
+  //************************************************************************
+  function Add_Alert(){
+    $("#action_table").append(
+      " <tr class='info_rows'>" +
+      " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      "   <option value='Empty'>---</option>" + 
+      "   <option value='1'>Immediate</option>" +
+      "   <option value='2'>Temporary</option>" +
+      "   <option value='3'>Permanent</option> </select></td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td class='table_data' style='text-align: center'>X</td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+    );
+    
+    Update_Owners(users.length);
+    add_row_counter++;  //Increment
+  }// End Add_alert()
+
+
+  function Add_New_Alert(tableID){
+    $("#action_table").append(
+      " <tr class='info_rows "+ add_row_counter + "'>" +
+      " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      "   <option value='Empty'>---</option>" + 
+      "   <option value='1'>Immediate</option>" +
+      "   <option value='2'>Temporary</option>" +
+      "   <option value='3'>Permanent</option> </select></td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+      " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
+      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+    );
+    
+    Update_Owners(users.length);
+    add_row_counter++;  //Increment
+  }
+
+  function Load_Create(){
     Press_Enter();
     var dept = $('#department').val();
     var payload = { department : dept };
@@ -176,125 +313,13 @@ $(document).ready(function () {
     });
 
     $('#id_number').html($.urlParam('id'));
-    $('#return_home').on('click touchstart', () => {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/index.html';
-      else
-        return false;
-    });
-
-  });//End create_page
-
-  $('#mixing_page').exists(function(){
-    var url = "mixing_alert.html?id=";
-    var query_url = "/show_mixing_alerts"
-
-    Show_Current(query_url, url);
-    setInterval(function(){
-      Show_Current(query_url, url);
-    }, 300000);
-
-
-    $('#mixing_alert_redirect').on('click touchstart', () => { 
-      $.ajax({
-        url         : "/create_post_it",
-        type        : "POST",
-        contentType : "application/json",
-        processData : false,
-        complete    : function(data){
-            var parsed_data = JSON.parse(data.responseText);
-            window.location.href = url + parsed_data[0].insertId;
-        }
-      });
-    });
-  
-  });// End mixing
-
-
-  //************************************************************************
-  // Adds another row to the Additional Info section
-  //************************************************************************
-  $('#add_row').click(() => {
-    Add_New_Alert("action_table");
-  });//End add_row
-
-  $(document).on('click', '#delete', () => {    
-    $('.' + (add_row_counter - 1)).closest('tr').remove();
-    add_row_counter--;
-    return false;
-  });
-  
-
-  //************************************************************************
-  // Creates a new aletry entry into the DB
-  // Stores data entered in the fields from the webpage and sends them
-  // to the server as a JSON string
-  //************************************************************************
-  $('#submit_btn').click(function(){
-    Submit_Data();
-
-    // Wait 5 seconds before redirect so emails can be sent
-    setTimeout(function(){
-      window.location.href = '/index.html';
-    }, 2000);   
-  });//End submit_btn 
-  //************************************************************************
-  // Add an addition info row for an alert.
-  //************************************************************************
-  function Add_Alert(){
-    $("#action_table").append(
-      " <tr class='info_rows'>" +
-      " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
-      "   <option value='Empty'>---</option>" + 
-      "   <option value='1'>Immediate</option>" +
-      "   <option value='2'>Temporary</option>" +
-      "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td class='table_data' style='text-align: center'>X</td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-    );
-    
-    Update_Owners(users.length);
-    add_row_counter++;  //Increment
-  }// End Add_alert()
-
-
-  function Add_New_Alert(tableID){
-    $("#action_table").append(
-      " <tr class='info_rows "+ add_row_counter + "'>" +
-      " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
-      "   <option value='Empty'>---</option>" + 
-      "   <option value='1'>Immediate</option>" +
-      "   <option value='2'>Temporary</option>" +
-      "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
-      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-    );
-    
-    Update_Owners(users.length);
-    add_row_counter++;  //Increment
-    console.log(add_row_counter);
-  }
+  }//End Load_CReate()
 
   function Empty_Owners(){
     for(var j = 0; j <= add_row_counter; j++){
       $('#responsible_' + j).empty();
     }
-  }
+  }//End Empty_Owners()
   
   function Update_Owners(length){
     for(var i = 0; i < length; i++){
@@ -521,8 +546,6 @@ $(document).ready(function () {
       }
 
       var weekend_day = new Date(date_ending).getUTCDay(); 
-      console.log("Week Day number: %s", weekend_day);
-
       var payload2 = {
         item_id       : item_id,
         post_id       : post_id,

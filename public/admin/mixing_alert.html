@@ -154,28 +154,16 @@
       </div>
 
       <table id="action_table">
-          <tr>
-              <td class="action_column" id="">
-                Type
-              </td>
-              <td class="action_column" id="">
-                Description
-              </td>
-              <td class="action_column" id="">
-                Owner
-              </td>
-              <td class="action_column" id="">
-                Start
-              </td>
-              <td class="action_column" id="">
-                Deadline
-              </td>
-              <td class="action_column" id="">
-                Completed
-              </td>
-              <td class="action_column" id="">
-                State
-              </td>              
+          <tr id="action_header">
+              <td class="shorten_td"    id="action_type">Type </td>
+              <td class="action_column" id="action_desc">Description </td>
+              <td class="action_column" id="action_owner">Owner </td>
+              <td class="date_td"       id="action_start">Start </td>
+              <td class="date_td"       id="action_deadline">Deadline </td>
+              <td class="date_td"       id="action_complete">Completed </td>
+              <td class="shorten_td"    id="action_state">State </td>
+              <td class="shorten_td"    id="action_email">Email Sent </td>
+              <td class="shorten_td"> Delete </td>
           </tr>
 
           <tr class="hidden_element">
@@ -188,16 +176,17 @@
               <td class="hidden_element"> </td>
               <td class="hidden_element"> </td>
               <td class="hidden_element"> </td>
+              <td class="hidden_element"> </td>
           </tr>
-        </table>      
+        </table>     
     </form>
     
     <div class="mycontainer">
       <table class="page-footer">
         <tr>
           <td> <button class="btn btn-white table_button" id="add_row" type="button">Add Action</button></td>
-          <td> <button class="btn btn-white table_button" id="submit_btn">Submit</button></td>
-          <td> <button class="btn btn-white table_button" id="mixing home_home">Return to Main Page</button></td>          
+          <td> <button class="btn btn-white table_button" id="submit_mix">Submit</button></td>
+          <td> <button class="btn btn-white table_button" id="mixing_home">Return to Main Page</button></td>          
         </tr>
       </table>
     </div> 
