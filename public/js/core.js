@@ -187,7 +187,7 @@ $(document).ready(function () {
     console.log(this.id);
     // Wait 5 seconds before redirect so emails can be sent
     setTimeout(function(){
-      window.location.href = '/index.html';
+      window.location.href = '/mixing.html';
     }, 2000);  
   });//End submit_plant
   //************************************************************************
@@ -533,7 +533,7 @@ $(document).ready(function () {
       // Formatting and error checking
       if(date_completed == ""){
         if(!$('#email_' + i).is(':checked'))
-          Format_Email(responsible, dept, t_descript, date_start, date_ending);
+          Format_Email(responsible, dept, location, part_num, issue, cust, t_descript, date_ending);
         
         date_completed = null;
       }
@@ -568,10 +568,9 @@ $(document).ready(function () {
         data        : JSON.stringify(payload2),
       });
     }
-  }// End Send_Data()
+  }// End Submit_Data()
   
-
-  function Format_Email(responsible, dept, t_descript, start_date, deadline){
+  function Format_Email(responsible, dept, location, part_num, issue, customer, t_descript, date_ending){
     var payload3 = {
       owner     : responsible,
       department : dept,
@@ -590,9 +589,10 @@ $(document).ready(function () {
 
         for(var i = 0; i < parsed_data.length; i++){
           var email = parsed_data[i].email;
-          var message = ("You have been assigned a task for QRQC:\n\n" + t_descript +
-                         "\n\nTask assigned on: " + start_date +
-                         "\nTask deadline is: " + deadline);
+          var message = ("You have been assigned a task for QRQC:\n\n" +
+                         "Location: "+ location + " \nPart Number: "+ part_num +" \nCustomer: "+ customer +
+                         "\nIssue Description: " + issue + 
+                         "\nAction to be Taken: "+ t_descript + " \nTask deadline is: "+ deadline);
           
           var email_body = {
             owner      : responsible,
@@ -614,7 +614,6 @@ $(document).ready(function () {
       }//End/complete
     });
   }//End Format_Email()
-
 });//End document.ready
 //************************************************************************
 

@@ -23,12 +23,6 @@ var smtpTransport = require('nodemailer-smtp-transport');
 var app = express();
 app.use( bodyParser.json() );
 //app.use( cookieParser() );
-/*app.use( session({
-    secret: '0eda241fc65ccf35d9743309ac395215',
-    resave: true,
-    saveUninitialized: true,   store: new mysql(options)
-    })//
-);*/
 
 var transporter = nodemailer.createTransport(smtpTransport({
     service     : 'gmail',
@@ -244,7 +238,7 @@ app.post('/pull_qrqc_data', (req, res) => {
     var sql = ("SELECT `id`, `alert_type`, DATE_FORMAT(`date`, '%Y-%m-%d') AS `date`, `department`, `location`, `part`, `customer`, `recurrence`, `issue`, `cause`, `active` FROM `post_it` WHERE `id` = {id}; " +
                "SELECT t2.id, t2.post_it_id, t2.term, t2.description, t2.owner, DATE_FORMAT(t2.initial_date, '%Y-%m-%d') AS `initial_date`," +
                "DATE_FORMAT(t2.deadline, '%Y-%m-%d') AS `deadline`, DATE_FORMAT(t2.completed, '%Y-%m-%d') AS `completed`, t2.email_sent, t2.state " +
-               "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id}"
+               "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id} ORDER BY t2.deadline ASC"
                ).formatSQL(req.body);
 
 
