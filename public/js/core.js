@@ -592,7 +592,7 @@ $(document).ready(function () {
           var message = ("You have been assigned a task for QRQC:\n\n" +
                          "Location: "+ location + " \nPart Number: "+ part_num +" \nCustomer: "+ customer +
                          "\nIssue Description: " + issue + 
-                         "\nAction to be Taken: "+ t_descript + " \nTask deadline is: "+ deadline);
+                         "\nAction to be Taken: "+ t_descript + " \nTask deadline is: "+ date_ending);
           
           var email_body = {
             owner      : responsible,
