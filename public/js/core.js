@@ -205,7 +205,7 @@ $(document).ready(function () {
       " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
       " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
       " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
       " <td class='table_data' style='text-align: center'>X</td>" +
@@ -614,6 +614,22 @@ $(document).ready(function () {
       }//End/complete
     });
   }//End Format_Email()
+
+
+  //Check for changes to a complete 
+  $(document).change((event) => {
+    var elem_id = event.target.id;
+    var elem_data = $("#" + elem_id).val();
+    var column_name = $("#" + elem_id).attr("name");
+
+    if (column_name == 'complete'){
+      var option = confirm("Are you sure you want to complete this action?");
+      if(option == true)
+        return true;
+      else
+        $("#" + elem_id).val(null);
+    }
+  });
 });//End document.ready
 //************************************************************************
 

@@ -245,7 +245,7 @@ app.post('/pull_qrqc_data', (req, res) => {
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
         
-        console.log(result);
+        //console.log(result);
         res.send(JSON.stringify(result));
     });
 });    
@@ -371,10 +371,10 @@ app.post('/send_email', (req, res) => {
             return;
         }
         console.log('Message sent successfully!');
-        console.log('Server responded with "%s"', info.response);
+        //console.log('Server responded with "%s"', info.response);
     });
 
-    console.log("\n\nsent email");
+    //console.log("\n\nsent email");
 });
 
 //************************************************************************
