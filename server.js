@@ -377,11 +377,19 @@ app.post('/send_email', (req, res) => {
     //console.log("\n\nsent email");
 });
 
+app.post('/get_now', (req, res) => {
+    sql = "SELECT DATE_FORMAT(CURDATE(), '%M %D, %Y') AS date, TIME_FORMAT(CURTIME(), '%h:%i:%s %p') as time";
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+        res.send(JSON.stringify(result));
+    });
+});
+
 //************************************************************************
 // Get paths setup, load css, js, etc for the browser
 //************************************************************************
 var dir_path = 'public/';
-var admin_path = 'public/admin/'
+var admin_path = 'public/admin/';
 var each = ["images", "css", "js", "datetimepicker", "jquery"];
 //var each = ['flot','reveal.js','snap','sparkline','d3','work_instructions', 'work_videos']
 

@@ -84,6 +84,21 @@ $(document).ready(function () {
       location.reload();
     }, 300000);
    
+    setInterval(function(){
+      $.ajax({
+        url  : '/get_now',
+        type : 'POST',
+        contentType : "application/json",
+        processData : false,
+        complete    : function(data){
+          var parsed_data = JSON.parse(data.responseText);
+          console.log(parsed_data);
+
+          $("#Date").text(parsed_data[0].date);
+          $("#Time").text(parsed_data[0].time);
+        }
+      }, 10000);
+    });
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
     $('#new_alert_redirect').on('click touchstart', () => { 
