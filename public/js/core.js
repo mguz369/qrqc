@@ -447,10 +447,13 @@ $(document).ready(function () {
                 $('#responsible_' + j).attr('disabled', 'disabled');
                 $('#date_completed_' + j).attr('disabled', 'disabled');
                 $('#state_' + j).css('background-color', 'green');
+		$('#state_' + j).css('color', 'white');
               }
 
-              if(state == "Due")
+              if(state == "Due"){
                 $('#state_' + j).css('background-color', '#006bb3');
+		$('#state_' + j).css('color', 'white');
+	      }
 
               $('#email_' + j).attr('disabled', 'disabled');
             }          
