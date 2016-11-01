@@ -159,13 +159,6 @@ $(document).ready(function () {
     Add_New_Alert("action_table");
   });//End add_row
 
-  $(document).on('click', '#delete', () => {    
-    $('.' + (add_row_counter - 1)).closest('tr').remove();
-    add_row_counter--;
-    return false;
-  });
-  
-
   //************************************************************************
   // Creates a new aletry entry into the DB
   // Stores data entered in the fields from the webpage and sends them
@@ -174,7 +167,7 @@ $(document).ready(function () {
   $('#submit_plant').click(function(){
     Submit_Data();
 
-    console.log(this.id);
+  
     // Wait 5 seconds before redirect so emails can be sent
     setTimeout(function(){
       window.location.href = '/index.html';
@@ -453,11 +446,11 @@ $(document).ready(function () {
                 $('#term_description_' + j).attr('disabled', 'disabled');
                 $('#responsible_' + j).attr('disabled', 'disabled');
                 $('#date_completed_' + j).attr('disabled', 'disabled');
-
-                $('#term_length_' + j).css('background-color', '#ebebe4');
-                $('#responsible_' + j).css('background-color', '#ebebe4');
                 $('#state_' + j).css('background-color', 'green');
               }
+
+              if(state == "Due")
+                $('#state_' + j).css('background-color', '#006bb3');
 
               $('#email_' + j).attr('disabled', 'disabled');
             }          
@@ -540,12 +533,31 @@ $(document).ready(function () {
       else if(date_completed != "")
         state = "Closed";
       
+      //Make sure that important fields are filled in
       if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
         alert("Please make sure all fields are filled in for action " + (i + 1));
         return false;
       }
 
-      var weekend_day = new Date(date_ending).getUTCDay(); 
+      //
+      var date = new Date()
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+
+      if(day < 10)
+          day = '0' + day;
+      if(month < 10)
+          month = '0' + month;
+      var today = year + "-" + month + "-" + day;
+      
+      console.log(date_ending + " " + today)
+      if(date_ending == today && date_completed == null){
+        state = "Due";
+        console.log(state)
+      }
+
+      //var weekend_day = new Date(date_ending).getUTCDay();
       var payload2 = {
         item_id       : item_id,
         post_id       : post_id,
@@ -615,6 +627,13 @@ $(document).ready(function () {
     });
   }//End Format_Email()
 
+
+  //Remove the last newly added action row
+  $(document).on('click', '#delete', () => {    
+    $('.' + (add_row_counter - 1)).closest('tr').remove();
+    add_row_counter--;
+    return false;
+  });
 
   //Check for changes to a complete 
   $(document).change((event) => {
