@@ -212,7 +212,7 @@ $(document).ready(function () {
       " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
       " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
       " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
       " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
@@ -236,8 +236,8 @@ $(document).ready(function () {
       " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
       " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
       " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
       " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
       " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
@@ -433,8 +433,6 @@ $(document).ready(function () {
               email          = parsed_data[i][j].email_sent;
               state          = parsed_data[i][j].state;
               
-
-              
               Add_Alert();//Add a row to the action area
 
               $('#term_length_' + j).val(t_length);
@@ -462,14 +460,14 @@ $(document).ready(function () {
                 $('#responsible_' + j).attr('disabled', 'disabled');
                 $('#date_completed_' + j).attr('disabled', 'disabled');
                 $('#state_' + j).css('background-color', 'green');
-		$('#state_' + j).css('color', 'white');
+                $('#state_' + j).css('color', 'white');
+                $('#state_' + j).css('border-color', 'black');
               }
-
               if(state == "Due"){
                 $('#state_' + j).css('background-color', '#006bb3');
-		$('#state_' + j).css('color', 'white');
-	      }
-
+                $('#state_' + j).css('color', 'white');
+                $('#state_' + j).css('border-color', 'black');
+              }
               $('#email_' + j).attr('disabled', 'disabled');
             }          
           }
@@ -659,12 +657,48 @@ $(document).ready(function () {
     var elem_data = $("#" + elem_id).val();
     var column_name = $("#" + elem_id).attr("name");
 
-    if (column_name == 'complete'){
-      var option = confirm("Are you sure you want to complete this action?");
+
+    if(column_name == 'complete'){
+      var option = confirm("Are you sure you want to change the completion date?");
       if(option == true)
         return true;
       else
         $("#" + elem_id).val(null);
+    }
+
+    if(column_name == 'deadline'){      
+      var date = new Date();
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      
+      if(day < 10)
+          day = '0' + day;
+      if(month < 10)
+          month = '0' + month;
+      var today = year + "-" + month + "-" + day;
+
+      var elem_row = elem_id.lastIndexOf("_") + 1;
+      elem_row = elem_id.substring(elem_row);
+      
+
+      if(today == elem_data){
+        $('#state_' + elem_row).html("Due");
+        $('#state_' + elem_row).css('background-color', '#006bb3');
+        $('#state_' + elem_row).css('color', 'white');
+        $('#state_' + elem_row).css('border-color', 'black');
+        $('#email_' + elem_row).prop('checked', false);
+      }
+      else if(today < elem_data){
+        $('#state_' + elem_row).html("Open");
+        $('#state_' + elem_row).css('background-color', 'white');
+        $('#state_' + elem_row).css('color', 'black');
+        $('#email_' + elem_row).prop('checked', false);
+      }
+      else if (today > elem_data){
+        $('#state_' + elem_row).html("Late");
+        $('#state_' + elem_row).css('background-color', 'red');
+      }
     }
   });
 });//End document.ready
