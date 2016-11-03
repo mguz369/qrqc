@@ -40,19 +40,19 @@
               i-Notes Category:
             </td>
             <td class="right_column">
-              <select class="box_length" id="alert_type">
-                <!--<option value="Empty"               >---</option>-->
-                <option value="Safety"    id="Safety"   >Safety/Environment</option>
-                <option value="Quality"   id="Quality"  >Quality</option>
-                <option value="Activity"  id="Activity" >Activity (Sales)</option>
-                <option value="Inventory" id="Inventory">Inventory</option>
-                <option value="Scrap"     id="Scrap"    >Scrap</option>
-                <option value="Hr"        id="Hr"       >HR/Labor</option>
-                <option value="Delivery"  id="Delivery" >Delivery</option>
-                <option value="Operation" id="Operation">Operations Efficiency</option>
-                <option value="Supply"    id="Supply"   >Supply Chain</option>
-                <option value="Misc"      id="Misc"     >Miscellaneaous</option>
-              </select>    
+              <select class="box_length Safety" id="alert_type" 
+                onchange="this.className=this.options[this.selectedIndex].className">
+                <option value="Safety"    class="Safety">Safety/Environment</option>
+                <option value="Quality"   class="Quality">Quality</option>
+                <option value="Activity"  class="Activity">Activity (Sales)</option>
+                <option value="Inventory" class="Inventory">Inventory</option>
+                <option value="Scrap"     class="Scrap">Scrap</option>
+                <option value="Hr"        class="Hr">HR/Labor</option>
+                <option value="Delivery"  class="Delivery">Delivery</option>
+                <option value="Operation" class="Operation">Operations Efficiency</option>
+                <option value="Supply"    class="Supply">Supply Chain</option>
+                <option value="Misc"      class="Misc">Miscellaneaous</option>
+              </select>
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -71,7 +71,6 @@
             </td>
             <td class="right_column">
               <select class="box_length" id="department">
-                <!--<option value="Empty"       >---</option>-->
                 <option value="Plant"       >Plant</option>
                 <option value="Mixing"      >Mixing</option>
                 <option value="Cementing"   >Cementing</option>

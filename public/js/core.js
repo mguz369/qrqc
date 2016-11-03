@@ -92,7 +92,6 @@ $(document).ready(function () {
         processData : false,
         complete    : function(data){
           var parsed_data = JSON.parse(data.responseText);
-          console.log(parsed_data);
 
           $("#Date").text(parsed_data[0].date);
           $("#Time").text(parsed_data[0].time);
@@ -101,16 +100,21 @@ $(document).ready(function () {
     });
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
-    $('#new_alert_redirect').on('click touchstart', () => { 
+    $('.categories').on('click touchstart', () => {
+      var elem_id = event.target.id;
+      var payload = {
+        category : elem_id
+      };
+
       $.ajax({
         url         : "/create_plant",
         type        : "POST",
         contentType : "application/json",
+        data        : JSON.stringify(payload),
         processData : false,
         complete    : function(data){
           var parsed_data = JSON.parse(data.responseText);
           window.location.href = url + parsed_data[0].insertId;
-          //Add_Alert();
         }
       });
     });
@@ -147,6 +151,9 @@ $(document).ready(function () {
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){ 
     Load_Create();
+
+
+  
 
     $('#return_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");

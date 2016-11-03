@@ -1108,39 +1108,39 @@ section.log-button {
 /*Everything that I'm adding*/
 
 /*Alert type formatting*/
-#Safety{
+.Safety{
   background-color: #006600;
   color: white;
 }
-#Supply{
+.Supply{
   background-color: #000080;
   color: white;
 }
-#Activity{
+.Activity{
   background-color: #e6e600;
 }
-#Inventory{
+.Inventory{
   background-color: #660066;
   color: white;
 }
-#Scrap{
+.Scrap{
   background-color: #ff8000;
 }
-#Hr{
+.Hr{
   background-color: #00cc44;
 }
-#Delivery{
+.Delivery{
   background-color: #3399ff;
 }
-#Operation{
+.Operation{
   background-color: #47476b;
   color: white;
 }
-#Quality{
+.Quality{
   background-color: #b33c00;
   color: white;
 }
-#Misc{
+.Misc{
   background-color: #999966;
 }
 

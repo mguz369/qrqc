@@ -256,7 +256,8 @@ app.post('/pull_qrqc_data', (req, res) => {
 //************************************************************************
 app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ('---', CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();").formatSQL(req.body); 
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+                     ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
@@ -266,7 +267,8 @@ app.post('/create_plant', (req, res) => {
 });
 
 app.post('/create_mixing', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ('---', CURRENT_DATE, 'Mixing', '---', '---', '0'); SELECT LAST_INSERT_ID();").formatSQL(req.body); 
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Mixing', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+                     ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
