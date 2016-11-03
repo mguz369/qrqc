@@ -1,11 +1,4 @@
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
-
-/**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
- */
-
 html {
   font-family: sans-serif; /* 1 */
   -ms-text-size-adjust: 100%; /* 2 */
@@ -50,211 +43,6 @@ summary {
  * 1. Correct `inline-block` display not defined in IE 8/9.
  * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
  */
-
-audio,
-canvas,
-progress,
-video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
-}
-
-/**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
-
-audio:not([controls]) {
-  display: none;
-  height: 0;
-}
-
-/**
- * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
- */
-
-[hidden],
-template {
-  display: none;
-}
-
-/* Links
-   ========================================================================== */
-
-/**
- * Remove the gray background color from active links in IE 10.
- */
-
-a {
-  background-color: transparent;
-}
-
-/**
- * Improve readability when focused and also mouse hovered in all browsers.
- */
-
-a:active,
-a:hover {
-  outline: 0;
-}
-
-/* Text-level semantics
-   ========================================================================== */
-
-/**
- * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
- */
-
-abbr[title] {
-  border-bottom: 1px dotted;
-}
-
-/**
- * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
- */
-
-b,
-strong {
-  font-weight: bold;
-}
-
-/**
- * Address styling not present in Safari and Chrome.
- */
-
-dfn {
-  font-style: italic;
-}
-
-/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
-
-/**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
- */
-
-html {
-  font-family: sans-serif; /* 1 */
-  -ms-text-size-adjust: 100%; /* 2 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-}
-
-/**
- * Remove default margin.
- */
-
-body {
-  margin: 0;
-}
-
-/* HTML5 display definitions
-   ========================================================================== */
-
-/**
- * Correct `block` display not defined for any HTML5 element in IE 8/9.
- * Correct `block` display not defined for `details` or `summary` in IE 10/11
- * and Firefox.
- * Correct `block` display not defined for `main` in IE 11.
- */
-
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-main,
-menu,
-nav,
-section,
-summary {
-  display: block;
-}
-
-/**
- * 1. Correct `inline-block` display not defined in IE 8/9.
- * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
- */
-
-audio,
-canvas,
-progress,
-video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
-}
-
-/**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
-
-audio:not([controls]) {
-  display: none;
-  height: 0;
-}
-
-/**
- * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
- */
-
-[hidden],
-template {
-  display: none;
-}
-
-/* Links
-   ========================================================================== */
-
-/**
- * Remove the gray background color from active links in IE 10.
- */
-
-a {
-  background-color: transparent;
-}
-
-/**
- * Improve readability when focused and also mouse hovered in all browsers.
- */
-
-a:active,
-a:hover {
-  outline: 0;
-}
-
-/* Text-level semantics
-   ========================================================================== */
-
-/**
- * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
- */
-
-abbr[title] {
-  border-bottom: 1px dotted;
-}
-
-/**
- * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
- */
-
-b,
-strong {
-  font-weight: bold;
-}
-
-/**
- * Address styling not present in Safari and Chrome.
- */
-
-dfn {
-  font-style: italic;
-}
 
 /**
  * Address variable `h1` font-size and margin within `section` and `article`
@@ -270,97 +58,9 @@ h1, h2, h3, h4, h5, h6 {
  * Address styling not present in IE 8/9.
  */
 
-mark {
-  background: #ff0;
-  color: #000;
-}
-
-/**
- * Address inconsistent and variable font size in all browsers.
- */
-
-small {
-  font-size: 80%;
-}
-
-/**
- * Prevent `sub` and `sup` affecting `line-height` in all browsers.
- */
-
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-
-sup {
-  top: -0.5em;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-/* Embedded content
-   ========================================================================== */
-
-/**
- * Remove border when inside `a` element in IE 8/9/10.
- */
 
 img {
   border: 0;
-}
-
-/**
- * Correct overflow not hidden in IE 9/10/11.
- */
-
-svg:not(:root) {
-  overflow: hidden;
-}
-
-/* Grouping content
-   ========================================================================== */
-
-/**
- * Address margin not present in IE 8/9 and Safari.
- */
-
-figure {
-  margin: 1em 40px;
-}
-
-/**
- * Address differences between Firefox and other browsers.
- */
-
-hr {
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-}
-
-/**
- * Contain overflow in all browsers.
- */
-
-pre {
-  overflow: auto;
-}
-
-/**
- * Address odd `em`-unit font size rendering in all browsers.
- */
-
-code,
-kbd,
-pre,
-samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
 }
 
 /* Forms
@@ -463,8 +163,7 @@ input {
  * 2. Remove excess padding in IE 8/9/10.
  */
 
-input[type="checkbox"],
-input[type="radio"] {
+input[type="checkbox"]{
   box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
 }
@@ -475,59 +174,10 @@ input[type="radio"] {
  * decrement button to change from `default` to `text`.
  */
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  height: auto;
-}
-
 input[type="date"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     display: none;
     align-items: left;
-}
-
-/**
- * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
- *    (include `-moz` to future-proof).
- */
-
-input[type="search"] {
-  -webkit-appearance: textfield; /* 1 */
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box; /* 2 */
-  box-sizing: border-box;
-}
-
-/**
- * Remove inner padding and search cancel button in Safari and Chrome on OS X.
- * Safari (but not Chrome) clips the cancel button when the search input has
- * padding (and `textfield` appearance).
- */
-
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-
-/**
- * Define consistent border, margin, and padding.
- */
-
-fieldset {
-  border: 1px solid #c0c0c0;
-  margin: 0 2px;
-  padding: 0.35em 0.625em 0.75em;
-}
-
-/**
- * 1. Correct `color` not being inherited in IE 8/9/10/11.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
- */
-
-legend {
-  border: 0; /* 1 */
-  padding: 0; /* 2 */
 }
 
 /**
@@ -536,15 +186,6 @@ legend {
 
 textarea {
   overflow: auto;
-}
-
-/**
- * Don't inherit the `font-weight` (applied by a rule above).
- * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
- */
-
-optgroup {
-  font-weight: bold;
 }
 
 /* Tables
@@ -679,105 +320,6 @@ div.container {
   padding-bottom: 35px;
 }
 
-header {
-  margin-top: 60px;
-}
-
-.fixed-bottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-.spacer {
-  display: block;
-  clear: both;
-}
-
-.clearfix:after {
-     visibility: hidden;
-     display: block;
-     font-size: 0;
-     content: " ";
-     clear: both;
-     height: 0;
-     }
-.clearfix { display: inline-block; }
-/* start commented backslash hack \*/
-* html .clearfix { height: 1%; }
-.clearfix { display: block; }
-/* close commented backslash hack */
-
-.rounded-feature {
-  -webkit-transition: background-color 0.2s, color 0.2s;
-  -moz-transition: background-color 0.2s, color 0.2s;
-  -o-transition: background-color 0.2s, color 0.2s;
-  transition: background-color 0.2s, color 0.2s;
-  border-radius: 50%;
-  background-color: #132057;
-  border: 2px solid #8d8d8d;
-  width: 250px;
-  height: 250px;
-  display: inline-block;
-  vertical-align: middle;
-  text-align: center;
-  color: #fff;
-  text-decoration: none;
-  text-transform: uppercase;
-  line-height: 1.2;
-  font-size: 1.4em;
-  margin-right: 50px;
-  padding-top: 100px;
-}
-
-.rounded-feature:active {
-  background-color: #fff;
-  color: #132057;
-}
-
-.rounded-feature:last-of-type {
-  margin-right: 0;
-}
-
-.rounded-feature > span {
-  display: block;
-}
-
-.user-selected {
-  background-color: #e5e5e5;
-}
-
-.schedule-box-disabled {
-  cursor: default;
-  background-image: none;
-  opacity: 0.65;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  pointer-events: none;
-}
-
-.activeQuestion {
-  background-color: #132057;
-}
-
-.incorrectQuestion {
-  background-color: #dd002a;
-}
-
-.correctQuestion {
-  background-color: green;
-}
-
 #app-notifications {
   color: #fff;
   background-color: green;
@@ -798,176 +340,7 @@ header {
   color: #fff;
 }
 
-/* Main Page Header Styles
-   ========================================================================== */
-section#main-page-header {
-  height: 210px;
-  background-color: #132057;
-  background: url(../images/main-page-header-background.png) no-repeat;
-  background-size: cover;
-}
 
-section#main-page-header.user-dashboard {
-  height: 75px;
-  padding-top: 18px;
-  background-color: #132057;
-  background: url(../images/main-page-header-background.png) center center no-repeat;
-  background-size: cover;
-  z-index: 10002;
-}
-
-section#main-page-header.user-dashboard > div.logo {
-  height: 35px;
-  position: absolute;
-  right: 5px;
-  top: 20px;
-  z-index: 5;
-}
-
-section#main-page-header.user-dashboard > div.logo img {
-  height: 35px;
-}
-
-section#main-page-header.user-dashboard > div.logo > a {
-  height: 35px;
-}
-
-section#main-page-header.user-dashboard div.page-header {
-  padding-top: 0;
-}
-
-section#main-page-header.user-dashboard div.page-header div.user-information {
-  margin-top: 0;
-  width: 195px;
-}
-
-section#main-page-header.user-dashboard div.page-header div.user-information p.user-name {
-  padding-top: 5px;
-  font-size: 1em;
-}
-
-section#main-page-header.user-dashboard div.page-header div.user-information p.user-position {
-  font-size: 0.6em;
-}
-
-section#main-page-header > div.logo {
-  height: 50px;
-  position: absolute;
-  top: 150px;
-  right: 5px;
-  z-index: 5;
-}
-
-section#main-page-header > div.logo > a {
-  height: 50px;
-}
-
-section#main-page-header > div.logo img {
-  height: 50px;
-}
-
-section#main-page-header > div.startup-section {
-  color: #fff;
-  /*text-transform: uppercase;*/
-  width: 25%;
-  width: max-content;
-  text-align: center;
-  margin: 0 auto;
-}
-
-section#main-page-header > div.startup-section > a {
-  margin-top: 35px;
-}
-
-section#main-page-header > div.startup-section > h3 {
-  font-size: 1em;
-  font-weight: normal;
-  padding-top: 35px;
-  padding-bottom: 17px;
-}
-
-section#main-page-header > div.startup-section > p {
-  font-size: 0.8em;
-  margin: 0;
-}
-
-section#main-page-header > div.startup-section > p:first-of-type {
-  padding-bottom: 12px;
-}
-
-section#main-page-header > div.page-header {
-  border-bottom: 0;
-  height: auto;
-  width: 75%;
-  width: max-content;
-  margin: 0 auto;
-  padding-top: 20px;
-}
-
-section#main-page-header section.user-logged-in {
-  width: 100%;
-}
-
-section#main-page-header div.user-image {
-  width: 120px;
-  display: block;
-  float: left;
-}
-
-section#main-page-header div.user-image > img {
-  width: 112px;
-  height: 112px;
-  position: relative;
-  display: none;
-}
-
-section#main-page-header div.user-information {
-  width: 300px;
-  display: block;
-}
-
-section#main-page-header div.user-information > p.user-name {
-  /*text-transform: uppercase;*/
-  color: #fff;
-  font-size: 1.2em;
-}
-
-section#main-page-header div.user-information > p.user-position {
-  /*text-transform: uppercase;*/
-  font-style: italic;
-  color: #fff;
-  font-size: 0.8em;
-}
-
-section#main-page-header section.log-button {
-  width: 100%;
-  display: block;
-  text-align: left;
-  vertical-align: top;
-  margin-top: 0;
-  padding-top: 0;
-  clear: both;
-}
-
-section#main-page-header.user-dashboard section.log-button {
-  position: relative;
-  top: -58px;
-  left: 110px;
-}
-
-section#main-page-header.user-dashboard section.log-button a.btn {
-  font-size: 0.6em;
-  padding: 8px 15px;
-}
-
-nav.fixed-bottom.user-dashboard {
-  bottom: 162px;
-  border-bottom: 2px solid #e5e5e5;
-}
-
-nav.fixed-bottom.user-dashboard > ul {
-  left: 0;
-}
 
 /* Header Styles
    ========================================================================== */
@@ -982,44 +355,6 @@ section.user-logged-in {
   display: inline-block;
 }
 
-div.user-image {
-  display: inline-block;
-  width: 65px;
-}
-
-div.user-image > img {
-  height: 60px;
-  width: 60px;
-  border-radius: 50%;
-  border: 2px solid #8d8d8d;
-}
-
-div.user-information {
-  height: 63px;
-  width: 215px;
-  display: inline-block;
-  vertical-align: top;
-}
-
-div.user-information > p {
-  margin: 0;
-  padding: 0;
-}
-
-div.user-information > p.user-name {
-  text-transform: uppercase;
-  color: #132057;
-  font-size: 1.2em;
-  padding-top: 15px;
-  padding-bottom: 5px;
-}
-
-div.user-information > p.user-position {
-  text-transform: uppercase;
-  font-style: italic;
-  color: #8d8d8d;
-  font-size: 0.8em;
-}
 
 section.page-title {
   width: 50%;
@@ -1108,40 +443,100 @@ section.log-button {
 /*Everything that I'm adding*/
 
 /*Alert type formatting*/
+#Safety{
+  background-color: #006600;
+  color: white;
+}
+#Supply{
+  background-color: #000080;
+  color: white;
+}
+#Activity{
+  background-color: #e6e600;
+}
+#Inventory{
+  background-color: #660066;
+  color: white;
+}
+#Scrap{
+  background-color: #ff8000;
+  width: 85%;
+}
+#Hr{
+  background-color: #00cc44;
+  width: 85%;
+}
+#Delivery{
+  background-color: #3399ff;
+  width: 85%;
+}
+#Operation{
+  background-color: #47476b;
+  color: white;
+}
+#Quality{
+  background-color: #b33c00;
+  color: white;
+}
+#Misc{
+  background-color: #999966;
+  width: 85%;
+ }
+
 .Safety{
   background-color: #006600;
   color: white;
+  width: 95%;
+  margin-left: 5px;
 }
 .Supply{
   background-color: #000080;
   color: white;
+  width: 95%;
+  margin-left: 5px;
 }
 .Activity{
   background-color: #e6e600;
+  width: 95%;
+  margin-left: 5px;
 }
 .Inventory{
   background-color: #660066;
   color: white;
+  width: 95%;
+  margin-left: 5px;
 }
 .Scrap{
   background-color: #ff8000;
+  width: 95%;
+  margin-left: 5px;
 }
 .Hr{
   background-color: #00cc44;
+  width: 95%;
+  margin-left: 5px;
 }
 .Delivery{
   background-color: #3399ff;
+  width: 95%;
+  margin-left: 5px;
 }
 .Operation{
   background-color: #47476b;
   color: white;
+  width: 95%;
+  margin-left: 5px;
 }
 .Quality{
   background-color: #b33c00;
   color: white;
+  width: 95%;
+  margin-left: 5px;
 }
 .Misc{
   background-color: #999966;
+  width: 95%;
+  margin-left: 5px;
 }
 
 .hidden_element{
@@ -1226,7 +621,6 @@ section.log-button {
 
 .date{
   width: 30%;
-  
 }
 
 .alert{
@@ -1288,7 +682,7 @@ section.log-button {
 }
 
 .box_length{
-  width: 85%;
+  width: 95%;
   margin-left: 5px;
 }
 .date_td{

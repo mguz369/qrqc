@@ -751,15 +751,15 @@ function loadAlerts(data, today, url){
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
       if(rg[day][j].deadline < today){
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{short}</td>" + 
-                "<td class='btn alert {alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
+                "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else if(rg[day][j].deadline == today){
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey;'>{short}</td>" + 
-                "<td class='btn alert {alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
+                "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
-                "<td class='btn alert {alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
+                "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       
 
