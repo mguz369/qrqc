@@ -152,9 +152,6 @@ $(document).ready(function () {
   $('#create_page').exists(function(){ 
     Load_Create();
 
-
-  
-
     $('#return_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
@@ -754,15 +751,15 @@ function loadAlerts(data, today, url){
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
       if(rg[day][j].deadline < today){
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{short}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
+                "<td class='btn alert {alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else if(rg[day][j].deadline == today){
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey;'>{short}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
+                "<td class='btn alert {alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
         e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
-                "<td class='btn alert' data-part_num='{post_it_id}' id='{alert_type}'>{owner} - {description}</td>").format(rg[day][j]));
+                "<td class='btn alert {alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       
 
