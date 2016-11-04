@@ -460,15 +460,13 @@ section.log-button {
 }
 #Scrap{
   background-color: #ff8000;
-  width: 85%;
 }
 #Hr{
   background-color: #00cc44;
-  width: 85%;
 }
+
 #Delivery{
   background-color: #3399ff;
-  width: 85%;
 }
 #Operation{
   background-color: #47476b;
@@ -480,7 +478,6 @@ section.log-button {
 }
 #Misc{
   background-color: #999966;
-  width: 85%;
  }
 
 .Safety{

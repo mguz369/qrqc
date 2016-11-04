@@ -258,7 +258,7 @@ app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
-   
+    console.log("SQL: ",sql_create);
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
 
@@ -332,7 +332,6 @@ app.post('/get_customers', (req, res) =>{
 app.post('/get_users', (req, res) => {
     var sql = ("SELECT `name` FROM `owner` WHERE `department` = {department}").formatSQL(req.body);
 
-    console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 

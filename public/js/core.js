@@ -102,6 +102,7 @@ $(document).ready(function () {
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
     $('.categories').on('click touchstart', () => {
       var elem_id = event.target.id;
+      
       var payload = {
         category : elem_id
       };
