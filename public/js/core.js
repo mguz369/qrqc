@@ -64,7 +64,7 @@ $(document).ready(function () {
         const parsed_data = JSON.parse(data.responseText);
 
         if(parsed_data == "1")
-          window.location.href = "/index.html";
+          window.location.href = "/index";
         else
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
       }
@@ -76,7 +76,7 @@ $(document).ready(function () {
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
   $('#index_page').exists(function() {
-    var url = "create.html?id=";
+    var url = "create?id=";
     var query_url = "/show_current_alerts"
     //Refresh the page every 5 minutes
     Show_Current(query_url, url);
@@ -126,7 +126,7 @@ $(document).ready(function () {
   //************************************************************************
   // Mixing
   $('#mixing_page').exists(function(){
-    var url = "mixing_alert.html?id=";
+    var url = "mixing_alert?id=";
     var query_url = "/show_mixing_alerts"
 
     Show_Current(query_url, url);
@@ -157,7 +157,7 @@ $(document).ready(function () {
     $('#return_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/index.html';
+        window.location.href = '/index';
       else
         return false;
     });
@@ -165,7 +165,7 @@ $(document).ready(function () {
     $('#mixing_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/mixing.html';
+        window.location.href = '/mixing';
       else
         return false;
     });
@@ -191,7 +191,7 @@ $(document).ready(function () {
   
     // Wait 5 seconds before redirect so emails can be sent
     setTimeout(function(){
-      window.location.href = '/index.html';
+      window.location.href = '/index';
     }, 2000);  
   });//End submit_plant
 

@@ -180,7 +180,7 @@ ConnectToSp();
 
 
 //************************************************************************
-// Login - This does use HTTPS or TLS/SSL (yet)
+// Login - This doesn't use HTTPS or TLS/SSL (yet)
 // It only check if the user is authorized
 //************************************************************************
 app.post('/login_user', (req, res) => {
@@ -258,7 +258,7 @@ app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
-    console.log("SQL: ",sql_create);
+
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
 
@@ -286,7 +286,6 @@ app.post('/update_post_it', (req, res) => {
         "`alert_type` = {type}, `department` = {department}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
         "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
 
-    console.log("Update into POST_IT: ", sql_update);
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
 
@@ -301,7 +300,6 @@ app.post('/update_post_it_items', (req, res) => {
         " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
         ).formatSQL(req.body);
 
-    console.log("Update into Items: %s\n\n", sql_update);
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
 
@@ -415,8 +413,8 @@ app.get('/', (req, res) => {
 //************************************************************************
 // Fetch other pages
 //************************************************************************
-app.get('/index.html',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
-app.get('/create.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
+app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
+app.get('/create',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
 
-app.get('/mixing.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
-app.get('/mixing_alert.html', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
+app.get('/mixing',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
+app.get('/mixing_alert', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
