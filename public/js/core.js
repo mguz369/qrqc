@@ -64,7 +64,7 @@ $(document).ready(function () {
         const parsed_data = JSON.parse(data.responseText);
 
         if(parsed_data == "1")
-          window.location.href = "/index";
+          window.location.href = "/index.html";
         else
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
       }
@@ -201,7 +201,7 @@ $(document).ready(function () {
     console.log(this.id);
     // Wait 5 seconds before redirect so emails can be sent
     setTimeout(function(){
-      window.location.href = '/mixing.html';
+      window.location.href = '/mixing';
     }, 2000);  
   });//End submit_plant
   //************************************************************************

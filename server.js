@@ -415,8 +415,8 @@ app.get('/', (req, res) => {
 //************************************************************************
 // Fetch other pages
 //************************************************************************
-app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
+app.get('/index.html',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
 app.get('/create.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
 
-app.get('/mixing',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
-app.get('/mixing_alert', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
+app.get('/mixing.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
+app.get('/mixing_alert.html', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
