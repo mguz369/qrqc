@@ -404,8 +404,8 @@ app.get('/', (req, res) => {
     if(req.path == '/'){
         //console.log('Cookies', req.cookies);
         res.locals.query = req.query;
-        //res.sendFile(path.join(__dirname, dir_path + 'login.html'));
-        res.sendFile(path.join(__dirname, admin_path + '/index.html'));  
+        res.sendFile(path.join(__dirname, dir_path + 'login.html'));
+        //res.sendFile(path.join(__dirname, admin_path + '/index.html'));  
     }
     else{
         res.sendFile(path.join(__dirname, dir_path + req.path));
@@ -415,7 +415,8 @@ app.get('/', (req, res) => {
 //************************************************************************
 // Fetch other pages
 //************************************************************************
-app.get('/index.html',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
-app.get('/create.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
-app.get('/mixing.html',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
-app.get('/mixing_alert.html', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
+app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
+app.get('/create',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
+
+app.get('/mixing',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
+app.get('/mixing_alert', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });

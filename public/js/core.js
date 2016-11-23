@@ -56,16 +56,17 @@ $(document).ready(function () {
     
     $.ajax({
       url         : "/login_user",
-      type        : "POST",
+      method      : "POST",
       contentType : "application/json",
       data        : JSON.stringify(login_info),
       processData : false,
       complete    : function(data){
-        console.log(data.responseText);
-        var is_valid = JSON.parse(data.responseText);
-        console.log("anything happenging?");
-        
-        console.log("is_valid: ", is_valid);
+        const parsed_data = JSON.parse(data.responseText);
+
+        if(parsed_data == "1")
+          window.location.href = "/index";
+        else
+          $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
       }
     });
   });
@@ -81,8 +82,8 @@ $(document).ready(function () {
     Show_Current(query_url, url);
     
     setInterval(function(){
-      location.reload();
-    }, 300000);
+      window.location.href = "/";
+    }, 1800000);
    
     setInterval(function(){
       $.ajax({
@@ -483,10 +484,10 @@ $(document).ready(function () {
   }// End Pull_Data()
 
   function Submit_Data() {
-    var post_id, active;    
+    var post_id;    
 
     //Information write to DB
-    var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause;
+    var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause, active;
     a_type      = $('#alert_type').val();
     date_posted = $('#date_initial').val();
     dept        = $('#department').val();
