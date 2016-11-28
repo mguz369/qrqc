@@ -233,7 +233,7 @@ $(document).ready(function () {
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
       " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
@@ -257,8 +257,8 @@ $(document).ready(function () {
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
       " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text'> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
       " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
@@ -266,7 +266,16 @@ $(document).ready(function () {
       " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
-    
+    var date = new Date;
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();      
+    if(day < 10)
+        day = '0' + day;
+    if(month < 10)
+        month = '0' + month;
+    var today = year + "-" + month + "-" + day;
+    $('#date_start_' + add_row_counter).val(today)
     Update_Owners(users.length);
     add_row_counter++;  //Increment
   }
@@ -344,7 +353,7 @@ $(document).ready(function () {
     });
 
     $('#id_number').html($.urlParam('id'));
-  }//End Load_CReate()
+  }//End Load_Create()
 
   function Empty_Owners(){
     for(var j = 0; j <= add_row_counter; j++){
@@ -680,6 +689,11 @@ $(document).ready(function () {
     var elem_data = $("#" + elem_id).val();
     var column_name = $("#" + elem_id).attr("name");
 
+    if(column_name == 'owner'){
+      var elem_row = elem_id.lastIndexOf("_") + 1;
+      elem_row = elem_id.substring(elem_row);
+      $('#email_' + elem_row).prop('checked', false);
+    }
 
     if(column_name == 'complete'){
       var option = confirm("Are you sure you want to change the completion date?");
@@ -689,7 +703,7 @@ $(document).ready(function () {
         $("#" + elem_id).val(null);
     }
 
-    if(column_name == 'deadline'){      
+    if(column_name == 'deadline'){
       var date = new Date();
       var day = date.getDate();
       var month = date.getMonth() + 1;
@@ -709,19 +723,19 @@ $(document).ready(function () {
         $('#state_' + elem_row).html("Due");
         $('#state_' + elem_row).css('background-color', '#006bb3');
         $('#state_' + elem_row).css('color', 'white');
-        $('#state_' + elem_row).css('border-color', 'black');
-        $('#email_' + elem_row).prop('checked', false);
+        $('#state_' + elem_row).css('border-color', 'black'); 
       }
       else if(today < elem_data){
         $('#state_' + elem_row).html("Open");
         $('#state_' + elem_row).css('background-color', 'white');
         $('#state_' + elem_row).css('color', 'black');
-        $('#email_' + elem_row).prop('checked', false);
       }
       else if (today > elem_data){
         $('#state_' + elem_row).html("Late");
         $('#state_' + elem_row).css('background-color', 'red');
       }
+
+      $('#email_' + elem_row).prop('checked', false);
     }
   });
 });//End document.ready
