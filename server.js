@@ -8,21 +8,19 @@
 //************************************************************************
 var express     = require('express');
 var favicon     = require('static-favicon');
-var cookieParser= require('cookie-parser');
 var session     = require('express-session');
-var bodyParser  = require('body-parser');
-
+var bodyParser  = require('body-parser')
 var path        = require('path');
 var md5         = require('md5');
 var mysql       = require('mysql');
 var net         = require('net');
 var nodemailer  = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
+var Cookies = require('js-cookie');
 
 // Set up express
 var app = express();
 app.use( bodyParser.json() );
-//app.use( cookieParser() );
 
 var transporter = nodemailer.createTransport(smtpTransport({
     service     : 'gmail',

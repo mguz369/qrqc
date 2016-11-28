@@ -42,11 +42,15 @@ $.urlParam = function(name){
 //************************************************************************
 $(document).ready(function () {
   var add_row_counter = '0';  //Yeah it's a global, used for Add_alert()
-  var users;
-   
+  var users, username, password;
+  
+  $('#page-id-index').exists(() => {
+    Cookies.set('is_valid', 'invalid');
+  });
+
   $('#login_button').click(() => {
-    var password = $('#password').val().trim();
-    var username = $('#username').val().trim();
+    password = $('#password').val().trim();
+    username = $('#username').val().trim();
     
     var login_info = {
       user : username,
@@ -64,10 +68,13 @@ $(document).ready(function () {
         const parsed_data = JSON.parse(data.responseText);
 
         if(parsed_data == "1"){
-            window.location.href = "/index";
+          Cookies.set('is_valid', 'valid');
+          window.location.href = "/index";
         }
-        else
+        else{
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
+          Cookies.set('is_valid', 'invalid');
+        }
       }
     });
   });
@@ -76,16 +83,24 @@ $(document).ready(function () {
   //************************************************************************
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
+  function Start_Timer(){
+     setInterval(function(){
+      window.location.href = "/";
+      Cookies.set('is_valid', 'invalid');
+    }, 1800000);
+  }
+  function Check_Valid(){
+    if(Cookies.get('is_valid') == "invalid")
+      window.location.href = "/";
+  }
+
   $('#index_page').exists(function() {
+    Check_Valid();
+
     var url = "create?id=";
     var query_url = "/show_current_alerts"
-
-    //Refresh the page every 5 minutes
     Show_Current(query_url, url);
-    
-    setInterval(function(){
-      window.location.href = "/";
-    }, 1800000);
+    Start_Timer();
    
     setInterval(function(){
       $.ajax({
@@ -128,13 +143,11 @@ $(document).ready(function () {
   //************************************************************************
   // Mixing
   $('#mixing_page').exists(function(){
+    Check_Valid();
     var url = "mixing_alert?id=";
     var query_url = "/show_mixing_alerts"
 
-    Show_Current(query_url, url);
-    setInterval(function(){
-      window.location.href = "/";
-    }, 1800000);
+    Start_Timer();
 
     $('#mixing_alert_redirect').on('click touchstart', () => { 
       $.ajax({
@@ -153,7 +166,9 @@ $(document).ready(function () {
 
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
-  $('#create_page').exists(function(){ 
+  $('#create_page').exists(function(){
+    Check_Valid();
+    Start_Timer();
     Load_Create();
 
     $('#return_home').on('click touchstart', () => {
