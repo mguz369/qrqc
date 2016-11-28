@@ -63,8 +63,9 @@ $(document).ready(function () {
       complete    : function(data){
         const parsed_data = JSON.parse(data.responseText);
 
-        if(parsed_data == "1")
-          window.location.href = "/index";
+        if(parsed_data == "1"){
+            window.location.href = "/index";
+        }
         else
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
       }
@@ -78,6 +79,7 @@ $(document).ready(function () {
   $('#index_page').exists(function() {
     var url = "create?id=";
     var query_url = "/show_current_alerts"
+
     //Refresh the page every 5 minutes
     Show_Current(query_url, url);
     
@@ -131,8 +133,8 @@ $(document).ready(function () {
 
     Show_Current(query_url, url);
     setInterval(function(){
-      location.reload();
-    }, 300000);
+      window.location.href = "/";
+    }, 1800000);
 
     $('#mixing_alert_redirect').on('click touchstart', () => { 
       $.ajax({
@@ -415,7 +417,7 @@ $(document).ready(function () {
 
 
               //Output to html
-              $('#alert_type').val(a_type);
+              $('#alert_type').val(a_type).trigger('change');
               $('#date_initial').val(date_posted);
               $('#department').val(dept);
               $('#location').val(location);
@@ -813,4 +815,8 @@ function Press_Enter(){
     else 
       return true;
   });
+
+  function Set_State(){
+    
+  }//End Late
 }// End Press_Enter
