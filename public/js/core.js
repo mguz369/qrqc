@@ -42,6 +42,7 @@ $.urlParam = function(name){
 //************************************************************************
 $(document).ready(function () {
   var add_row_counter = '0';  //Yeah it's a global, used for Add_alert()
+  var interval_timer = 3600000;
   var users, username, password;
   
   $('#page-id-index').exists(() => {
@@ -87,7 +88,7 @@ $(document).ready(function () {
      setInterval(function(){
       window.location.href = "/";
       Cookies.set('is_valid', 'invalid');
-    }, 1800000);
+    }, interval_timer);
   }
   function Check_Valid(){
     if(Cookies.get('is_valid') == "invalid")
@@ -139,6 +140,27 @@ $(document).ready(function () {
     });
   
   });//End index_page
+
+  $('#view_page').exists(function() {
+    var url = "view";
+    var query_url = "/show_current_alerts"
+    Show_Current(query_url, url);
+
+    setInterval(function(){
+      $.ajax({
+        url  : '/get_now',
+        type : 'POST',
+        contentType : "application/json",
+        processData : false,
+        complete    : function(data){
+          var parsed_data = JSON.parse(data.responseText);
+
+          $("#Date").text(parsed_data[0].date);
+          $("#Time").text(parsed_data[0].time);
+        }
+      }, 10000);
+    });
+  });//End view_page
 
   //************************************************************************
   // Mixing
@@ -777,17 +799,19 @@ function loadAlerts(data, today, url){
       while ($(".row").length < rg[day].length){
         $('#issues_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
           + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
+         $('#_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
+          + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
         rows++;
       }
       
 
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
       if(rg[day][j].deadline < today){
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red;'>{short}</td>" + 
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red; color: white;'>{short}</td>" + 
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else if(rg[day][j].deadline == today){
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey;'>{short}</td>" + 
+        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey; color: white;'>{short}</td>" + 
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
@@ -795,12 +819,13 @@ function loadAlerts(data, today, url){
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       
-
-      e.promise().done(function(){
-        $(".btn", this).on('click touchstart', function(){ 
-          window.location.href = url + jQuery.attr(this, "data-part_num");
+      if(url != 'view'){
+        e.promise().done(function(){
+          $(".btn", this).on('click touchstart', function(){ 
+            window.location.href = url + jQuery.attr(this, "data-part_num");
+          });
         });
-      });
+      }
     }
   }  
 }// End loadAlerts
