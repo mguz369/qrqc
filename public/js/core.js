@@ -142,7 +142,7 @@ $(document).ready(function () {
   });//End index_page
 
   $('#view_page').exists(function() {
-    var url = "view";
+    var url = "view?id=";
     var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
 
@@ -819,13 +819,12 @@ function loadAlerts(data, today, url){
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       
-      if(url != 'view'){
-        e.promise().done(function(){
-          $(".btn", this).on('click touchstart', function(){ 
-            window.location.href = url + jQuery.attr(this, "data-part_num");
-          });
+  
+      e.promise().done(function(){
+        $(".btn", this).on('click touchstart', function(){ 
+          window.location.href = url + jQuery.attr(this, "data-part_num");
         });
-      }
+      });    
     }
   }  
 }// End loadAlerts

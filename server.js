@@ -412,7 +412,11 @@ app.get('/', (req, res) => {
 // Fetch other pages
 //************************************************************************
 app.get('/login',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
+
 app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
 app.get('/create',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
+
 app.get('/mixing',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
 app.get('/mixing_alert', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
+
+app.get('/view',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_alert.html')); });
