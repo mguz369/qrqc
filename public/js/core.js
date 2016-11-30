@@ -85,7 +85,7 @@ $(document).ready(function () {
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
   function Start_Timer(){
-     setInterval(function(){
+    setInterval(function(){
       window.location.href = "/";
       Cookies.set('is_valid', 'invalid');
     }, interval_timer);
@@ -142,6 +142,8 @@ $(document).ready(function () {
   });//End index_page
 
   $('#view_page').exists(function() {
+    Cookies.set('is_valid', 'invalid');
+
     var url = "view?id=";
     var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
@@ -189,7 +191,7 @@ $(document).ready(function () {
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){
-    Check_Valid();
+    //Check_Valid();
     Start_Timer();
     Load_Create();
 
