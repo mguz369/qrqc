@@ -45,11 +45,27 @@ $(document).ready(function () {
   var interval_timer = 3600000;
   var users, username, password;
   
+  setInterval(function(){
+    $.ajax({
+      url  : '/get_now',
+      type : 'POST',
+      contentType : "application/json",
+      processData : false,
+      complete    : function(data){
+        var parsed_data = JSON.parse(data.responseText);
+
+        $("#Date").text(parsed_data[0].date);
+        $("#Time").text(parsed_data[0].time);
+      }
+    });
+  }, 300);
+  
   $('#page-id-index').exists(() => {
     Cookies.set('is_valid', 'invalid');
   });
 
   $('#login_button').click(() => {
+    Press_Enter();
     password = $('#password').val().trim();
     username = $('#username').val().trim();
     
@@ -91,7 +107,8 @@ $(document).ready(function () {
     }, interval_timer);
   }
   function Check_Valid(){
-    if(Cookies.get('is_valid') == "invalid")
+    var validity = Cookies.get('is_valid');
+    if(validity == "invalid")
       window.location.href = "/";
   }
 
@@ -101,22 +118,7 @@ $(document).ready(function () {
     var url = "create?id=";
     var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
-    Start_Timer();
-   
-    setInterval(function(){
-      $.ajax({
-        url  : '/get_now',
-        type : 'POST',
-        contentType : "application/json",
-        processData : false,
-        complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-
-          $("#Date").text(parsed_data[0].date);
-          $("#Time").text(parsed_data[0].time);
-        }
-      }, 10000);
-    });
+    Start_Timer();    
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
     $('.categories').on('click touchstart', () => {
@@ -147,21 +149,6 @@ $(document).ready(function () {
     var url = "view?id=";
     var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
-
-    setInterval(function(){
-      $.ajax({
-        url  : '/get_now',
-        type : 'POST',
-        contentType : "application/json",
-        processData : false,
-        complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-
-          $("#Date").text(parsed_data[0].date);
-          $("#Time").text(parsed_data[0].time);
-        }
-      }, 10000);
-    });
   });//End view_page
 
   //************************************************************************
@@ -191,9 +178,19 @@ $(document).ready(function () {
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){
-    //Check_Valid();
-    Start_Timer();
+    try{
+      var body = document.getElementsByClassName('disabled')[0].className;
+    }catch(e){
+      if(body === undefined)
+        body = "";
+    }
+
+    if (body == ""){
+      Check_Valid();
+      Start_Timer();
+    }
     Load_Create();
+    
 
     $('#return_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
@@ -305,7 +302,7 @@ $(document).ready(function () {
   }
 
   function Load_Create(){
-    Press_Enter();
+    //Press_Enter();
     var dept = $('#department').val();
     var payload = { department : dept };
 
@@ -499,8 +496,12 @@ $(document).ready(function () {
               $('#date_completed_' + j).val(date_completed);
               if (email == 1) 
                 $('#email_' + j).prop('checked', true);
-              if (state == 'Late')
-                 $('#state_' + j).css('background-color', 'red');
+              if (state == 'Late'){
+                $('#state_' + j).css('background-color', 'red');
+                $('#state_' + j).css('color', 'white');
+                $('#state_' + j).css('border-color', 'black');
+              }
+
               $('#state_' + j).html(state);              
               $('#item_id_' + j).val(i_id);
 
@@ -757,6 +758,8 @@ $(document).ready(function () {
       else if (today > elem_data){
         $('#state_' + elem_row).html("Late");
         $('#state_' + elem_row).css('background-color', 'red');
+        $('#state_' + elem_row).css('color', 'white');
+        $('#state_' + elem_row).css('border-color', 'black'); 
       }
 
       $('#email_' + elem_row).prop('checked', false);
@@ -831,7 +834,6 @@ function loadAlerts(data, today, url){
   }  
 }// End loadAlerts
 
-
 //************************************************************************
 // Used by loadAlerts() to format that way the data will be
 // displayed in the table element
@@ -860,18 +862,3 @@ function regroup_list_by(list, categorize) {
 function whichDay(dateString) {
     return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][new Date(dateString).getDay()];
 }
-
-function Press_Enter(){
-  $("form input").keypress(function (e) {
-    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-      $('button[type=submit] .default').click();
-      return false;
-    }
-    else 
-      return true;
-  });
-
-  function Set_State(){
-    
-  }//End Late
-}// End Press_Enter

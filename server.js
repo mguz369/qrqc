@@ -16,7 +16,7 @@ var mysql       = require('mysql');
 var net         = require('net');
 var nodemailer  = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
-var Cookies = require('js-cookie');
+var Cookies     = require('js-cookie');
 
 // Set up express
 var app = express();

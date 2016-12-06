@@ -460,56 +460,86 @@ section.log-button {
   background-color: #006600;
   color: white;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Supply{
   background-color: #000080;
   color: white;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Activity{
   background-color: #e6e600;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Inventory{
   background-color: #660066;
   color: white;
-  width: 95%;
-  margin-left: 5px;
+  width: 95%;  
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Scrap{
   background-color: #ff8000;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Hr{
   background-color: #00cc44;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Delivery{
   background-color: #3399ff;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Operation{
   background-color: #47476b;
   color: white;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Quality{
   background-color: #b33c00;
   color: white;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 .Misc{
   background-color: #999966;
   width: 95%;
-  margin-left: 5px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
 }
 
 .hidden_element{
@@ -569,7 +599,7 @@ section.log-button {
   border-style: solid;
   border-color: black;
   display: inline-block;
-  height: 50px;
+  height: 60px;
   width: 17%;
   word-wrap: break-word;
   margin-left: 2%;
@@ -722,4 +752,6 @@ section.log-button {
   background-color: #4d4d4d;
   color: white;
 }
+
+
 /**************************************/
