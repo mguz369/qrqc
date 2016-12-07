@@ -189,7 +189,7 @@ $(document).ready(function () {
       Check_Valid();
       Start_Timer();
     }
-    Load_Create();
+    Load_Create(body);
     
 
     $('#return_home').on('click touchstart', () => {
@@ -245,20 +245,20 @@ $(document).ready(function () {
   //************************************************************************
   // Add an addition info row for an alert.
   //************************************************************************
-  function Add_Alert(){
+  function Add_Alert(disabled){
     $("#action_table").append(
       " <tr class='info_rows'>" +
-      " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+      " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
       "   <option value='Empty'>---</option>" + 
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' " + disabled + "> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' " + disabled + "> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' " + disabled + "> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
+      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
       " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
       " <td class='table_data' style='text-align: center'>X</td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
@@ -301,7 +301,7 @@ $(document).ready(function () {
     add_row_counter++;  //Increment
   }
 
-  function Load_Create(){
+  function Load_Create(disabled){
     //Press_Enter();
     var dept = $('#department').val();
     var payload = { department : dept };
@@ -369,7 +369,7 @@ $(document).ready(function () {
           $('#customer').append("<option value='" + customer + "'>" + customer + "</option>" );
         }
 
-         Pull_Data($.urlParam('id'));
+         Pull_Data($.urlParam('id'), disabled);
       }
     });
 
@@ -430,7 +430,7 @@ $(document).ready(function () {
   // When an alert is clicked from the home page, pull data from the DB
   // and populate fields with the data
   //************************************************************************
-  function Pull_Data(id){
+  function Pull_Data(id, disabled){
     var payload = {
       id : id,
     };
@@ -486,7 +486,7 @@ $(document).ready(function () {
               email          = parsed_data[i][j].email_sent;
               state          = parsed_data[i][j].state;
               
-              Add_Alert();//Add a row to the action area
+              Add_Alert(disabled);//Add a row to the action area
 
               $('#term_length_' + j).val(t_length);
               $('#term_description_' + j).val(t_descript);
