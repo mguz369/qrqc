@@ -36,12 +36,13 @@ $.urlParam = function(name){
        return results[1] || 0;
     }
 }
+
 //************************************************************************
 // jQuery that will handle the requests and responses between
 // the server and the webpages
 //************************************************************************
 $(document).ready(function () {
-  var add_row_counter = '0';  //Yeah it's a global, used for Add_alert()
+  var add_row_counter = '0';
   var interval_timer = 3600000;
   var users, username, password;
   
@@ -65,6 +66,7 @@ $(document).ready(function () {
   });
 
   $('#login_button').click(() => {
+    var level = Cookies.get('level');
     Press_Enter();
     password = $('#password').val().trim();
     username = $('#username').val().trim();
@@ -86,7 +88,10 @@ $(document).ready(function () {
 
         if(parsed_data == "1"){
           Cookies.set('is_valid', 'valid');
-          window.location.href = "/index";
+          if(level == 'Plant')
+            window.location.href = "/index";
+          if(level == 'Mixing')
+            window.location.href = "/index_mixing";
         }
         else{
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
@@ -102,16 +107,50 @@ $(document).ready(function () {
   // based on the days of the week
   function Start_Timer(){
     setInterval(function(){
-      window.location.href = "/";
       Cookies.set('is_valid', 'invalid');
+      var level = Cookies.get('level');
+
+      if(level == "Plant")
+        window.location.href = "/";
+      else if(level == "Mixing")
+        window.location.href = "/view_mixing"; 
+      
     }, interval_timer);
   }
+
   function Check_Valid(){
     var validity = Cookies.get('is_valid');
-    if(validity == "invalid")
-      window.location.href = "/";
+    var level = Cookies.get('level');
+    console.log(level);
+
+    if(validity == "invalid" && level == "Plant")
+        window.location.href = "/";
+    else if(validity == "invalid" && level == "Mixing")
+        window.location.href = "/view_mixing";        
   }
 
+  //View pages, not logged in
+  $('#view_page').exists(function() {
+    Cookies.set('is_valid', 'invalid');
+    Cookies.set('level', 'Plant');
+
+    var url = "view?id=";
+    var query_url = "/show_current_alerts"
+    Show_Current(query_url, url);
+  });//End view_page
+
+  $('#view_mixing_page').exists(function() {
+    Cookies.set('is_valid', 'invalid');
+    Cookies.set('level', 'Mixing');
+
+    var url = "view?id=";
+    var query_url = "/show_mixing_alerts"
+    Show_Current(query_url, url);
+  });//End view_page
+
+
+  //************************************************************************
+  // Index Pages
   $('#index_page').exists(function() {
     Check_Valid();
 
@@ -143,38 +182,36 @@ $(document).ready(function () {
   
   });//End index_page
 
-  $('#view_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-
-    var url = "view?id=";
-    var query_url = "/show_current_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
-
-  //************************************************************************
-  // Mixing
   $('#mixing_page').exists(function(){
     Check_Valid();
-    var url = "mixing_alert?id=";
-    var query_url = "/show_mixing_alerts"
 
+    var url = "create_mixing?id=";
+    var query_url = "/show_mixing_alerts";
+    Show_Current(query_url, url);
     Start_Timer();
 
-    $('#mixing_alert_redirect').on('click touchstart', () => { 
+    $('.categories').on('click touchstart', () => {
+      var elem_id = event.target.id;
+      
+      var payload = {
+        category : elem_id
+      };
+
       $.ajax({
         url         : "/create_mixing",
         type        : "POST",
         contentType : "application/json",
+        data        : JSON.stringify(payload),
         processData : false,
         complete    : function(data){
-            var parsed_data = JSON.parse(data.responseText);
-            window.location.href = url + parsed_data[0].insertId;
+          var parsed_data = JSON.parse(data.responseText);
+          window.location.href = url + parsed_data[0].insertId;
         }
       });
-    });
-  
-  });// End mixing
+    });  
+  });// End index_mixing
 
+  
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){
@@ -209,7 +246,6 @@ $(document).ready(function () {
     });
   });//End create_page
 
-
  
   //************************************************************************
   // Adds another row to the Additional Info section
@@ -223,7 +259,7 @@ $(document).ready(function () {
   // Stores data entered in the fields from the webpage and sends them
   // to the server as a JSON string
   //************************************************************************
-  $('#submit_plant').click(function(){
+  $('#submit_plant').on('click touchstart', function(){
     Submit_Data();
 
   
@@ -233,7 +269,7 @@ $(document).ready(function () {
     }, 2000);  
   });//End submit_plant
 
-  $('#submit_mix').click(function(){
+  $('#submit_mix').on('click touchstart', function(){
     Submit_Data();
 
     console.log(this.id);
@@ -242,6 +278,15 @@ $(document).ready(function () {
       window.location.href = '/mixing';
     }, 2000);  
   });//End submit_plant
+
+  $('.table_button').on('click touchstart', function(){
+    var level = Cookies.get('level');
+
+    if(level == "Plant")
+        window.location.href = "/";
+    else if(level == "Mixing")
+        window.location.href = "/view_mixing"; 
+  });
   //************************************************************************
   // Add an addition info row for an alert.
   //************************************************************************
@@ -267,7 +312,6 @@ $(document).ready(function () {
     Update_Owners(users.length);
     add_row_counter++;  //Increment
   }// End Add_alert()
-
 
   function Add_New_Alert(tableID){
     $("#action_table").append(
@@ -657,7 +701,7 @@ $(document).ready(function () {
   
   function Format_Email(responsible, dept, location, part_num, issue, customer, t_descript, date_ending){
     var payload3 = {
-      owner     : responsible,
+      owner      : responsible,
       department : dept,
     };
 

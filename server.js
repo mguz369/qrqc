@@ -221,7 +221,7 @@ app.post('/show_mixing_alerts', (req, res) => {
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
-                console.log(result);
+        //console.log(result);
         res.send(JSON.stringify(result));
     });       
 });
@@ -400,8 +400,7 @@ app.get('/', (req, res) => {
     if(req.path == '/'){
         //console.log('Cookies', req.cookies);
         res.locals.query = req.query;
-        res.sendFile(path.join(__dirname, dir_path + 'view.html'));
-        //res.sendFile(path.join(__dirname, admin_path + '/index.html'));  
+        res.sendFile(path.join(__dirname, dir_path + 'view_plant.html'));
     }
     else{
         res.sendFile(path.join(__dirname, dir_path + req.path));
@@ -411,12 +410,16 @@ app.get('/', (req, res) => {
 //************************************************************************
 // Fetch other pages
 //************************************************************************
+
+//Views and login
+app.get('/view',         (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_alert.html')); });
+app.get('/view_mixing',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
 app.get('/login',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
 
+//plant index and login
 app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
 app.get('/create',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
 
-app.get('/mixing',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing.html')); });
-app.get('/mixing_alert', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/mixing_alert.html')); });
-
-app.get('/view',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_alert.html')); });
+//Mixing index and create
+app.get('/index_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_mixing.html')); });
+app.get('/create_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_mixing.html')); });
