@@ -46,7 +46,7 @@ $(document).ready(function () {
   var interval_timer = 3600000;
   var users, username, password;
   
-  setInterval(function(){
+  /*setInterval(function(){
     $.ajax({
       url  : '/get_now',
       type : 'POST',
@@ -59,11 +59,8 @@ $(document).ready(function () {
         $("#Time").text(parsed_data[0].time);
       }
     });
-  }, 300);
-  
-  $('#page-id-index').exists(() => {
-    Cookies.set('is_valid', 'invalid');
-  });
+  }, 300);*/
+
 
   $('#login_button').click(() => {
     var level = Cookies.get('level');
@@ -106,27 +103,25 @@ $(document).ready(function () {
   // When the home page is loaded, populate with a list of existing issues
   // based on the days of the week
   function Start_Timer(){
-    setInterval(function(){
-      Cookies.set('is_valid', 'invalid');
+    setTimeout(function(){
       var level = Cookies.get('level');
 
-      if(level == "Plant")
+      /*if(level == "Plant")
         window.location.href = "/";
       else if(level == "Mixing")
         window.location.href = "/view_mixing"; 
-      
+      */
     }, interval_timer);
   }
 
   function Check_Valid(){
     var validity = Cookies.get('is_valid');
     var level = Cookies.get('level');
-    console.log(level);
 
     if(validity == "invalid" && level == "Plant")
         window.location.href = "/";
     else if(validity == "invalid" && level == "Mixing")
-        window.location.href = "/view_mixing";        
+        window.location.href = "/view_mixing";       
   }
 
   //View pages, not logged in
@@ -215,17 +210,17 @@ $(document).ready(function () {
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){
+    var body;
     try{
-      var body = document.getElementsByClassName('disabled')[0].className;
+       body = document.getElementsByClassName('disabled')[0].className;
     }catch(e){
       if(body === undefined)
         body = "";
-    }
-
-    if (body == ""){
+      
       Check_Valid();
       Start_Timer();
     }
+
     Load_Create(body);
     
 
@@ -240,7 +235,7 @@ $(document).ready(function () {
     $('#mixing_home').on('click touchstart', () => {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/mixing';
+        window.location.href = '/index_mixing';
       else
         return false;
     });
@@ -250,8 +245,8 @@ $(document).ready(function () {
   //************************************************************************
   // Adds another row to the Additional Info section
   //************************************************************************
-  $('#add_row').click(() => {
-    Add_New_Alert("action_table");
+  $('#add_row').on('click touchstart', () => {
+    Add_New_Alert();
   });//End add_row
 
   //************************************************************************
@@ -259,7 +254,7 @@ $(document).ready(function () {
   // Stores data entered in the fields from the webpage and sends them
   // to the server as a JSON string
   //************************************************************************
-  $('#submit_plant').on('click touchstart', function(){
+  $('#submit_plant').on('click touchstart', () =>{
     Submit_Data();
 
   
@@ -269,7 +264,7 @@ $(document).ready(function () {
     }, 2000);  
   });//End submit_plant
 
-  $('#submit_mix').on('click touchstart', function(){
+  $('#submit_mix').on('click touchstart', () =>{
     Submit_Data();
 
     console.log(this.id);
@@ -279,7 +274,7 @@ $(document).ready(function () {
     }, 2000);  
   });//End submit_plant
 
-  $('.table_button').on('click touchstart', function(){
+  $('#view_return').on('click touchstart', () =>{
     var level = Cookies.get('level');
 
     if(level == "Plant")
@@ -313,7 +308,7 @@ $(document).ready(function () {
     add_row_counter++;  //Increment
   }// End Add_alert()
 
-  function Add_New_Alert(tableID){
+  function Add_New_Alert(){
     $("#action_table").append(
       " <tr class='info_rows "+ add_row_counter + "'>" +
       " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
@@ -333,14 +328,15 @@ $(document).ready(function () {
     );
     var date = new Date;
     var day = date.getDate();
-    var month = date.getMonth() + 1;
+    var month = date.getMonth() + 1; //Date.getMonth() starts at 0;
     var year = date.getFullYear();      
     if(day < 10)
         day = '0' + day;
     if(month < 10)
         month = '0' + month;
     var today = year + "-" + month + "-" + day;
-    $('#date_start_' + add_row_counter).val(today)
+    
+    $('#date_start_' + add_row_counter).val(today);
     Update_Owners(users.length);
     add_row_counter++;  //Increment
   }
@@ -786,7 +782,6 @@ $(document).ready(function () {
 
       var elem_row = elem_id.lastIndexOf("_") + 1;
       elem_row = elem_id.substring(elem_row);
-      
 
       if(today == elem_data){
         $('#state_' + elem_row).html("Due");
