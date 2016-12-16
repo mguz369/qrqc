@@ -46,7 +46,7 @@ $(document).ready(function () {
   var interval_timer = 3600000;
   var users, username, password;
   
-  /*setInterval(function(){
+  setInterval(function(){
     $.ajax({
       url  : '/get_now',
       type : 'POST',
@@ -59,7 +59,7 @@ $(document).ready(function () {
         $("#Time").text(parsed_data[0].time);
       }
     });
-  }, 300);*/
+  }, 300);
 
 
   $('#login_button').click(() => {
@@ -270,7 +270,7 @@ $(document).ready(function () {
     console.log(this.id);
     // Wait 5 seconds before redirect so emails can be sent
     setTimeout(function(){
-      window.location.href = '/mixing';
+      window.location.href = '/index_mixing';
     }, 2000);  
   });//End submit_plant
 
