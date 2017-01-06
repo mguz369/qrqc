@@ -46,22 +46,6 @@ $(document).ready(function () {
   var interval_timer = 3600000;
   var users, username, password;
   
-  setInterval(function(){
-    $.ajax({
-      url  : '/get_now',
-      type : 'POST',
-      contentType : "application/json",
-      processData : false,
-      complete    : function(data){
-        var parsed_data = JSON.parse(data.responseText);
-
-        $("#Date").text(parsed_data[0].date);
-        $("#Time").text(parsed_data[0].time);
-      }
-    });
-  }, 300);
-
-
   $('#login_button').click(() => {
     var level = Cookies.get('level');
     Press_Enter();

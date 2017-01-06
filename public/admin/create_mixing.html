@@ -6,6 +6,7 @@
     
      <!-- Load CSS -->  
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/clock.css">
 
     <!-- Load JavaScript files -->
     <script src='js/jquery-3.1.1.min.js'></script>
@@ -16,8 +17,13 @@
 
   <body id="create_page">
     <section class="user-logged-in">
-          <div id="Date"></div>
-          <div id="Time"></div>
+          <div id="clock" class="dark display">
+          <div class="weekdays"></div>
+          <div class="month_date"></div>
+          <div class="year"></div>
+          <div class="ampm"></div>
+          <div class="digits"></div>
+        </div>
     </section>
     <section class="page-title">
       <h2 >iQRQC - Mixing e-Lert</h2>
@@ -179,6 +185,9 @@
           <td> <button class="btn btn-white table_button" id="mixing_home">Return to Main Page</button></td>          
         </tr>
       </table>
-    </div> 
+    </div>
+
+    <script type="text/javascript" src="../js/clock.js"></script>
+    <script type="text/javascript" src="../js/moment.js"></script>
   </body>
 </html>
