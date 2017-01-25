@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>e-Alert</title>
+    <title>Create e-Lert</title>
     
-    <!-- Load CSS -->  
+     <!-- Load CSS -->  
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/clock.css">
 
@@ -12,15 +12,15 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
             crossorigin="anonymous"></script>
-    <script src='js/core.js'></script>
-    <script src='js/js.cookie.js'></script>
+    <script src='../js/core_jt.js'></script>
+    <script src='../js/js.cookie.js'></script>
   </head>
 
 
   <body id="create_page">
     <section class="user-logged-in">
           <div id="clock" class="dark display">
-          <div class="weekdays">day</div>
+          <div class="weekdays"></div>
           <div class="month_date"></div>
           <div class="year"></div>
           <div class="ampm"></div>
@@ -28,10 +28,10 @@
         </div>
     </section>
     <section class="page-title">
-      <h2 >iQRQC - Grand Rapids - e-Lert</h2>
+      <h2>iQRQC - Executive - e-Lert</h2>
     </section>
     <section class="log-button ng-scope">
-      <img src="../images/logo.jpg" alt="" height="50px" width="250px">
+      <img src="../images/logo.jpg" alt="" height="50px" width="275px">
     </section>
     
 
@@ -53,17 +53,17 @@
             </td>
             <td class="right_column">
               <select class="box_length" id="alert_type" onchange="this.className=this.options[this.selectedIndex].className">
-                <option value="Safety"    class="Safety">Safety/Environment</option>
-                <option value="Quality"   class="Quality">Quality</option>
-                <option value="Activity"  class="Activity">Activity (Sales)</option>
-                <option value="Inventory" class="Inventory">Inventory</option>
-                <option value="Scrap"     class="Scrap">Scrap</option>
-                <option value="Hr"        class="Hr">HR/Labor</option>
-                <option value="Delivery"  class="Delivery">Delivery</option>
-                <option value="Operation" class="Operation">Operations Efficiency</option>
-                <option value="Supply"    class="Supply">Supply Chain</option>
-                <option value="Misc"      class="Misc">Miscellaneaous</option>
-              </select>
+                <option value="Safety"    id="Safety"    >Safety / Environment</option>
+                <option value="Activity"  id="Activity"  >Sales / Business Design</option>
+                <option value="Prod"      id="Product"   >Product &amp Process Design</option>
+                <option value="Quality"   id="Quality"   >Quality</option>
+                <option value="Operation" id="Operation" >Operations</option>
+                <option value="Purchasing"id="Purchasing">Purchasing</option>
+                <option value="Supply"    id="Supply"    >Supply Chain</option>
+                <option value="Hr"        id="Hr"        >Human Resources</option>
+                <option value="It"        id="It"        >Information Technology</option>                
+                <option value="Finance"   id="Finance"   >Finance</option>
+              </select>   
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -72,7 +72,7 @@
               Date posted:
             </td>
             <td class="right_column">
-              <input class="box_length" id="date_initial" type="date"></input>
+              <input class="box_length" id="date_initial" type="date"> </input>
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -81,24 +81,15 @@
               iQRQC Level:
             </td>
             <td class="right_column">
-              <select class="box_length" id="department">
-                <option value="Plant"     >Plant</option>
-                <option value="Mixing"    >Mixing</option>
-                <option value="Cementing" >Cementing</option>
-                <option value="Automation">Automation</option>
-                <!--<option value="Office"    >Office</option>
-                <option value="Ship_Receive">Shipping/Receiving</option>-->
+              <select class="box_length" id="region">
+                <option value="NA">North America</option>
+                <option value="SA">South America</option>
+                <option value="EU">Europe</option>
+                <option value="AS">Asia</option>
+                <option value="GA">Global Activity</option>
               </select>
             </td>
         </tr>
-        <!--<tr>
-          <td class="left_column">
-            Start Level
-          </td>
-          <td class="right_column">
-            <p class="box_length" id="start_department"></p>
-          </td>
-        </tr>-->
         <!-- ############################################################################ -->
         <tr >
             <td class="left_column">
@@ -114,9 +105,7 @@
               Part Number:
             </td>
             <td class="right_column">
-              <select class="box_length" id="part_num">
-                
-              </select>              
+              <select class="box_length" id="part_num"></select>              
             </td>
         </tr>
         <!-- ############################################################################ -->
@@ -125,15 +114,13 @@
               Customer:
             </td>
             <td class="right_column">
-              <select class="box_length" id="customer">
-                
-              </select>        
+              <select class="box_length" id="customer"></select>              
             </td>
         </tr>
         <!-- ############################################################################ -->
         <tr>
             <td class="left_column">
-              Repeat:
+              Repeat Issue:
             </td>
             <td class="right_column">
               <select class="box_length" id="recur">
@@ -189,24 +176,18 @@
               <td class="shorten_td"    id="action_email">Email Sent </td>
               <td class="shorten_td"> Delete </td>
           </tr>
-        </table>      
+        </table>     
     </form>
     
-
     <div class="mycontainer">
       <table class="page-footer">
         <tr>
           <td> <button class="btn btn-white table_button" id="add_row" type="button">Add Action</button></td>
-          <td> <button class="btn btn-white table_button" id="submit_plant">Submit</button></td>
-          <td> <button class="btn btn-white table_button" id="return_home">Return to Main Page</button></td>          
+          <td> <button class="btn btn-white table_button" id="submit_jt">Submit</button></td>
+          <td> <button class="btn btn-white table_button" id="jt_home">Return to Main Page</button></td>          
         </tr>
       </table>
     </div>
-
-    <!--<script>
-      var dropdown = document.querySelector('select');
-      dropdown.className = dropdown.options[dropdown.selectedIndex].className;
-    </script>-->
 
     <script type="text/javascript" src="../js/clock.js"></script>
     <script type="text/javascript" src="../js/moment.js"></script>

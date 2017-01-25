@@ -213,11 +213,22 @@ app.post('/show_current_alerts', (req, res) => {
     });       
 });
 
-
 app.post('/show_mixing_alerts', (req, res) => {
     var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
         "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Mixing' ORDER BY t1.deadline ASC;");
+
+    connectionQRQC.query(select_dates, (err, result) => {
+        if(err) throw err;
+        //console.log(result);
+        res.send(JSON.stringify(result));
+    });       
+});
+
+app.post('/show_jt_alerts', (req, res) => {
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Jim' ORDER BY t1.deadline ASC;");
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
@@ -247,7 +258,21 @@ app.post('/pull_qrqc_data', (req, res) => {
         res.send(JSON.stringify(result));
     });
 });    
+app.post('/pull_jt_data', (req, res) => {
+    var sql = ("SELECT `id`, `alert_type`, DATE_FORMAT(`date`, '%Y-%m-%d') AS `date`, `region`, `location`, `part`, `customer`, `recurrence`, `issue`, `cause`, `active` FROM `post_it` WHERE `id` = {id}; " +
+               "SELECT t2.id, t2.post_it_id, t2.term, t2.description, t2.owner, DATE_FORMAT(t2.initial_date, '%Y-%m-%d') AS `initial_date`," +
+               "DATE_FORMAT(t2.deadline, '%Y-%m-%d') AS `deadline`, DATE_FORMAT(t2.completed, '%Y-%m-%d') AS `completed`, t2.email_sent, t2.state " +
+               "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id} ORDER BY t2.deadline ASC"
+               ).formatSQL(req.body);
 
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+        
+        //console.log(result);
+        res.send(JSON.stringify(result));
+    });
+});    
 
 //************************************************************************
 // Write a new alert to the QRQC DB
@@ -266,6 +291,17 @@ app.post('/create_plant', (req, res) => {
 
 app.post('/create_mixing', (req, res) => {
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Mixing', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+                     ).formatSQL(req.body); 
+   
+    connectionQRQC.query(sql_create, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/create_jt', (req, res) => {
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Jim', '---', '---', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
@@ -300,6 +336,20 @@ app.post('/update_post_it_items', (req, res) => {
 
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
+        
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/update_jt_post_it', (req, res) => {
+    
+    var sql_update = (
+        "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
+        "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
+        "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
+
+    connectionQRQC.query(sql_update, (err, result) => {
+        if (err) throw err;
 
         res.send(JSON.stringify(result));
     });
@@ -315,10 +365,30 @@ app.post('/get_part_nums', (req, res) => {
     });
 });
 
-app.post('/get_customers', (req, res) =>{
-    var sql = "SELECT `name` FROM `customer`";
+app.post('/get_jt_part_nums', (req, res) => {
+    var sql = ("SELECT `number` FROM `part_exec`");
 
-    connectionSp.query(sql, (err, result) => {
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/get_customers', (req, res) =>{
+    var sql = "SELECT `name` FROM `customers_plant`";
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/get_jt_customers', (req, res) =>{
+    var sql = "SELECT `name` FROM `customers_exec`";
+
+    connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
         res.send(JSON.stringify(result));
@@ -335,6 +405,16 @@ app.post('/get_users', (req, res) => {
     });
 });
 
+app.post('/get_jt_users', (req, res) => {
+    var sql = ("SELECT `name` FROM `owner_exec`").formatSQL(req.body);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
 
 //************************************************************************
 // 1) Get the required email address based on the user
@@ -342,6 +422,16 @@ app.post('/get_users', (req, res) => {
 //************************************************************************
 app.post('/get_email', (req, res) => {
     var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/get_jt_email', (req, res) => {
+    var sql = ("SELECT `email` FROM `owner_exec` WHERE `name` = {owner}").formatSQL(req.body);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
@@ -374,13 +464,6 @@ app.post('/send_email', (req, res) => {
     //console.log("\n\nsent email");
 });
 
-app.post('/get_now', (req, res) => {
-    sql = "SELECT DATE_FORMAT(CURDATE(), '%M %D, %Y') AS date, TIME_FORMAT(CURTIME(), '%h:%i:%s %p') as time";
-    connectionQRQC.query(sql, (err, result) => {
-        if(err) throw err;
-        res.send(JSON.stringify(result));
-    });
-});
 
 //************************************************************************
 // Get paths setup, load css, js, etc for the browser
@@ -412,14 +495,19 @@ app.get('/', (req, res) => {
 //************************************************************************
 
 //Views and login
-app.get('/view',         (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_alert.html')); });
-app.get('/view_mixing',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
-app.get('/login',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
+app.get('/view',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_alert.html')); });
+app.get('/view_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
+app.get('/view_jt',     (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_jt.html')); });
+app.get('/login',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
 
 //plant index and login
-app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index.html')); });
+app.get('/index',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_plant.html')); });
 app.get('/create',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
 
 //Mixing index and create
-app.get('/index_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_mixing.html')); });
+app.get('/index_mixing',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_mixing.html')); });
 app.get('/create_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_mixing.html')); });
+
+//Todoroff's island
+app.get('/index_jt',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });
+app.get('/create_jt', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_jt.html')); });

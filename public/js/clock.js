@@ -60,7 +60,7 @@ $(function(){
 		// d is for day of week and A is for AM/PM
 
 		var now = moment().format("hhmmA");
-		var date = moment().format("dddd,MMMM,Do,YYYY").split(','); console.log(date)
+		var date = moment().format("dddd,MMMM,Do,YYYY").split(',');
 
 		digits.h1.attr('class', digit_to_name[now[0]]);
 		digits.h2.attr('class', digit_to_name[now[1]]);

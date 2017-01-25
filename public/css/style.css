@@ -440,7 +440,6 @@ section.log-button {
 #Hr{
   background-color: #00cc44;
 }
-
 #Delivery{
   background-color: #3399ff;
 }
@@ -455,7 +454,23 @@ section.log-button {
 #Misc{
   background-color: #999966;
  }
+ #Product{
+  background-color: #669900;
+}
+#Purchasing{
+  background-color: #003366;
+  color: white;
+}
+#It{
+  background-color: #400080;
+  color: white;
+}
+#Finance{
+  background-color: #b30000;
+}
 
+
+/********************************/
 .Safety{
   background-color: #006600;
   color: white;
@@ -535,6 +550,40 @@ section.log-button {
 }
 .Misc{
   background-color: #999966;
+  width: 95%;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
+}
+.Product{
+  background-color: #669900;
+  width: 95%;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
+}
+.Purchasing{
+  background-color: #003366;
+  color: white;
+  width: 95%;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
+}
+.It{
+  background-color: #400080;
+  color: white;
+  width: 95%;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.6%;
+}
+.Finance{
+  background-color: #b30000;
   width: 95%;
   display: table-cell;
   text-align: center;
