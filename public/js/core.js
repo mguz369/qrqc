@@ -74,7 +74,7 @@ $(document).ready(function () {
           else if(level == 'Mixing')
             window.location.href = "/index_mixing";
           else if(level == "Jim")
-            window.location.href = "/index_jt";
+            window.location.href = "/index_exec";
         }
         else{
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
@@ -109,7 +109,7 @@ $(document).ready(function () {
     else if(validity == "invalid" && level == "Mixing")
         window.location.href = "/view_mixing";
     else if(validity == "invalid" && level == "Jim")
-        window.location.href = "/index_jt";       
+        window.location.href = "/index_exec";       
   }
 
   //View pages, not logged in
@@ -269,7 +269,7 @@ $(document).ready(function () {
     $('#jt_home').on('click touchstart', function () {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/index_jt';
+        window.location.href = '/index_exec';
       else
         return false;
     });    
@@ -311,7 +311,7 @@ $(document).ready(function () {
     Submit_Data();
 
     setTimeout(function(){
-      window.location.href = '/index_jt';
+      window.location.href = '/index_exec';
     }, 2000);
   });
 

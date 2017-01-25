@@ -109,7 +109,7 @@ $(document).ready(function () {
     else if(validity == "invalid" && level == "Mixing")
         window.location.href = "/view_mixing";
     else if(validity == "invalid" && level == "Jim")
-        window.location.href = "/index_jt";       
+        window.location.href = "/index_exec";       
   }
 
   //View pages, not logged in
@@ -146,7 +146,7 @@ $(document).ready(function () {
   $('#jt_page').exists(function(){
     Check_Valid();
 
-    var url = "create_jt?id=";
+    var url = "create_exec?id=";
     var query_url = "/show_jt_alerts";
     Show_Current(query_url, url);
     Start_Timer();

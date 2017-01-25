@@ -497,7 +497,7 @@ app.get('/', (req, res) => {
 //Views and login
 app.get('/view',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_alert.html')); });
 app.get('/view_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
-app.get('/view_jt',     (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_jt.html')); });
+app.get('/view_exec',     (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_jt.html')); });
 app.get('/login',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
 
 //plant index and login
@@ -509,5 +509,5 @@ app.get('/index_mixing',  (req, res) => { res.sendFile(path.join(__dirname, admi
 app.get('/create_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_mixing.html')); });
 
 //Todoroff's island
-app.get('/index_jt',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });
-app.get('/create_jt', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_jt.html')); });
+app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });
+app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_jt.html')); });
