@@ -69,12 +69,8 @@ $(document).ready(function () {
 
         if(parsed_data == "1"){
           Cookies.set('is_valid', 'valid');
-          if(level == 'Plant')
-            window.location.href = "/index";
-          else if(level == 'Mixing')
-            window.location.href = "/index_mixing";
-          else if(level == "Jim")
-            window.location.href = "/index_jt";
+          if(level == "Jim")
+            window.location.href = "/index_exec";
         }
         else{
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
@@ -104,38 +100,16 @@ $(document).ready(function () {
     var validity = Cookies.get('is_valid');
     var level = Cookies.get('level');
 
-    if(validity == "invalid" && level == "Plant")
-        window.location.href = "/";
-    else if(validity == "invalid" && level == "Mixing")
-        window.location.href = "/view_mixing";
-    else if(validity == "invalid" && level == "Jim")
+    if(validity == "invalid" && level == "Jim")
         window.location.href = "/index_exec";       
   }
 
   //View pages, not logged in
-  $('#view_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Plant');
-
-    var url = "view?id=";
-    var query_url = "/show_current_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
-
-  $('#view_mixing_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Mixing');
-
-    var url = "view?id=";
-    var query_url = "/show_mixing_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
-
   $('#view_jt_page').exists(function() {
     Cookies.set('is_valid', 'invalid');
     Cookies.set('level', 'Jim');
 
-    var url = "view?id=";
+    var url = "view2?id=";
     var query_url = "/show_jt_alerts"
     Show_Current(query_url, url);
   });//End view_page
@@ -188,28 +162,11 @@ $(document).ready(function () {
     }
 
     Load_Create(body);
-    
-
-    $('#return_home').on('click touchstart', function () {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/index';
-      else
-        return false;
-    });
-
-    $('#mixing_home').on('click touchstart', function () {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/index_mixing';
-      else
-        return false;
-    });
 
     $('#jt_home').on('click touchstart', function () {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/index_jt';
+        window.location.href = '/index_exec';
       else
         return false;
     });    
@@ -235,10 +192,8 @@ $(document).ready(function () {
   $('#view_return').on('click touchstart', function (){
     var level = Cookies.get('level');
 
-    if(level == "Plant")
-        window.location.href = "/";
-    else if(level == "Mixing")
-        window.location.href = "/view_mixing"; 
+    if(level == "Jim")
+        window.location.href = "/view_exec";
   });
   //************************************************************************
   // Add an addition info row for an alert.
@@ -569,7 +524,7 @@ $(document).ready(function () {
       }
       else{
         setTimeout(function(){
-          window.location.href = '/index_jt';
+          window.location.href = '/index_exec';
         }, 2000);  
            
 

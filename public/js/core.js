@@ -109,7 +109,7 @@ $(document).ready(function () {
     else if(validity == "invalid" && level == "Mixing")
         window.location.href = "/view_mixing";
     else if(validity == "invalid" && level == "Jim")
-        window.location.href = "/index_exec";       
+        window.location.href = "/view_exec";       
   }
 
   //View pages, not logged in
@@ -323,7 +323,7 @@ $(document).ready(function () {
     else if(level == "Mixing")
         window.location.href = "/view_mixing"; 
     else if(level == "Jim")
-        window.location.href = "/view_jt"; 
+        window.location.href = "/view_exec"; 
   });
   //************************************************************************
   // Add an addition info row for an alert.
