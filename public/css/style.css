@@ -454,8 +454,9 @@ section.log-button {
 #Misc{
   background-color: #999966;
  }
- #Product{
+#Product{
   background-color: #669900;
+  color: white;
 }
 #Purchasing{
   background-color: #003366;
@@ -466,7 +467,7 @@ section.log-button {
   color: white;
 }
 #Finance{
-  background-color: #b30000;
+  background-color: #c3c388;
 }
 
 
@@ -563,6 +564,7 @@ section.log-button {
   text-align: center;
   vertical-align: middle;
   padding: 0.6%;
+  color: white;
 }
 .Purchasing{
   background-color: #003366;
@@ -583,7 +585,7 @@ section.log-button {
   padding: 0.6%;
 }
 .Finance{
-  background-color: #b30000;
+  background-color: #c3c388;
   width: 95%;
   display: table-cell;
   text-align: center;

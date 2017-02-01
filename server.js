@@ -483,7 +483,7 @@ app.get('/', (req, res) => {
     if(req.path == '/'){
         //console.log('Cookies', req.cookies);
         res.locals.query = req.query;
-        res.sendFile(path.join(__dirname, dir_path + 'view_plant.html'));
+        res.sendFile(path.join(__dirname, dir_path + 'view_plant.html' /*'angular.html'*/));
     }
     else{
         res.sendFile(path.join(__dirname, dir_path + req.path));
