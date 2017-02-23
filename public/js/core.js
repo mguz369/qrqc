@@ -92,11 +92,10 @@ $(document).ready(function () {
     setTimeout(function(){
       var level = Cookies.get('level');
 
-      /*if(level == "Plant")
+      if(level == "Plant")
         window.location.href = "/";
       else if(level == "Mixing")
         window.location.href = "/view_mixing"; 
-      */
     }, interval_timer);
   }
 
@@ -130,16 +129,6 @@ $(document).ready(function () {
     var query_url = "/show_mixing_alerts"
     Show_Current(query_url, url);
   });//End view_page
-
-  $('#view_jt_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Jim');
-
-    var url = "view?id=";
-    var query_url = "/show_jt_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
-
 
   //************************************************************************
   // Index Pages
@@ -202,36 +191,6 @@ $(document).ready(function () {
       });
     });  
   });// End index_mixing
-
-  $('#jt_page').exists(function(){
-    Check_Valid();
-
-    var url = "create_jt?id=";
-    var query_url = "/show_jt_alerts";
-    Show_Current(query_url, url);
-    Start_Timer();
-
-     $('.categories').on('click touchstart', function () {
-      var elem_id = event.target.id;
-      
-      var payload = {
-        category : elem_id
-      };
-      
-      $.ajax({
-        url           : "/jtcreate",
-        type          : "POST",
-        contentType   : "application/json",
-        data          : JSON.stringify(payload),
-        processData   : false,
-        complete      : function(data){
-            var parsed_data = JSON.parse(data.responseText);
-            window.location.href = url + parsed_data[0].insertId;
-        }
-      });
-    });
-  });//End index_jt
-
   
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
@@ -246,9 +205,7 @@ $(document).ready(function () {
       Check_Valid();
       Start_Timer();
     }
-
-    Load_Create(body);
-    
+    Load_Create(body);    
 
     $('#return_home').on('click touchstart', function () {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
@@ -265,17 +222,8 @@ $(document).ready(function () {
       else
         return false;
     });
+  });
 
-    $('#jt_home').on('click touchstart', function () {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/index_exec';
-      else
-        return false;
-    });    
-  });//End create_page
-
- 
   //************************************************************************
   // Adds another row to the Additional Info section
   //************************************************************************
@@ -290,30 +238,13 @@ $(document).ready(function () {
   //************************************************************************
   $('#submit_plant').on('click touchstart', function (){
     Submit_Data();
-
-  
-    // Wait 5 seconds before redirect so emails can be sent
-    setTimeout(function(){
-      window.location.href = '/index';
-    }, 2000);  
+    window.location.href = '/index'; 
   });//End submit_plant
 
   $('#submit_mix').on('click touchstart', function (){
     Submit_Data();
-
-    // Wait 5 seconds before redirect so emails can be sent
-    setTimeout(function(){
-      window.location.href = '/index_mixing';
-    }, 2000);  
+    window.location.href = '/index';   
   });//End submit_plant
-
-  $('#submit_jt').on('click touchstart', function (){
-    Submit_Data();
-
-    setTimeout(function(){
-      window.location.href = '/index_exec';
-    }, 2000);
-  });
 
   $('#view_return').on('click touchstart', function (){
     var level = Cookies.get('level');
@@ -336,15 +267,15 @@ $(document).ready(function () {
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' " + disabled + "> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' " + disabled + "> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' " + disabled + "> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' name='description'" + disabled + "> </input> </td>" +
+      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' "    + disabled + "> </select> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' "                 + disabled + "> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
       " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
       " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
       " <td class='table_data' style='text-align: center'>X</td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+      " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
     );
     
     Update_Owners(users.length);
@@ -359,7 +290,7 @@ $(document).ready(function () {
       "   <option value='1'>Immediate</option>" +
       "   <option value='2'>Temporary</option>" +
       "   <option value='3'>Permanent</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' name='description'> </input> </td>" +
       " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
@@ -369,15 +300,8 @@ $(document).ready(function () {
       " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
     );
-    var date = new Date;
-    var day = date.getDate();
-    var month = date.getMonth() + 1; //Date.getMonth() starts at 0;
-    var year = date.getFullYear();      
-    if(day < 10)
-        day = '0' + day;
-    if(month < 10)
-        month = '0' + month;
-    var today = year + "-" + month + "-" + day;
+    
+    var today = GetToday();
     
     $('#date_start_' + add_row_counter).val(today);
     Update_Owners(users.length);
@@ -490,20 +414,7 @@ $(document).ready(function () {
       contentType : "application/json",
       processData : false,
       complete    : function(data){
-        var date = new Date();
-
-        //Format the date
-        var day = date.getDate();
-        var month = (date.getMonth() + 1);
-        var year = date.getFullYear();
-
-        if(day < 10)
-          day = '0' + day;
-        if(month < 10)
-          month = '0' + month;
-
-
-        var today = (year + "-" + month + "-" + day);        
+        var today = GetToday()    
         loadAlerts(data, today, url);
       }
     });
@@ -694,26 +605,11 @@ $(document).ready(function () {
         alert("Please make sure all fields are filled in for action " + (i + 1));
         return false;
       }
-
-      //
-      var date = new Date()
-      var day = date.getDate();
-      var month = date.getMonth() + 1;
-      var year = date.getFullYear();
-
-      if(day < 10)
-          day = '0' + day;
-      if(month < 10)
-          month = '0' + month;
-      var today = year + "-" + month + "-" + day;
+      var today = GetToday();
       
-      console.log(date_ending + " " + today)
-      if(date_ending == today && date_completed == null){
-        state = "Due";
-        console.log(state)
-      }
+      if(date_ending == today && date_completed == null)
+        state = "Due";      
 
-      //var weekend_day = new Date(date_ending).getUTCDay();
       var payload2 = {
         item_id       : item_id,
         post_id       : post_id,
@@ -742,6 +638,12 @@ $(document).ready(function () {
     var payload3 = {
       owner      : responsible,
       department : dept,
+      location   : location,
+      part       : part_num,
+      issue      : issue,
+      customer   : customer,
+      description: t_descript,
+      ending     : date_ending
     };
 
     $.ajax({
@@ -749,37 +651,7 @@ $(document).ready(function () {
       type        : "POST",
       contentType : "application/json",
       processData : false,
-      data        : JSON.stringify(payload3),
-      complete    : function(data){
-        var parsed_data = JSON.parse(data.responseText);
-        console.log(parsed_data);
-
-
-        for(var i = 0; i < parsed_data.length; i++){
-          var email = parsed_data[i].email;
-          var message = ("You have been assigned a task for QRQC:\n\n" +
-                         "Location: "+ location + " \nPart Number: "+ part_num +" \nCustomer: "+ customer +
-                         "\nIssue Description: " + issue + 
-                         "\nAction to be Taken: "+ t_descript + " \nTask deadline is: "+ date_ending);
-          
-          var email_body = {
-            owner      : responsible,
-            email_addr : email,
-            email_text : message,
-          };
-        }
-        
-        $.ajax({
-            url         : "/send_email",
-            type        : "POST",
-            contentType : "application/json",
-            processData : false,
-            data        : JSON.stringify(email_body),
-            complete    : function(){
-              return;
-            }
-          });
-      }//End/complete
+      data        : JSON.stringify(payload3)
     });
   }//End Format_Email()
 
@@ -791,37 +663,27 @@ $(document).ready(function () {
     return false;
   });
 
-  //Check for changes to a complete 
-  $(document).change(function (event) {
+  //Check for changes to a complete
+  $(document).keypress(function (){
+
     var elem_id = event.target.id;
     var elem_data = $("#" + elem_id).val();
     var column_name = $("#" + elem_id).attr("name");
-
-    if(column_name == 'owner'){
+    if(column_name == 'description'){
       var elem_row = elem_id.lastIndexOf("_") + 1;
       elem_row = elem_id.substring(elem_row);
       $('#email_' + elem_row).prop('checked', false);
     }
+  });
 
-    if(column_name == 'complete'){
-      var option = confirm("Are you sure you want to change the completion date?");
-      if(option == true)
-        return true;
-      else
-        $("#" + elem_id).val(null);
-    }
+  $(document).change(function (event) {
+    var elem_id = event.target.id;
+    var elem_data = $("#" + elem_id).val();
+    var column_name = $("#" + elem_id).attr("name");
+    console.log(column_name);
 
     if(column_name == 'deadline'){
-      var date = new Date();
-      var day = date.getDate();
-      var month = date.getMonth() + 1;
-      var year = date.getFullYear();
-      
-      if(day < 10)
-          day = '0' + day;
-      if(month < 10)
-          month = '0' + month;
-      var today = year + "-" + month + "-" + day;
+      var today = GetToday();
 
       var elem_row = elem_id.lastIndexOf("_") + 1;
       elem_row = elem_id.substring(elem_row);
@@ -846,6 +708,18 @@ $(document).ready(function () {
 
       $('#email_' + elem_row).prop('checked', false);
     }
+    else if(column_name == 'owner'){
+      var elem_row = elem_id.lastIndexOf("_") + 1;
+      elem_row = elem_id.substring(elem_row);
+      $('#email_' + elem_row).prop('checked', false);
+    }
+    else if(column_name == 'complete'){
+      var option = confirm("Are you sure you want to change the completion date?");
+      if(option == true)
+        return true;
+      else
+        $("#" + elem_id).val(null);
+    }   
   });
 });//End document.ready
 //************************************************************************
@@ -941,4 +815,19 @@ function regroup_list_by(list, categorize) {
 //************************************************************************
 function whichDay(dateString) {
     return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][new Date(dateString).getDay()];
+}
+
+function GetToday(){
+  var date = new Date()
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+
+      if(day < 10)
+          day = '0' + day;
+      if(month < 10)
+          month = '0' + month;
+  var today = year + "-" + month + "-" + day;
+
+  return today;
 }

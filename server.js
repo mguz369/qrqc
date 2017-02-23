@@ -247,7 +247,7 @@ app.post('/pull_qrqc_data', (req, res) => {
     var sql = ("SELECT `id`, `alert_type`, DATE_FORMAT(`date`, '%Y-%m-%d') AS `date`, `department`, `location`, `part`, `customer`, `recurrence`, `issue`, `cause`, `active` FROM `post_it` WHERE `id` = {id}; " +
                "SELECT t2.id, t2.post_it_id, t2.term, t2.description, t2.owner, DATE_FORMAT(t2.initial_date, '%Y-%m-%d') AS `initial_date`," +
                "DATE_FORMAT(t2.deadline, '%Y-%m-%d') AS `deadline`, DATE_FORMAT(t2.completed, '%Y-%m-%d') AS `completed`, t2.email_sent, t2.state " +
-               "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id} ORDER BY t2.deadline ASC"
+               "FROM `post_it` as t1 INNER JOIN `post_it_items` as t2 WHERE t1.id = t2.post_it_id AND t1.id = {id} ORDER BY t2.deadline AND t2.id ASC "
                ).formatSQL(req.body);
 
 
@@ -314,7 +314,8 @@ app.post('/create_jt', (req, res) => {
 // Update any changes made to an existing alert
 //************************************************************************
 app.post('/update_post_it', (req, res) => {
-	
+    res.send(true);
+
     var sql_update = (
         "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
         "`alert_type` = {type}, `department` = {department}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
@@ -322,12 +323,12 @@ app.post('/update_post_it', (req, res) => {
 
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
-
-        res.send(JSON.stringify(result));
     });
 });
 
 app.post('/update_post_it_items', (req, res) => {
+    res.send(true);
+
     var sql_update = (
         "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
         "ON DUPLICATE KEY UPDATE `term` = {term}, `description` = {term_descript}, `owner` = {owner}, `initial_date` = {starting}, `deadline` = {ending}, " +
@@ -336,12 +337,11 @@ app.post('/update_post_it_items', (req, res) => {
 
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
-        
-        res.send(JSON.stringify(result));
     });
 });
 
 app.post('/update_jt_post_it', (req, res) => {
+    res.send(true);
     
     var sql_update = (
         "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
@@ -350,8 +350,6 @@ app.post('/update_jt_post_it', (req, res) => {
 
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
-
-        res.send(JSON.stringify(result));
     });
 });
 
@@ -421,24 +419,63 @@ app.post('/get_jt_users', (req, res) => {
 // 2) Create the email transporter to send the email
 //************************************************************************
 app.post('/get_email', (req, res) => {
+    res.send(true);
+
     var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+    var owner = "{owner}".formatSQL(req.body);
+    var subject = "iQRQC Task: {issue}".formatSQL(req.body);
+    var message = ("You have been assigned a task for QRQC:\n\n" +
+                     "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
+                     "\nIssue Description: {issue}" +
+                     "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
-
-        res.send(JSON.stringify(result));
+    
+        SendEmail(owner, subject, result[0].email, message);
     });
 });
 
 app.post('/get_jt_email', (req, res) => {
     var sql = ("SELECT `email` FROM `owner_exec` WHERE `name` = {owner}").formatSQL(req.body);
+    var owner = "{owner}".formatSQL(req.body);
+    var subject = "iQRQC Task: {issue}".formatSQL(req.body);
+    var message = ("You have been assigned a task for QRQC:\n\n" +
+                     "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
+                     "\nIssue Description: {issue}" +
+                     "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
-
-        res.send(JSON.stringify(result));
+    
+        SendEmail(owner, subject, result[0].email, message);
     });
 });
+
+
+function SendEmail(owner, subject, address, message){
+    var recipient = ('%s <%s>', owner, address)
+    //var message = ('{email_text}').format(req.body);
+
+    var msg_body = {
+        from    : 'iQRQC automated email',
+        to      : recipient,
+        subject : subject, 
+        text    : message
+    };
+
+    transporter.sendMail(msg_body, (error, info) => {
+        if (error) {
+            console.log('Error occurred');
+            console.log(error.message);
+            return;
+        }
+        console.log('Message sent successfully!');
+        //console.log('Server responded with "%s"', info.response);
+    });
+
+    //console.log("\n\nsent email");
+}
 
 app.post('/send_email', (req, res) => {
     var recipient = ('{owner} <{email_addr}>').format(req.body);

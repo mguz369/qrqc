@@ -417,7 +417,9 @@ section.log-button {
 
 /*----------------------------------------------------*/
 /*Everything that I'm adding*/
-
+#view_page{
+  /*background-color: #03050f;*/
+}
 /*Alert type formatting*/
 #Safety{
   background-color: #006600;
