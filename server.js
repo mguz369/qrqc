@@ -526,3 +526,22 @@ app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, dir_path + req.path));
     }   
 });
+
+//Views and login
+app.get('/view',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/disabled_view.html')); });
+app.get('/view2',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/disabled_exec.html')); });
+app.get('/view_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
+app.get('/view_exec',   (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_jt.html')); });
+app.get('/login',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
+
+//plant index and login
+app.get('/index',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_plant.html')); });
+app.get('/create',      (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create.html')); });
+
+//Mixing index and create
+app.get('/index_mixing',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_mixing.html')); });
+app.get('/create_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_mixing.html')); });
+
+//Todoroff's island
+app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });
+app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_jt.html')); });
