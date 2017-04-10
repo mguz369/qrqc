@@ -225,6 +225,18 @@ app.post('/show_mixing_alerts', (req, res) => {
     });       
 });
 
+app.post('/show_auto_alerts', (req, res) => {
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Automation' ORDER BY t1.deadline ASC;");
+
+    connectionQRQC.query(select_dates, (err, result) => {
+        if(err) throw err;
+        //console.log(result);
+        res.send(JSON.stringify(result));
+    });       
+});
+
 app.post('/show_jt_alerts', (req, res) => {
     var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
@@ -300,6 +312,17 @@ app.post('/create_mixing', (req, res) => {
     });
 });
 
+app.post('/create_auto', (req, res) => {
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Automation', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+                     ).formatSQL(req.body); 
+   
+    connectionQRQC.query(sql_create, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
 app.post('/create_jt', (req, res) => {
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Jim', '---', '---', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
@@ -354,7 +377,7 @@ app.post('/update_jt_post_it', (req, res) => {
 });
 
 app.post('/get_part_nums', (req, res) => {
-    var sql = ("SELECT `number` FROM `part`");
+    var sql = ("SELECT `number` FROM `part` ORDER BY `number`");
 
     connectionSp.query(sql, (err, result) => {
         if (err) throw err;
@@ -364,7 +387,7 @@ app.post('/get_part_nums', (req, res) => {
 });
 
 app.post('/get_jt_part_nums', (req, res) => {
-    var sql = ("SELECT `number` FROM `part_exec`");
+    var sql = ("SELECT `number` FROM `part_exec` ORDER BY `number`");
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
@@ -477,7 +500,7 @@ function SendEmail(owner, subject, address, message){
     //console.log("\n\nsent email");
 }
 
-app.post('/send_email', (req, res) => {
+/*app.post('/send_email', (req, res) => {
     var recipient = ('{owner} <{email_addr}>').format(req.body);
     var message = ('{email_text}').format(req.body);
 
@@ -499,7 +522,7 @@ app.post('/send_email', (req, res) => {
     });
 
     //console.log("\n\nsent email");
-});
+});*/
 
 
 //************************************************************************
@@ -531,6 +554,7 @@ app.get('/', (req, res) => {
 app.get('/view',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/disabled_view.html')); });
 app.get('/view2',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/disabled_exec.html')); });
 app.get('/view_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
+app.get('/view_auto',   (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_auto.html')); });
 app.get('/view_exec',   (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_jt.html')); });
 app.get('/login',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/login.html')); });
 
@@ -541,6 +565,10 @@ app.get('/create',      (req, res) => { res.sendFile(path.join(__dirname, admin_
 //Mixing index and create
 app.get('/index_mixing',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_mixing.html')); });
 app.get('/create_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_mixing.html')); });
+
+//Automation index and create
+app.get('/index_auto',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_auto.html')); });
+app.get('/create_auto', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_auto.html')); });
 
 //Todoroff's island
 app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });

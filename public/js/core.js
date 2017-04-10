@@ -73,6 +73,8 @@ $(document).ready(function () {
             window.location.href = "/index";
           else if(level == 'Mixing')
             window.location.href = "/index_mixing";
+          else if(level == 'Auto')
+            window.location.href = "/index_auto";
           else if(level == "Jim")
             window.location.href = "/index_exec";
         }
@@ -96,6 +98,8 @@ $(document).ready(function () {
         window.location.href = "/";
       else if(level == "Mixing")
         window.location.href = "/view_mixing"; 
+      else if(level == 'Auto')
+        window.location.href = "/index_auto";
     }, interval_timer);
   }
 
@@ -107,6 +111,8 @@ $(document).ready(function () {
         window.location.href = "/";
     else if(validity == "invalid" && level == "Mixing")
         window.location.href = "/view_mixing";
+      else if(validity == "invalid" && level == "Auto")
+        window.location.href = "/view_auto";
     else if(validity == "invalid" && level == "Jim")
         window.location.href = "/view_exec";       
   }
@@ -127,6 +133,15 @@ $(document).ready(function () {
 
     var url = "view?id=";
     var query_url = "/show_mixing_alerts"
+    Show_Current(query_url, url);
+  });//End view_page
+
+  $('#view_auto_page').exists(function() {
+    Cookies.set('is_valid', 'invalid');
+    Cookies.set('level', 'Auto');
+
+    var url = "view?id=";
+    var query_url = "/show_auto_alerts"
     Show_Current(query_url, url);
   });//End view_page
 
@@ -159,8 +174,7 @@ $(document).ready(function () {
           window.location.href = url + parsed_data[0].insertId;
         }
       });
-    });
-  
+    });  
   });//End index_page
 
   $('#mixing_page').exists(function(){
@@ -180,6 +194,35 @@ $(document).ready(function () {
 
       $.ajax({
         url         : "/create_mixing",
+        type        : "POST",
+        contentType : "application/json",
+        data        : JSON.stringify(payload),
+        processData : false,
+        complete    : function(data){
+          var parsed_data = JSON.parse(data.responseText);
+          window.location.href = url + parsed_data[0].insertId;
+        }
+      });
+    });
+  });
+
+  $('#auto_page').exists(function(){
+    Check_Valid();
+
+    var url = "create_auto?id=";
+    var query_url = "/show_auto_alerts";
+    Show_Current(query_url, url);
+    Start_Timer();
+
+    $('.categories').on('click touchstart', function () {
+      var elem_id = event.target.id;
+      
+      var payload = {
+        category : elem_id
+      };
+
+      $.ajax({
+        url         : "/create_auto",
         type        : "POST",
         contentType : "application/json",
         data        : JSON.stringify(payload),
@@ -222,6 +265,14 @@ $(document).ready(function () {
       else
         return false;
     });
+
+    $('#auto_home').on('click touchstart', function () {
+      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
+      if(option == true)
+        window.location.href = '/index_auto';
+      else
+        return false;
+    });
   });
 
   //************************************************************************
@@ -243,8 +294,14 @@ $(document).ready(function () {
 
   $('#submit_mix').on('click touchstart', function (){
     Submit_Data();
-    window.location.href = '/index';   
-  });//End submit_plant
+    window.location.href = '/index_mixing';   
+  });//End submit_mix
+
+  $('#submit_auto').on('click touchstart', function (){
+    Submit_Data();
+    window.location.href = '/index_auto';   
+  });//End submit_auto
+
 
   $('#view_return').on('click touchstart', function (){
     var level = Cookies.get('level');
@@ -252,7 +309,9 @@ $(document).ready(function () {
     if(level == "Plant")
         window.location.href = "/";
     else if(level == "Mixing")
-        window.location.href = "/view_mixing"; 
+        window.location.href = "/view_mixing";
+    else if(level == "Auto")
+        window.location.href = "/view_auto";
     else if(level == "Jim")
         window.location.href = "/view_exec"; 
   });
