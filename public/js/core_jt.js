@@ -531,7 +531,6 @@ $(document).ready(function () {
   function Format_Email(responsible, region, location, part_num, issue, customer, t_descript, date_ending){
     var payload3 = {
       owner      : responsible,
-      department : dept,
       location   : location,
       part       : part_num,
       issue      : issue,
