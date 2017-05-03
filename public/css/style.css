@@ -741,10 +741,40 @@ section.log-button {
   width: 95%;
   margin-left: 5px;
 }
+
 .date_td{
   border-style: solid;
   border-color: black;
   width: 8%;
+}
+
+.task_complete{
+  background-color: green;
+  color: white;
+  border-color: black;
+}
+
+.task_due{
+  background-color: #006bb3;
+  color: white;
+  border-color: black;
+}
+
+.task_late{
+  background-color: red;
+  color: white;
+  border-color: black;
+}
+
+.task_new{
+  background-color: yellow;
+  color: black;
+  border-color: black;
+}
+
+.task_open{
+  background-color: white;
+  color: black;
 }
 
 .description{

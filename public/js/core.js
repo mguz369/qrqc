@@ -354,7 +354,7 @@ $(document).ready(function () {
       " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
       " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "'>Open</div></td>" +
+      " <td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
       " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
       " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
       " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
@@ -363,6 +363,7 @@ $(document).ready(function () {
     var today = GetToday();
     
     $('#date_start_' + add_row_counter).val(today);
+    $('#date_ending_'+ add_row_counter).val(today);
     Update_Owners(users.length);
     add_row_counter++;  //Increment
   }
@@ -550,9 +551,10 @@ $(document).ready(function () {
               if (email == 1) 
                 $('#email_' + j).prop('checked', true);
               if (state == 'Late'){
-                $('#state_' + j).css('background-color', 'red');
-                $('#state_' + j).css('color', 'white');
-                $('#state_' + j).css('border-color', 'black');
+                $('#state_' + j).removeClass('task_due task_open task_new').addClass('task_late');
+                // $('#state_' + j).css('background-color', 'red');
+                // $('#state_' + j).css('color', 'white');
+                // $('#state_' + j).css('border-color', 'black');
               }
 
               $('#state_' + j).html(state);              
@@ -569,14 +571,16 @@ $(document).ready(function () {
                 $('#term_description_' + j).attr('disabled', 'disabled');
                 $('#responsible_' + j).attr('disabled', 'disabled');
                 $('#date_completed_' + j).attr('disabled', 'disabled');
-                $('#state_' + j).css('background-color', 'green');
-                $('#state_' + j).css('color', 'white');
-                $('#state_' + j).css('border-color', 'black');
+                $('#state_' + j).removeClass('task_late task_open task_due task_new').addClass('task_complete');
+                // $('#state_' + j).css('background-color', 'green');
+                // $('#state_' + j).css('color', 'white');
+                // $('#state_' + j).css('border-color', 'black');
               }
               if(state == "Due"){
-                $('#state_' + j).css('background-color', '#006bb3');
-                $('#state_' + j).css('color', 'white');
-                $('#state_' + j).css('border-color', 'black');
+                $('#state_' + j).removeClass('task_late task_open task_new').addClass('task_due');
+                // $('#state_' + j).css('background-color', '#006bb3');
+                // $('#state_' + j).css('color', 'white');
+                // $('#state_' + j).css('border-color', 'black');
               }
               $('#email_' + j).attr('disabled', 'disabled');
             }          
@@ -749,20 +753,23 @@ $(document).ready(function () {
 
       if(today == elem_data){
         $('#state_' + elem_row).html("Due");
-        $('#state_' + elem_row).css('background-color', '#006bb3');
-        $('#state_' + elem_row).css('color', 'white');
-        $('#state_' + elem_row).css('border-color', 'black'); 
+        $('#state_' + elem_row).removeClass('task_late task_open task_new').addClass('task_due');
+        // $('#state_' + elem_row).css('background-color', '#006bb3');
+        // $('#state_' + elem_row).css('color', 'white');
+        // $('#state_' + elem_row).css('border-color', 'black'); 
       }
       else if(today < elem_data){
         $('#state_' + elem_row).html("Open");
-        $('#state_' + elem_row).css('background-color', 'white');
-        $('#state_' + elem_row).css('color', 'black');
+        $('#state_' + elem_row).removeClass('task_due task_open task_new').addClass('task_open');
+        // $('#state_' + elem_row).css('background-color', 'white');
+        // $('#state_' + elem_row).css('color', 'black');
       }
       else if (today > elem_data){
         $('#state_' + elem_row).html("Late");
-        $('#state_' + elem_row).css('background-color', 'red');
-        $('#state_' + elem_row).css('color', 'white');
-        $('#state_' + elem_row).css('border-color', 'black'); 
+        $('#state_' + elem_row).removeClass('task_due task_open task_new').addClass('task_late');
+        // $('#state_' + elem_row).css('background-color', 'red');
+        // $('#state_' + elem_row).css('color', 'white');
+        // $('#state_' + elem_row).css('border-color', 'black'); 
       }
 
       $('#email_' + elem_row).prop('checked', false);

@@ -18,8 +18,12 @@ var nodemailer  = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var Cookies     = require('js-cookie');
 
+var http = require('http');
+var ejs  = require('ejs');
+
 // Set up express
 var app = express();
+//app.engine('html', ejs.renderFile)
 app.use( bodyParser.json() );
 
 var transporter = nodemailer.createTransport(smtpTransport({
@@ -573,3 +577,35 @@ app.get('/create_auto', (req, res) => { res.sendFile(path.join(__dirname, admin_
 //Todoroff's island
 app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });
 app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_jt.html')); });
+
+
+//Modded Dashboard for TheNine cell display
+app.get('/mod',  (req, res) => { res.sendFile(path.join(__dirname, dir_path + '/dash_cell.html')); });
+app.get('/dashboard',  (req, res) => { res.sendFile(path.join(__dirname, dir_path + '/dash_mod.html')); });
+
+
+/* =======================================================================
+    HUTCHINSON[3.1] - GET CELL STATUS IN
+========================================================================== */
+app.post('/cell_status_in', function (req, res) {
+    var sql = "SELECT * FROM `smartplant`.`cell_status_in` WHERE `cell_id` = {cell_id}".formatSQL(req.body);
+    connection.query(sql, function (err, result) {
+            if (err) throw err;
+            res.send(JSON.stringify(result));
+        }
+    );
+});
+
+
+/* =======================================================================
+    HUTCHINSON[3.5] - GET CELLS
+========================================================================== */
+app.post('/get_cells', function (req, res) {
+    var sql = "SELECT * FROM `cell` ORDER BY `name`;";
+    console.log(sql);
+    connection.query(sql, function (err, result) {
+             if (err) throw err;
+             res.send(JSON.stringify(result));
+         }
+     );
+});
