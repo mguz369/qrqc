@@ -6,7 +6,6 @@
     
     "dependencies": {
         "mysql"            : "x",
-        "domino-nsf"       : "^0.0.3",
         "express"          : "x",
         "express-session"  : "x",
         "path"             : "x",

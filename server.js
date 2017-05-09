@@ -18,7 +18,6 @@ var nodemailer  = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var Cookies     = require('js-cookie');
 
-var http = require('http');
 var ejs  = require('ejs');
 
 // Set up express
@@ -253,6 +252,18 @@ app.post('/show_jt_alerts', (req, res) => {
     });       
 });
 
+app.post('/show_cad_alerts', (req, res) => {
+    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
+        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'CP' ORDER BY t1.deadline ASC;");
+
+    connectionQRQC.query(select_dates, (err, result) => {
+        if(err) throw err;
+        //console.log(result);
+        res.send(JSON.stringify(result));
+    });       
+});
+
 
 //************************************************************************
 // Pull data from the DB
@@ -337,6 +348,18 @@ app.post('/create_jt', (req, res) => {
         res.send(JSON.stringify(result));
     });
 });
+
+app.post('/create_cad', (req, res) => {
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'CP', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+                     ).formatSQL(req.body); 
+   
+    connectionQRQC.query(sql_create, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
 //************************************************************************
 // Update any changes made to an existing alert
 //************************************************************************
@@ -380,6 +403,10 @@ app.post('/update_jt_post_it', (req, res) => {
     });
 });
 
+
+//************************************************************************
+// Grab parts numbers
+//************************************************************************
 app.post('/get_part_nums', (req, res) => {
     var sql = ("SELECT `number` FROM `part` ORDER BY `number`");
 
@@ -400,6 +427,9 @@ app.post('/get_jt_part_nums', (req, res) => {
     });
 });
 
+//************************************************************************
+// Grab customers
+//************************************************************************
 app.post('/get_customers', (req, res) =>{
     var sql = "SELECT `name` FROM `customers_plant`";
 
@@ -420,6 +450,10 @@ app.post('/get_jt_customers', (req, res) =>{
     });
 });
 
+
+//************************************************************************
+// Grab users
+//************************************************************************
 app.post('/get_users', (req, res) => {
     var sql = ("SELECT `name` FROM `owner` WHERE `department` = {department}").formatSQL(req.body);
 
@@ -440,7 +474,15 @@ app.post('/get_jt_users', (req, res) => {
     });
 });
 
+app.post('/get_cad_users', (req, res) => {
+    var sql = ("SELECT `name` FROM `owner_cad`").formatSQL(req.body);
 
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
 //************************************************************************
 // 1) Get the required email address based on the user
 // 2) Create the email transporter to send the email
@@ -448,7 +490,7 @@ app.post('/get_jt_users', (req, res) => {
 app.post('/get_email', (req, res) => {
     res.send(true);
 
-    var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+    var sql = ("SELECT `email` FROM `owner_cad` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
     var owner = "{owner}".formatSQL(req.body);
     var subject = "iQRQC Task: {issue}".formatSQL(req.body);
     var message = ("You have been assigned a task for QRQC:\n\n" +
@@ -456,9 +498,10 @@ app.post('/get_email', (req, res) => {
                      "\nIssue Description: {issue}" +
                      "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
 
+    console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
-    
+        
         SendEmail(owner, subject, result[0].email, message);
     });
 });
@@ -547,14 +590,14 @@ app.get('/', (req, res) => {
     if(req.path == '/'){
         //console.log('Cookies', req.cookies);
         res.locals.query = req.query;
-        res.sendFile(path.join(__dirname, dir_path + 'view_plant.html' /*'angular.html'*/));
+        res.sendFile(path.join(__dirname, dir_path + 'view_plant.html'));
     }
     else{
         res.sendFile(path.join(__dirname, dir_path + req.path));
     }   
 });
 
-//Views and login
+//Views and login 
 app.get('/view',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/disabled_view.html')); });
 app.get('/view2',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/disabled_exec.html')); });
 app.get('/view_mixing', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_mixing.html')); });
@@ -578,34 +621,8 @@ app.get('/create_auto', (req, res) => { res.sendFile(path.join(__dirname, admin_
 app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_jt.html')); });
 app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_jt.html')); });
 
-
-//Modded Dashboard for TheNine cell display
-app.get('/mod',  (req, res) => { res.sendFile(path.join(__dirname, dir_path + '/dash_cell.html')); });
-app.get('/dashboard',  (req, res) => { res.sendFile(path.join(__dirname, dir_path + '/dash_mod.html')); });
-
-
-/* =======================================================================
-    HUTCHINSON[3.1] - GET CELL STATUS IN
-========================================================================== */
-app.post('/cell_status_in', function (req, res) {
-    var sql = "SELECT * FROM `smartplant`.`cell_status_in` WHERE `cell_id` = {cell_id}".formatSQL(req.body);
-    connection.query(sql, function (err, result) {
-            if (err) throw err;
-            res.send(JSON.stringify(result));
-        }
-    );
-});
-
-
-/* =======================================================================
-    HUTCHINSON[3.5] - GET CELLS
-========================================================================== */
-app.post('/get_cells', function (req, res) {
-    var sql = "SELECT * FROM `cell` ORDER BY `name`;";
-    console.log(sql);
-    connection.query(sql, function (err, result) {
-             if (err) throw err;
-             res.send(JSON.stringify(result));
-         }
-     );
-});
+ 
+//Cadillac's island
+app.get('/vcad',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/view_cad.html')); });
+app.get('/icad',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/index_cad.html')); });
+app.get('/ccad',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + '/create_cad.html')); });

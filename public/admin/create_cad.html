@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>e-Alert</title>
+    
+    <!-- Load CSS -->  
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/clock.css">
+
+    <!-- Load JavaScript files -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src='js/core.js'></script>
+    <script src='js/js.cookie.js'></script>
+  </head>
+
+
+  <body id="create_page">
+    <section class="user-logged-in">
+          <div id="clock" class="dark display">
+          <div class="weekdays">day</div>
+          <div class="month_date"></div>
+          <div class="year"></div>
+          <div class="ampm"></div>
+          <div class="digits"></div>
+        </div>
+    </section>
+    <section class="page-title">
+      <h2 >iQRQC - Cadillac - e-Lert</h2>
+    </section>
+    <section class="log-button ng-scope">
+      <img src="../images/logo.jpg" alt="" height="50px" width="250px">
+    </section>
+    
+
+    <form id="gen_info">
+      <table id="header_table">
+        <tr>
+            <td id="info_header"><h3 class="mycontainer">Information</h3></td>
+            <td id="info_alert">
+              <span >Alert ID:</span>
+              <span type="text" id="id_number"></span> 
+            </td>
+        </tr>      
+      </table>
+
+      <table class="inline_table" id="info_table">
+        <tr >
+            <td class="left_column">
+              iNotes Category:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="alert_type" onchange="this.className=this.options[this.selectedIndex].className">
+                <option value="Safety"    class="Safety">Safety/Environment</option>
+                <option value="Quality"   class="Quality">Quality</option>
+                <option value="Activity"  class="Activity">Activity (Sales)</option>
+                <option value="Inventory" class="Inventory">Inventory</option>
+                <option value="Scrap"     class="Scrap">Scrap</option>
+                <option value="Hr"        class="Hr">HR/Labor</option>
+                <option value="Delivery"  class="Delivery">Delivery</option>
+                <option value="Operation" class="Operation">Operations Efficiency</option>
+                <option value="Supply"    class="Supply">Supply Chain</option>
+                <option value="Misc"      class="Misc">Miscellaneaous</option>
+              </select>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >   
+            <td class="left_column">
+              Date posted:
+            </td>
+            <td class="right_column">
+              <input class="box_length" id="date_initial" type="date"></input>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              iQRQC Level:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="department">
+                <option value="CP">Plant</option>
+                <option value="CM">Mixing</option>
+                <option value="CC">Cementing</option>
+                <option value="CA">Automation</option> 
+                <!--<option value="Office"    >Office</option>
+                <option value="Ship_Receive">Shipping/Receiving</option>-->
+              </select>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Location Details:
+            </td>
+            <td class="right_column">
+              <input class="box_length" id="location" type="text"></input>
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Part Number:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="part_num">
+                
+              </select>              
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr >
+            <td class="left_column">
+              Customer:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="customer">
+                
+              </select>        
+            </td>
+        </tr>
+        <!-- ############################################################################ -->
+        <tr>
+            <td class="left_column">
+              Repeat:
+            </td>
+            <td class="right_column">
+              <select class="box_length" id="recur">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </td>
+        </tr>          
+      </table>
+
+      <table class="inline_table" id="issue_table">
+        <tr>
+            <td class="title_descript">
+              Issue Description:
+            </td>
+        </tr>
+        <tr>
+            <td class="text_area">
+              <textarea class="description" id="issue_desc" type="text"></textarea>
+            </td>
+        </tr>
+      </table>
+
+      <table class="inline_table" id="cause_table">
+        <tr>
+            <td class="title_descript">
+              Cause:
+            </td>
+        </tr>
+        <tr>
+            <td class="text_area">
+              <textarea class="description" id="cause_desc" type="text"></textarea>
+            </td>
+        </tr>
+      </table>
+    </form>
+
+
+    <form id="info_rows">
+      <div class="mycontainer">
+        <h3 class="h_format">Action Plan</h3>
+      </div>
+
+      <table id="action_table">
+          <tr id="action_header">
+              <td class="shorten_td"    id="action_type">Type </td>
+              <td class="action_column" id="action_desc">Description </td>
+              <td class="action_column" id="action_owner">Owner </td>
+              <td class="date_td"       id="action_start">Start </td>
+              <td class="date_td"       id="action_deadline">Deadline </td>
+              <td class="date_td"       id="action_complete">Completed </td>
+              <td class="shorten_td"    id="action_state">State </td>
+              <td class="shorten_td"    id="action_email">Email Sent </td>
+              <td class="shorten_td"> Delete </td>
+          </tr>
+        </table>      
+    </form>
+    
+
+    <div class="mycontainer">
+      <table class="page-footer">
+        <tr>
+          <td> <button class="btn btn-white table_button" id="add_row" type="button">Add Action</button></td>
+          <td> <button class="btn btn-white table_button" id="submit_cad">Submit</button></td>
+          <td> <button class="btn btn-white table_button" id="cad_home">Return to Main Page</button></td>
+        </tr>
+      </table>
+    </div>
+
+    <!--<script>
+      var dropdown = document.querySelector('select');
+      dropdown.className = dropdown.options[dropdown.selectedIndex].className;
+    </script>-->
+
+    <script type="text/javascript" src="../js/clock.js"></script>
+    <script type="text/javascript" src="../js/moment.js"></script>
+  </body>
+</html>
