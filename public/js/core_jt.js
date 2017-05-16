@@ -294,7 +294,7 @@ $(document).ready(function () {
     $('#id_number').html($.urlParam('id'));
   }//End Load_Create()
   
-  function Show_Current(query_url, url){
+  function Show_JT_Current(query_url, url){
     $.ajax({
       url         : query_url,
       type        : "POST",

@@ -490,7 +490,7 @@ app.post('/get_cad_users', (req, res) => {
 app.post('/get_email', (req, res) => {
     res.send(true);
 
-    var sql = ("SELECT `email` FROM `owner_cad` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+    var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
     var owner = "{owner}".formatSQL(req.body);
     var subject = "iQRQC Task: {issue}".formatSQL(req.body);
     var message = ("You have been assigned a task for QRQC:\n\n" +
@@ -505,6 +505,25 @@ app.post('/get_email', (req, res) => {
         SendEmail(owner, subject, result[0].email, message);
     });
 });
+
+app.post('/get_cad_email', (req,res) => {
+    res.send(true);
+
+    var sql = ("SELECT `email` FROM `owner_cad` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+    var owner = "{owner}".formatSQL(req.body);
+    var subject = "iQRQC Task: {issue}".formatSQL(req.body);
+    var message = ("You have been assigned a task for QRQC:\n\n" +
+                     "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
+                     "\nIssue Description: {issue}" +
+                     "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
+
+    console.log(sql);
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+        
+        SendEmail(owner, subject, result[0].email, message);
+    });
+})
 
 app.post('/get_jt_email', (req, res) => {
     var sql = ("SELECT `email` FROM `owner_exec` WHERE `name` = {owner}").formatSQL(req.body);
