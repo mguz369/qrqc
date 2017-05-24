@@ -68,7 +68,7 @@ $(document).ready(function () {
       complete    : function(data){
         const parsed_data = JSON.parse(data.responseText);
 
-        if(parsed_data == "1"){
+        if(parsed_data != "0"){
           Cookies.set('is_valid', 'valid');
           if(level == 'Plant')
             window.location.href = "/index";
@@ -411,27 +411,35 @@ $(document).ready(function () {
   // to the server as a JSON string
   //************************************************************************
   $('#submit_plant').on('click touchstart', function (){
+    //var go = 
     Submit_Data();
-    window.location.href = '/index'; 
+    //console.log(go)
+
+    //if(go == 1)
+      window.location.href = '/index';
   });//End submit_plant
 
   $('#submit_mix').on('click touchstart', function (){
-    Submit_Data();
-    window.location.href = '/index_mixing';   
+    var go = Submit_Data();
+    if(go == 1)
+      window.location.href = '/index_mixing';  
   });//End submit_mix
 
   $('#submit_auto').on('click touchstart', function (){
-    Submit_Data();
-    window.location.href = '/index_auto';   
+    var go = Submit_Data();
+    if(go == 1)
+      window.location.href = '/index_auto';  
   });//End submit_auto
 
   $('#submit_jt').on('click touchstart', function (){
     Submit_JT_Data();
+    window.location.href = '/index_jt';
   });//End subit_jt
 
   $('#submit_cad').on('click touchstart', function (){
-    Submit_Data();
-    window.location.href = '/icad';   
+    var go = Submit_Data();
+    if(go == 1)
+      window.location.href = '/icad';  
   });//End submit_cad
 
   $('#view_return').on('click touchstart', function (){
@@ -617,11 +625,14 @@ function Add_New_JT_Alert(){
   add_row_counter++;  //Increment
 }
 
+
 function Load_Create(disabled){
   //Press_Enter();
   console.log("Load_Create");
   var url = "";
   var level = Cookies.get('level');
+  console.log("Level: ", level);
+
   var dept = $('#department').val();
   var payload = { department : dept };
 
@@ -1028,7 +1039,7 @@ function Submit_Data() {
   cause       = $('#cause_desc').val();
   post_id     = $('#id_number').text();
   active      = 1;
-  console.log(issue.length);
+
   if(issue.length == 0 || location.length == 0 || cause.length == 0){
     alert("Please fill in all Information fields");
     return false;
@@ -1089,10 +1100,13 @@ function Submit_Data() {
       state = "Closed";
     
     //Make sure that important fields are filled in
-    if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
+    if(t_length == 'Empty' || date_start == "" || date_ending == ""){
       alert("Please make sure all fields are filled in for action " + (i + 1));
-      return false;
+      //return 0;
     }
+    //else{
+      //return 1;
+    //}
     var today = GetToday();
     
     if(date_ending == today && date_completed == null)

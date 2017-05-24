@@ -189,13 +189,16 @@ app.post('/login_user', (req, res) => {
     var password = "{pass}".format(req.body);
 
     password = md5(password);
-    var validate_user = ("SELECT * FROM `executive_login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
+    var validate_user = ("SELECT `Level` FROM `executive_login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
 
     connectionSp.query(validate_user, (err, result) => {
         if (err) console.log(err);
 
-        if(result.length > 0)
-            res.send(JSON.stringify(1));
+        
+        console.log(result[0].Level)
+
+        if(result.length > 0 || result[0].Level != null)
+            res.send(JSON.stringify(result[0].Level));
         else
             res.send(JSON.stringify(0));
     });
@@ -306,7 +309,7 @@ app.post('/pull_jt_data', (req, res) => {
 //************************************************************************
 app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Plant', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) VALUES ({category}, CURRENT_DATE, 'Plant', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
 
     connectionQRQC.query(sql_create, (err, result) => {
