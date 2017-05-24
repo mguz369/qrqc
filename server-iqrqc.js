@@ -287,7 +287,8 @@ app.post('/pull_qrqc_data', (req, res) => {
         //console.log(result);
         res.send(JSON.stringify(result));
     });
-});    
+});
+
 app.post('/pull_jt_data', (req, res) => {
     var sql = ("SELECT `id`, `alert_type`, DATE_FORMAT(`date`, '%Y-%m-%d') AS `date`, `region`, `location`, `part`, `customer`, `recurrence`, `issue`, `cause`, `active` FROM `post_it` WHERE `id` = {id}; " +
                "SELECT t2.id, t2.post_it_id, t2.term, t2.description, t2.owner, DATE_FORMAT(t2.initial_date, '%Y-%m-%d') AS `initial_date`," +
@@ -376,12 +377,14 @@ app.post('/update_post_it', (req, res) => {
 
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
+
+        console.log("update_post_it:  ", result);
     });
 });
 
 app.post('/update_post_it_items', (req, res) => {
     res.send(true);
-
+    
     var sql_update = (
         "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
         "ON DUPLICATE KEY UPDATE `term` = {term}, `description` = {term_descript}, `owner` = {owner}, `initial_date` = {starting}, `deadline` = {ending}, " +
@@ -390,6 +393,8 @@ app.post('/update_post_it_items', (req, res) => {
 
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
+
+        console.log("update_post_it_items:  ", result);
     });
 });
 

@@ -6,26 +6,26 @@ $.fn.exists = function (callback) {
 String.prototype.format = function() {
   /*   var str = 'pass arg0 = {0} {1} {2} {foo}'.formatSQL('arg0', 1, 2, {foo:'foo'})  */
 
-    var args = arguments;         //arguemens is a keyword
-    this.unkeyed_index = 0;
-    return this.replace(/\{(\w*)\}/g, function(match, key) {
-        if (key === '') {
-            key = this.unkeyed_index;
-            this.unkeyed_index++
-        }
-        if (key == +key) {
-            return args[key] !== 'undefined'
-                ? args[key] 
-                : match;
-        } else {
-            for (var i = 0; i < args.length; i++) {
-                if (typeof args[i] === 'object' && typeof args[i][key] !== 'undefined') {
-                    return args[i][key] ;
-                }
-            }
-            return match;
-        }
-    }.bind(this));
+  var args = arguments;         //arguemens is a keyword
+  this.unkeyed_index = 0;
+  return this.replace(/\{(\w*)\}/g, function(match, key) {
+      if (key === '') {
+          key = this.unkeyed_index;
+          this.unkeyed_index++
+      }
+      if (key == +key) {
+          return args[key] !== 'undefined'
+              ? args[key] 
+              : match;
+      } else {
+          for (var i = 0; i < args.length; i++) {
+              if (typeof args[i] === 'object' && typeof args[i][key] !== 'undefined') {
+                  return args[i][key] ;
+              }
+          }
+          return match;
+      }
+  }.bind(this));
 }
 
 $.urlParam = function(name){
@@ -42,7 +42,7 @@ $.urlParam = function(name){
 // jQuery that will handle the requests and responses between
 // the server and the webpages
 //************************************************************************
-var add_row_counter = '0';
+var add_row_counter = '-1';
 var interval_timer = 3600000;   //1 hour
 var users, username, password;
 
@@ -57,8 +57,7 @@ $(document).ready(function () {
       user : username,
       pass : password
     };
-    
-    
+
     $.ajax({
       url         : "/login_user",
       method      : "POST",
@@ -411,34 +410,35 @@ $(document).ready(function () {
   // to the server as a JSON string
   //************************************************************************
   $('#submit_plant').on('click touchstart', function (){
-    //var go = 
-    Submit_Data();
-    //console.log(go)
+    var go = Submit_Data();
 
-    //if(go == 1)
+    if(go != 0)
       window.location.href = '/index';
   });//End submit_plant
 
   $('#submit_mix').on('click touchstart', function (){
     var go = Submit_Data();
-    if(go == 1)
+    if(go != 0)
       window.location.href = '/index_mixing';  
   });//End submit_mix
 
   $('#submit_auto').on('click touchstart', function (){
     var go = Submit_Data();
-    if(go == 1)
+    if(go != 0)
       window.location.href = '/index_auto';  
   });//End submit_auto
 
   $('#submit_jt').on('click touchstart', function (){
-    Submit_JT_Data();
-    window.location.href = '/index_jt';
+    var go = Submit_JT_Data();
+
+    if(go != 0)
+      window.location.href = '/index_exec';
   });//End subit_jt
 
   $('#submit_cad').on('click touchstart', function (){
     var go = Submit_Data();
-    if(go == 1)
+    
+    if(go != 0)
       window.location.href = '/icad';  
   });//End submit_cad
 
@@ -481,7 +481,7 @@ $(document).ready(function () {
     var elem_id = event.target.id;
     var elem_data = $("#" + elem_id).val();
     var column_name = $("#" + elem_id).attr("name");
-    console.log(column_name);
+    console.log("Column id: ", column_name);
 
     if(column_name == 'deadline'){
       var today = GetToday();
@@ -524,6 +524,8 @@ $(document).ready(function () {
 // Add an addition info row for an alert.
 //************************************************************************
 function Add_Alert(disabled){
+  add_row_counter++;  //Increment
+  
   $("#action_table").append(
     " <tr class='info_rows'>" +
     " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
@@ -543,10 +545,10 @@ function Add_Alert(disabled){
   );
   
   Update_Owners(users.length);
-  add_row_counter++;  //Increment
 }// End Add_alert()
 
 function Add_New_Alert(){
+  add_row_counter++;  //Increment
   $("#action_table").append(
     " <tr class='info_rows "+ add_row_counter + "'>" +
     " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
@@ -570,13 +572,14 @@ function Add_New_Alert(){
   $('#date_start_' + add_row_counter).val(today);
   $('#date_ending_'+ add_row_counter).val(today);
   Update_Owners(users.length);
-  add_row_counter++;  //Increment
 }
 
 //************************************************************************
 // Add an addition info row for an alert.
 //************************************************************************
 function Add_JT_Alert(disabled){
+    add_row_counter++;  //Increment
+    
     $("#action_table").append(
       " <tr class='info_rows'>" +
       " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
@@ -596,10 +599,11 @@ function Add_JT_Alert(disabled){
     );
     
     Update_Owners(users.length);
-    add_row_counter++;  //Increment
 }// End Add_alert()
 
 function Add_New_JT_Alert(){
+  add_row_counter++;  //Increment
+
   $("#action_table").append(
     " <tr class='info_rows "+ add_row_counter + "'>" +
     " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
@@ -622,13 +626,10 @@ function Add_New_JT_Alert(){
   $('#date_start_' + add_row_counter).val(today);
   $('#date_ending_'+ add_row_counter).val(today);
   Update_Owners(users.length);
-  add_row_counter++;  //Increment
 }
-
 
 function Load_Create(disabled){
   //Press_Enter();
-  console.log("Load_Create");
   var url = "";
   var level = Cookies.get('level');
   console.log("Level: ", level);
@@ -1027,23 +1028,29 @@ function Submit_Data() {
   var post_id;    
 
   //Information write to DB
-  var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause, active;
-  a_type      = $('#alert_type').val();
-  date_posted = $('#date_initial').val();
-  dept        = $('#department').val();
-  location    = $('#location').val();
-  part_num    = $('#part_num').val();
-  cust        = $('#customer').val();
-  repeat      = $('#recur').val();
-  issue       = $('#issue_desc').val();
-  cause       = $('#cause_desc').val();
-  post_id     = $('#id_number').text();
-  active      = 1;
+  var a_type      = $('#alert_type').val(),
+      date_posted = $('#date_initial').val(),
+      dept        = $('#department').val(),
+      location    = $('#location').val(),
+      part_num    = $('#part_num').val(),
+      cust        = $('#customer').val(),
+      repeat      = $('#recur').val(),
+      issue       = $('#issue_desc').val(),
+      cause       = $('#cause_desc').val(),
+      post_id     = $('#id_number').text(),
+      active      = 1;
 
   if(issue.length == 0 || location.length == 0 || cause.length == 0){
     alert("Please fill in all Information fields");
-    return false;
-  } 
+    console.log("Information failed");
+    return 0;      
+  }
+  else{
+    if(add_row_counter < 0){
+      alert("At least one action needs to be created");
+      return 0;
+    }
+  }
 
   var payload = {
     type        : a_type,
@@ -1069,19 +1076,18 @@ function Submit_Data() {
   });
 
   //Action Plan row(s) write to DB
-  var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, item_id;
-  for(var i = 0; i < add_row_counter; i++){
-    t_length        = $('#term_length_' + i).val();        
-    t_descript      = $('#term_description_' + i).val();
-    responsible     = $('#responsible_' + i).val();
-    date_start      = $('#date_start_' + i).val();
-    date_ending     = $('#date_ending_' + i).val();
-    date_completed  = $('#date_completed_' + i).val();
-    item_id         = $('#item_id_' + i).val();
-    state           = $('#state_' + i).html();
-    email           = 1;
-    active          = 1;
-    item_id         = $('#item_id_' + i).val();
+  for(var i = 0; i < (add_row_counter + 1); i++){
+    var t_length        = $('#term_length_' + i).val(),
+        t_descript      = $('#term_description_' + i).val(),
+        responsible     = $('#responsible_' + i).val(),
+        date_start      = $('#date_start_' + i).val(),
+        date_ending     = $('#date_ending_' + i).val(),
+        date_completed  = $('#date_completed_' + i).val(),
+        item_id         = $('#item_id_' + i).val(),
+        state           = $('#state_' + i).html(),
+        email           = 1,
+        active          = 1,
+        item_id         = $('#item_id_' + i).val();
       
 
     //*****************************************************
@@ -1100,39 +1106,41 @@ function Submit_Data() {
       state = "Closed";
     
     //Make sure that important fields are filled in
-    if(t_length == 'Empty' || date_start == "" || date_ending == ""){
-      alert("Please make sure all fields are filled in for action " + (i + 1));
-      //return 0;
+    if(t_length == 'Empty' || t_descript.length == 0 || date_ending == ""){
+      alert("Please make sure 'Type' 'Description' and 'Deadline'are filled in for action " + (i + 1));
+      console.log("Action failed");
+      return 0;
     }
-    //else{
-      //return 1;
-    //}
-    var today = GetToday();
+    else{
+      console.log("All action fields filled in");
+
+      var today = GetToday();
     
-    if(date_ending == today && date_completed == null)
-      state = "Due";      
+      if(date_ending == today && date_completed == null)
+        state = "Due";      
 
-    var payload2 = {
-      item_id       : item_id,
-      post_id       : post_id,
-      term          : t_length,
-      term_descript : t_descript,
-      owner         : responsible,
-      starting      : date_start,
-      ending        : date_ending,
-      completed     : date_completed,
-      emailed       : email,
-      state         : state,
-      is_active     : active,
-    };
+      var payload2 = {
+        item_id       : item_id,
+        post_id       : post_id,
+        term          : t_length,
+        term_descript : t_descript,
+        owner         : responsible,
+        starting      : date_start,
+        ending        : date_ending,
+        completed     : date_completed,
+        emailed       : email,
+        state         : state,
+        is_active     : active,
+      };
 
-    $.ajax({
-      url         : "/update_post_it_items",
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      data        : JSON.stringify(payload2),
-    });
+      $.ajax({
+        url         : "/update_post_it_items",
+        type        : "POST",
+        contentType : "application/json",
+        processData : false,
+        data        : JSON.stringify(payload2),
+      });
+    }
   }
 }// End Submit_Data()
 
@@ -1177,7 +1185,7 @@ function Submit_JT_Data() {
 
   //Action Plan row(s) write to DB
   var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, item_id;
-  for(var i = 0; i < add_row_counter; i++){
+  for(var i = 0; i < add_row_counter + 1; i++){
     t_length        = $('#term_length_' + i).val();        
     t_descript      = $('#term_description_' + i).val();
     responsible     = $('#responsible_' + i).val();
