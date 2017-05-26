@@ -238,6 +238,7 @@ $(document).ready(function () {
   $('#auto_page').exists(function(){
     Check_Valid();
 
+
     var url = "create_auto?id=";
     var query_url = "/show_auto_alerts";
     Show_Current(query_url, url);
@@ -410,33 +411,38 @@ $(document).ready(function () {
   // to the server as a JSON string
   //************************************************************************
   $('#submit_plant').on('click touchstart', function (){
-    var go = Submit_Data();
+    var token = "plantlevel";
+    var go = Submit_Data(token);
 
     if(go != 0)
       window.location.href = '/index';
   });//End submit_plant
 
   $('#submit_mix').on('click touchstart', function (){
-    var go = Submit_Data();
+    var token = "mixlevel";
+    var go = Submit_Data(token);
     if(go != 0)
       window.location.href = '/index_mixing';  
   });//End submit_mix
 
   $('#submit_auto').on('click touchstart', function (){
-    var go = Submit_Data();
+    var token = "autolevel";
+    var go = Submit_Data(token);
     if(go != 0)
       window.location.href = '/index_auto';  
   });//End submit_auto
 
   $('#submit_jt').on('click touchstart', function (){
-    var go = Submit_JT_Data();
+    var token = "jtlevel";
+    var go = Submit_JT_Data(token);
 
     if(go != 0)
       window.location.href = '/index_exec';
   });//End subit_jt
 
   $('#submit_cad').on('click touchstart', function (){
-    var go = Submit_Data();
+    var token = "cadlevel";
+    var go = Submit_Data(token);
     
     if(go != 0)
       window.location.href = '/icad';  
@@ -802,6 +808,13 @@ function Repopulate_Owners(length){
 
 function Show_Current(query_url, url){
   $.ajax({
+    url         : '/refresh_tokens',
+    type        : "POST",
+    contentType : "application/json",
+    processData : false,
+  });
+
+  $.ajax({
     url         : query_url,
     type        : "POST",
     contentType : "application/json",
@@ -1024,7 +1037,7 @@ function Pull_JT_Data(id, disabled){
     });
 }// End Pull_JT_Data()
 
-function Submit_Data() {
+function Submit_Data(token) {
   var post_id;    
 
   //Information write to DB
@@ -1065,6 +1078,7 @@ function Submit_Data() {
     c_desc      : cause,      
     post_id     : post_id,
     is_active   : active,
+    token       : token
   };
 
   $.ajax({
@@ -1131,6 +1145,7 @@ function Submit_Data() {
         emailed       : email,
         state         : state,
         is_active     : active,
+        token         : token
       };
 
       $.ajax({
@@ -1142,6 +1157,8 @@ function Submit_Data() {
       });
     }
   }
+
+  token = token + "1";
 }// End Submit_Data()
 
 function Submit_JT_Data() {
@@ -1337,22 +1354,22 @@ function loadAlerts(data, today, url){
       while ($(".row").length < rg[day].length){
         $('#issues_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
           + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
-         $('#_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
+        $('#_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
           + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");
         rows++;
       }
       
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
       if(rg[day][j].deadline < today){
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red; color: white;'>{short}</td>" + 
+        e.html(("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red; color: white;'>{short}</td>" + 
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else if(rg[day][j].deadline == today){
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey; color: white;'>{short}</td>" + 
+        e.html(("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey; color: white;'>{short}</td>" + 
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
-        e.html( ("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
+        e.html(("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
                 "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
         

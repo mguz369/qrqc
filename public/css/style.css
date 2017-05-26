@@ -484,7 +484,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Supply{
   background-color: #000080;
@@ -493,7 +493,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Activity{
   background-color: #e6e600;
@@ -501,7 +501,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Inventory{
   background-color: #660066;
@@ -510,7 +510,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Scrap{
   background-color: #ff8000;
@@ -518,7 +518,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Hr{
   background-color: #00cc44;
@@ -526,7 +526,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Delivery{
   background-color: #3399ff;
@@ -534,7 +534,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Operation{
   background-color: #47476b;
@@ -543,7 +543,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Quality{
   background-color: #b33c00;
@@ -552,7 +552,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Misc{
   background-color: #999966;
@@ -560,7 +560,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Product{
   background-color: #669900;
@@ -568,7 +568,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
   color: white;
 }
 .Purchasing{
@@ -578,7 +578,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .It{
   background-color: #400080;
@@ -587,7 +587,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 .Finance{
   background-color: #c3c388;
@@ -595,7 +595,7 @@ section.log-button {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  padding: 0.6%;
+  padding: 0.8%;
 }
 
 .hidden_element{
@@ -725,6 +725,10 @@ section.log-button {
 
 #action_desc{
   width: 40%;
+}
+
+#token{
+  visibility: hidden;
 }
 
 .action_column{
