@@ -387,9 +387,35 @@ app.post('/update_post_it', (req, res) => {
     res.send(true);
 });
 
+app.post('/update_jt_post_it', (req, res) => {
+    res.send(true);
+    
+    var sql_update = (
+        "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
+        "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
+        "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
 
-var canWrite = false; //an action has already been written
-var tokens = ["plantlevel", "mixLevel", "autolevel", "jtlevel", "cadlevel"];
+    connectionQRQC.query(sql_update, (err, result) => {
+        if (err) throw err;
+    });
+});
+
+app.post('/cad_post_it', (req, res) => {
+    var sql_update = (
+        "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
+        "`alert_type` = {type}, `department` = {department}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
+        "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
+
+    connectionQRQC.query(sql_update, (err, result) => {
+        if (err) throw err;
+
+        console.log("update_post_it:  ", result);
+    });
+
+    res.send(true);
+});
+
+
 
 app.post('/update_post_it_items', (req, res) => {
     /*var tempToken = "{token}".format(req.body);
@@ -420,19 +446,34 @@ app.post('/update_post_it_items', (req, res) => {
     res.send(true);
 });
 
-app.post('/update_jt_post_it', (req, res) => {
-    res.send(true);
+app.post('/cad_post_it_items', (req, res) => {
+    /*var tempToken = "{token}".format(req.body);
+
+    for(var i = 0; i < tokens.length; i++){
+        if(tempToken == tokens[i]){
+            token[i] = ""; //token is consumed
+            canWrite = true;
+        }
+    }*/
     
     var sql_update = (
-        "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
-        "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
-        "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
+        "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
+        "ON DUPLICATE KEY UPDATE `term` = {term}, `description` = {term_descript}, `owner` = {owner}, `initial_date` = {starting}, `deadline` = {ending}, " +
+        " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
+        ).formatSQL(req.body);
+    
+    //if(canWrite == true){
+        connectionQRQC.query(sql_update, (err, result) => {
+            if (err) throw err;
+            
+            //Write was a success, switch canWrite to false
+            //carWrite = false;
+            console.log("update_post_it_items:  ", result);
+        });
+    //}
 
-    connectionQRQC.query(sql_update, (err, result) => {
-        if (err) throw err;
-    });
+    res.send(true);
 });
-
 
 //************************************************************************
 // Grab parts numbers

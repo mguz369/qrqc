@@ -1,6 +1,6 @@
 $.fn.exists = function (callback) {
-    if (this.length !== 0)
-      callback.call(this);
+  if (this.length !== 0)
+    callback.call(this);
 }
 
 String.prototype.format = function() {
@@ -29,13 +29,13 @@ String.prototype.format = function() {
 }
 
 $.urlParam = function(name){
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results==null){
-       return null;
-    }
-    else{
-       return results[1] || 0;
-    }
+  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  if (results==null){
+     return null;
+  }
+  else{
+     return results[1] || 0;
+  }
 }
 
 //************************************************************************
@@ -412,7 +412,7 @@ $(document).ready(function () {
   //************************************************************************
   $('#submit_plant').on('click touchstart', function (){
     var token = "plantlevel";
-    var go = Submit_Data(token);
+    var go = Submit_Data();
 
     if(go != 0)
       window.location.href = '/index';
@@ -420,21 +420,21 @@ $(document).ready(function () {
 
   $('#submit_mix').on('click touchstart', function (){
     var token = "mixlevel";
-    var go = Submit_Data(token);
+    var go = Submit_Data();
     if(go != 0)
-      window.location.href = '/index_mixing';  
+      window.location.href = '/index_mixing';
   });//End submit_mix
 
   $('#submit_auto').on('click touchstart', function (){
     var token = "autolevel";
-    var go = Submit_Data(token);
+    var go = Submit_Data();
     if(go != 0)
-      window.location.href = '/index_auto';  
+      window.location.href = '/index_auto';
   });//End submit_auto
 
   $('#submit_jt').on('click touchstart', function (){
     var token = "jtlevel";
-    var go = Submit_JT_Data(token);
+    var go = Submit_JT_Data();
 
     if(go != 0)
       window.location.href = '/index_exec';
@@ -442,10 +442,10 @@ $(document).ready(function () {
 
   $('#submit_cad').on('click touchstart', function (){
     var token = "cadlevel";
-    var go = Submit_Data(token);
+    var go = Submit_Data();
     
     if(go != 0)
-      window.location.href = '/icad';  
+      window.location.href = '/icad';
   });//End submit_cad
 
   $('#view_return').on('click touchstart', function (){
@@ -584,27 +584,27 @@ function Add_New_Alert(){
 // Add an addition info row for an alert.
 //************************************************************************
 function Add_JT_Alert(disabled){
-    add_row_counter++;  //Increment
-    
-    $("#action_table").append(
-      " <tr class='info_rows'>" +
-      " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
-      "   <option value='Empty'>---</option>" + 
-      "   <option value='1'>Project</option>" +
-      "   <option value='2'>System</option>" +
-      "   <option value='3'>Task</option> </select></td>" +
-      " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' " + disabled + "> </input> </td>" +
-      " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' " + disabled + "> </select> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' " + disabled + "> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
-      " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
-      " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
-      " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-      " <td class='table_data' style='text-align: center'>X</td>" +
-      " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-    );
-    
-    Update_Owners(users.length);
+  add_row_counter++;  //Increment
+  
+  $("#action_table").append(
+    " <tr class='info_rows'>" +
+    " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
+    "   <option value='Empty'>---</option>" + 
+    "   <option value='1'>Project</option>" +
+    "   <option value='2'>System</option>" +
+    "   <option value='3'>Task</option> </select></td>" +
+    " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' " + disabled + "> </input> </td>" +
+    " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' " + disabled + "> </select> </td>" +
+    " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' " + disabled + "> </input> </td>" +
+    " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
+    " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
+    " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
+    " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+    " <td class='table_data' style='text-align: center'>X</td>" +
+    " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+  );
+  
+  Update_Owners(users.length);
 }// End Add_alert()
 
 function Add_New_JT_Alert(){
@@ -730,56 +730,56 @@ function Load_Create(disabled){
 }//End Load_Create()
 
 function Load_JT_Create(disabled){
-    //Press_Enter();
-    var dept = $('#department').val();
-    var payload = { department : dept };
+  //Press_Enter();
+  var dept = $('#department').val();
+  var payload = { department : dept };
 
-    //preload users[] so that changing can be done
-    $.ajax({
-      url         : "/get_jt_users",
-      type        : "POST",
-      contentType : "application/json",
-      data        : JSON.stringify(payload),
-      complete    : function(data){ 
-        var parsed_data = JSON.parse(data.responseText); 
-        users = parsed_data;
+  //preload users[] so that changing can be done
+  $.ajax({
+    url         : "/get_jt_users",
+    type        : "POST",
+    contentType : "application/json",
+    data        : JSON.stringify(payload),
+    complete    : function(data){ 
+      var parsed_data = JSON.parse(data.responseText); 
+      users = parsed_data;
 
-        Update_Owners(users.length);
-      }
-    });
+      Update_Owners(users.length);
+    }
+  });
 
-    $.ajax({
-      url         : "/get_jt_part_nums",
-      type        : "POST",
-      contentType : "application/json",
-      complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-
-          for(var i = 0; i < parsed_data.length; i++){
-            var part = parsed_data[i].number;
-
-            $('#part_num').append("<option value='" + part + "'>" + part + "</option>" );
-          }
-      }
-    });
-
-    $.ajax({
-      url         : "/get_jt_customers",
-      type        : "POST",
-      contentType : "application/json",
-      complete    : function(data){
+  $.ajax({
+    url         : "/get_jt_part_nums",
+    type        : "POST",
+    contentType : "application/json",
+    complete    : function(data){
         var parsed_data = JSON.parse(data.responseText);
 
         for(var i = 0; i < parsed_data.length; i++){
-          var customer = parsed_data[i].name;
-          $('#customer').append("<option value='" + customer + "'>" + customer + "</option>" );
+          var part = parsed_data[i].number;
+
+          $('#part_num').append("<option value='" + part + "'>" + part + "</option>" );
         }
+    }
+  });
 
-         Pull_JT_Data($.urlParam('id'), disabled);
+  $.ajax({
+    url         : "/get_jt_customers",
+    type        : "POST",
+    contentType : "application/json",
+    complete    : function(data){
+      var parsed_data = JSON.parse(data.responseText);
+
+      for(var i = 0; i < parsed_data.length; i++){
+        var customer = parsed_data[i].name;
+        $('#customer').append("<option value='" + customer + "'>" + customer + "</option>" );
       }
-    });
 
-    $('#id_number').html($.urlParam('id'));
+       Pull_JT_Data($.urlParam('id'), disabled);
+    }
+  });
+
+  $('#id_number').html($.urlParam('id'));
 }//End Load_JT_Create()
 
 function Empty_Owners(){
@@ -941,104 +941,118 @@ function Pull_Data(id, disabled){
 }// End Pull_Data()
 
 function Pull_JT_Data(id, disabled){
-    var payload = {
-      id : id,
-    };
+  var payload = {
+    id : id,
+  };
 
-    $.ajax({
-      url         : "/pull_jt_data",
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      data        : JSON.stringify(payload),
-      complete    : function(data){      
-        var parsed_data = JSON.parse(data.responseText);
+  $.ajax({
+    url         : "/pull_jt_data",
+    type        : "POST",
+    contentType : "application/json",
+    processData : false,
+    data        : JSON.stringify(payload),
+    complete    : function(data){      
+      var parsed_data = JSON.parse(data.responseText);
 
-        var a_type, date_posted, region, location, part_num, customer, repeat, issue, cause; //First section
-        var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, i_id;//Second section
+      var a_type, date_posted, region, location, part_num, customer, repeat, issue, cause; //First section
+      var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, i_id;//Second section
 
-        for(var i = 0; i < parsed_data.length; i++){
-          for(var j = 0; j < parsed_data[i].length; j++){
-            if(i == '0' && j == '0'){                   //Only grab General info once
-              a_type      = parsed_data[i][j].alert_type;
-              date_posted = parsed_data[i][j].date;
-              region      = parsed_data[i][j].region;
-              location    = parsed_data[i][j].location;
-              part_num    = parsed_data[i][j].part;
-              customer    = parsed_data[i][j].customer
-              repeat      = parsed_data[i][j].recurrence;
-              issue       = parsed_data[i][j].issue;
-              cause       = parsed_data[i][j].cause;
+      for(var i = 0; i < parsed_data.length; i++){
+        for(var j = 0; j < parsed_data[i].length; j++){
+          if(i == '0' && j == '0'){                   //Only grab General info once
+            a_type      = parsed_data[i][j].alert_type;
+            date_posted = parsed_data[i][j].date;
+            region      = parsed_data[i][j].region;
+            location    = parsed_data[i][j].location;
+            part_num    = parsed_data[i][j].part;
+            customer    = parsed_data[i][j].customer
+            repeat      = parsed_data[i][j].recurrence;
+            issue       = parsed_data[i][j].issue;
+            cause       = parsed_data[i][j].cause;
 
 
-              //Output to html
-              $('#alert_type').val(a_type).trigger('change');
-              $('#date_initial').val(date_posted);
-              $('#region').val(region);
-              $('#location').val(location);
-              $('#part_num').val(part_num);
-              $('#customer').val(customer);
-              $('#recur').val(repeat);
-              $('#issue_desc').html(issue);
-              $('#cause_desc').html(cause);
+            //Output to html
+            $('#alert_type').val(a_type).trigger('change');
+            $('#date_initial').val(date_posted);
+            $('#region').val(region);
+            $('#location').val(location);
+            $('#part_num').val(part_num);
+            $('#customer').val(customer);
+            $('#recur').val(repeat);
+            $('#issue_desc').html(issue);
+            $('#cause_desc').html(cause);
 
-               if(a_type != null && date_posted != null)
-                $('#date_initial').attr('disabled', 'disabled');
-            }
-            else{
-              i_id           = parsed_data[i][j].id;
-              t_length       = parsed_data[i][j].term;
-              t_descript     = parsed_data[i][j].description;
-              responsible    = parsed_data[i][j].owner;
-              date_start     = parsed_data[i][j].initial_date;
-              date_ending    = parsed_data[i][j].deadline;
-              date_completed = parsed_data[i][j].completed;
-              email          = parsed_data[i][j].email_sent;
-              state          = parsed_data[i][j].state;
-              
-              Add_JT_Alert(disabled);//Add a row to the action area
-
-              $('#term_length_' + j).val(t_length);
-              $('#term_description_' + j).val(t_descript);
-              $('#responsible_' + j).val(responsible);
-              $('#date_start_' + j).val(date_start);
-              $('#date_ending_' + j).val(date_ending);
-              $('#date_completed_' + j).val(date_completed);
-              if (email == 1) 
-                $('#email_' + j).prop('checked', true);
-              if (state == 'Late'){
-                $('#state_' + j).removeClass('task_due task_open task_new').addClass('task_late');
-              }
-
-              $('#state_' + j).html(state);              
-              $('#item_id_' + j).val(i_id);
-
-              
-              if(date_start != null)
-                $('#date_start_' + j).attr('disabled', 'disabled');
-              if(date_ending != null && date_completed != null)
-                $('#date_ending_' + j).attr('disabled', 'disabled');
-              //Disable an entire row if Action has been completed
-              if (date_completed != null){
-                $('#term_length_' + j).attr('disabled', 'disabled');
-                $('#term_description_' + j).attr('disabled', 'disabled');
-                $('#responsible_' + j).attr('disabled', 'disabled');
-                $('#date_completed_' + j).attr('disabled', 'disabled');
-                $('#state_' + j).removeClass('task_late task_open task_due task_new').addClass('task_complete');
-              }
-              if(state == "Due"){
-                $('#state_' + j).removeClass('task_late task_open task_new').addClass('task_due');
-              }
-              $('#email_' + j).attr('disabled', 'disabled');
-            }          
+             if(a_type != null && date_posted != null)
+              $('#date_initial').attr('disabled', 'disabled');
           }
+          else{
+            i_id           = parsed_data[i][j].id;
+            t_length       = parsed_data[i][j].term;
+            t_descript     = parsed_data[i][j].description;
+            responsible    = parsed_data[i][j].owner;
+            date_start     = parsed_data[i][j].initial_date;
+            date_ending    = parsed_data[i][j].deadline;
+            date_completed = parsed_data[i][j].completed;
+            email          = parsed_data[i][j].email_sent;
+            state          = parsed_data[i][j].state;
+            
+            Add_JT_Alert(disabled);//Add a row to the action area
+
+            $('#term_length_' + j).val(t_length);
+            $('#term_description_' + j).val(t_descript);
+            $('#responsible_' + j).val(responsible);
+            $('#date_start_' + j).val(date_start);
+            $('#date_ending_' + j).val(date_ending);
+            $('#date_completed_' + j).val(date_completed);
+            if (email == 1) 
+              $('#email_' + j).prop('checked', true);
+            if (state == 'Late'){
+              $('#state_' + j).removeClass('task_due task_open task_new').addClass('task_late');
+            }
+
+            $('#state_' + j).html(state);              
+            $('#item_id_' + j).val(i_id);
+
+            
+            if(date_start != null)
+              $('#date_start_' + j).attr('disabled', 'disabled');
+            if(date_ending != null && date_completed != null)
+              $('#date_ending_' + j).attr('disabled', 'disabled');
+            //Disable an entire row if Action has been completed
+            if (date_completed != null){
+              $('#term_length_' + j).attr('disabled', 'disabled');
+              $('#term_description_' + j).attr('disabled', 'disabled');
+              $('#responsible_' + j).attr('disabled', 'disabled');
+              $('#date_completed_' + j).attr('disabled', 'disabled');
+              $('#state_' + j).removeClass('task_late task_open task_due task_new').addClass('task_complete');
+            }
+            if(state == "Due"){
+              $('#state_' + j).removeClass('task_late task_open task_new').addClass('task_due');
+            }
+            $('#email_' + j).attr('disabled', 'disabled');
+          }          
         }
-      }//End complete*/
-    });
+      }
+    }//End complete*/
+  });
 }// End Pull_JT_Data()
 
-function Submit_Data(token) {
-  var post_id;    
+function Submit_Data() {
+  var post_id, post_url, items_url,
+      level = Cookies.get('level');
+
+  if(level == "Plant" || level == "Mixing" || level == "Auto"){
+    post_url = "update_post_it";
+    items_url = "update_post_it_items";
+  }
+  else if(level == "Jim"){
+    post_url = "update_jt_post_it";
+    items_url = "update_post_it_items";
+  }
+  else if(level == "Cadillac"){
+    post_url = "cad_post_it";
+    items_url = "cad_post_it_items";
+  }
 
   //Information write to DB
   var a_type      = $('#alert_type').val(),
@@ -1078,11 +1092,10 @@ function Submit_Data(token) {
     c_desc      : cause,      
     post_id     : post_id,
     is_active   : active,
-    token       : token
   };
 
   $.ajax({
-    url         : "/update_post_it",
+    url         : post_url,
     type        : "POST",
     contentType : "application/json",
     processData : false,
@@ -1143,11 +1156,10 @@ function Submit_Data(token) {
         emailed       : email,
         state         : state,
         is_active     : active,
-        token         : token
       };
 
       $.ajax({
-        url         : "/update_post_it_items",
+        url         : items_url,
         type        : "POST",
         contentType : "application/json",
         processData : false,
@@ -1155,8 +1167,6 @@ function Submit_Data(token) {
       });
     }
   }
-
-  token = token + "1";
 }// End Submit_Data()
 
 function Submit_JT_Data() {
@@ -1406,7 +1416,7 @@ function regroup_list_by(list, categorize) {
 // based on an incoming date string
 //************************************************************************
 function whichDay(dateString) {
-    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][new Date(dateString).getDay()];
+  return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][new Date(dateString).getDay()];
 }
 
 function GetToday(){
