@@ -310,7 +310,8 @@ app.post('/pull_jt_data', (req, res) => {
 //************************************************************************
 app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) VALUES ({category}, CURRENT_DATE, 'Plant', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) " +
+                      "VALUES ({category}, CURRENT_DATE, 'Plant', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
 
     connectionQRQC.query(sql_create, (err, result) => {
@@ -321,7 +322,8 @@ app.post('/create_plant', (req, res) => {
 });
 
 app.post('/create_mixing', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Mixing', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) "+
+                      "VALUES ({category}, CURRENT_DATE, 'Mixing', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
@@ -332,7 +334,8 @@ app.post('/create_mixing', (req, res) => {
 });
 
 app.post('/create_auto', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Automation', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) "+
+                      "VALUES ({category}, CURRENT_DATE, 'Automation', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
@@ -343,7 +346,8 @@ app.post('/create_auto', (req, res) => {
 });
 
 app.post('/create_jt', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'Jim', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) "+
+                      "VALUES ({category}, CURRENT_DATE, 'Jim', '---', '---', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
@@ -354,7 +358,8 @@ app.post('/create_jt', (req, res) => {
 });
 
 app.post('/create_cad', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) VALUES ({category}, CURRENT_DATE, 'CP', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) "+
+                      "VALUES ({category}, CURRENT_DATE, 'CP', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
@@ -387,14 +392,14 @@ var canWrite = false; //an action has already been written
 var tokens = ["plantlevel", "mixLevel", "autolevel", "jtlevel", "cadlevel"];
 
 app.post('/update_post_it_items', (req, res) => {
-    var tempToken = "{token}".format(req.body);
+    /*var tempToken = "{token}".format(req.body);
 
     for(var i = 0; i < tokens.length; i++){
         if(tempToken == tokens[i]){
             token[i] = ""; //token is consumed
             canWrite = true;
         }
-    }
+    }*/
     
     var sql_update = (
         "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
@@ -402,15 +407,15 @@ app.post('/update_post_it_items', (req, res) => {
         " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
         ).formatSQL(req.body);
     
-    if(canWrite == true){
+    //if(canWrite == true){
         connectionQRQC.query(sql_update, (err, result) => {
             if (err) throw err;
             
             //Write was a success, switch canWrite to false
-            carWrite = false;
+            //carWrite = false;
             console.log("update_post_it_items:  ", result);
         });
-    }
+    //}
 
     res.send(true);
 });
@@ -500,7 +505,7 @@ app.post('/get_jt_users', (req, res) => {
 });
 
 app.post('/get_cad_users', (req, res) => {
-    var sql = ("SELECT `name` FROM `owner_cad`").formatSQL(req.body);
+    var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department}").formatSQL(req.body);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;

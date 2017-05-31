@@ -1107,11 +1107,9 @@ function Submit_Data(token) {
     //*****************************************************
     // Formatting and error checking
     if(date_completed == ""){
-      var level = Cookies.get('level');
-
       if(!$('#email_' + i).is(':checked')){
         //depending on what level is in the cookie call a different format email function
-        Format_Email(responsible, dept, location, part_num, issue, cust, t_descript, date_ending, level);
+        Format_Email(responsible, dept, location, part_num, issue, cust, t_descript, date_ending);
       }
       
       date_completed = null;
@@ -1272,7 +1270,7 @@ function Format_Email(responsible, dept, location, part_num, issue, customer, t_
   if(level == "Cadillac"){
     url = 'get_cad_email';
   }
-  if(level == "Jim"){
+  else if(level == "Jim"){
      Format_JT_Email();
   }
   else{
