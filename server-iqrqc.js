@@ -6,19 +6,19 @@
 //************************************************************************
 // Requires
 //************************************************************************
-var express     = require('express');
-var favicon     = require('static-favicon');
-var session     = require('express-session');
-var bodyParser  = require('body-parser');
-var path        = require('path');
-var md5         = require('md5');
-var mysql       = require('mysql');
-var net         = require('net');
-var nodemailer  = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var Cookies     = require('js-cookie');
-
 var ejs  = require('ejs');
+var express    = require('express');
+var favicon    = require('static-favicon');
+var session    = require('express-session');
+var bodyParser = require('body-parser');
+var path       = require('path');
+var md5        = require('md5');
+var mysql      = require('mysql');
+var net        = require('net');
+var nodemailer = require('nodemailer');
+var Cookies    = require('js-cookie');
+var smtpTransport = require('nodemailer-smtp-transport');
+
 
 // Set up express
 var app = express();
@@ -215,6 +215,8 @@ app.post('/show_current_alerts', (req, res) => {
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
+
+        console.log("\n", result)
         res.send(JSON.stringify(result));
     });       
 });
@@ -418,22 +420,25 @@ app.post('/cad_post_it', (req, res) => {
 
 
 app.post('/update_post_it_items', (req, res) => {
-    /*var tempToken = "{token}".format(req.body);
+    var length = ("{array_length}").formatSQL(req.body);
 
-    for(var i = 0; i < tokens.length; i++){
-        if(tempToken == tokens[i]){
-            token[i] = ""; //token is consumed
-            canWrite = true;
-        }
-    }*/
-    
-    var sql_update = (
-        "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
-        "ON DUPLICATE KEY UPDATE `term` = {term}, `description` = {term_descript}, `owner` = {owner}, `initial_date` = {starting}, `deadline` = {ending}, " +
-        " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
+    for(var i = 0; i < length; i++){
+        var complete;
+        if(req.body.completed[i] == "NULL")
+            complete = " `completed` = NULL";
+        else
+            complete = " `completed` = '"+req.body.completed[i]+"'";
+
+        var sql_update = (
+            "INSERT INTO `post_it_items` VALUES ('"+req.body.item_id[i]+"', {post_id}, '"+req.body.term[i]+"', '"+req.body.term_descript[i]+"', '"+
+                req.body.owner[i]+"', '"+req.body.starting[i]+"', '"+req.body.ending[i]+"', "+complete+", '"+
+                req.body.state[i]+"', '"+req.body.emailed[i]+"', '1') " +
+            "ON DUPLICATE KEY UPDATE `term` = '"+req.body.term[i]+"', `description` = '"+req.body.term_descript[i]+"', `owner` = '"+req.body.owner[i]+
+                "', `initial_date` = '"+req.body.starting[i]+"', `deadline` = '"+req.body.ending[i]+
+                "', "+ complete +", `state` = '"+req.body.state[i]+"', `active` = '"+req.body.is_active[i]+"';"
         ).formatSQL(req.body);
-    
-    //if(canWrite == true){
+        //console.log("\n", sql_update);
+
         connectionQRQC.query(sql_update, (err, result) => {
             if (err) throw err;
             
@@ -441,8 +446,9 @@ app.post('/update_post_it_items', (req, res) => {
             //carWrite = false;
             console.log("update_post_it_items:  ", result);
         });
-    //}
+    }
 
+    console.log("\n\nDONE WITH LOOP");
     res.send(true);
 });
 
@@ -674,7 +680,6 @@ app.post('/refresh_tokens', (req, res) => {
 var dir_path = 'public/';
 var admin_path = 'public/admin/';
 var each = ["images", "css", "js", "datetimepicker", "jquery"];
-//var each = ['flot','reveal.js','snap','sparkline','d3','work_instructions', 'work_videos']
 
 for (var i = 0; i < each.length; i++){
         app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));

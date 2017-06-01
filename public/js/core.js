@@ -808,13 +808,6 @@ function Repopulate_Owners(length){
 
 function Show_Current(query_url, url){
   $.ajax({
-    url         : '/refresh_tokens',
-    type        : "POST",
-    contentType : "application/json",
-    processData : false,
-  });
-
-  $.ajax({
     url         : query_url,
     type        : "POST",
     contentType : "application/json",
@@ -822,6 +815,7 @@ function Show_Current(query_url, url){
     complete    : function(data){
       var today = GetToday()    
       loadAlerts(data, today, url);
+      console.log("show current")
     }
   });
 }// End Show_Current();
@@ -933,6 +927,8 @@ function Pull_Data(id, disabled){
               $('#state_' + j).removeClass('task_late task_open task_new').addClass('task_due');
             }
             $('#email_' + j).attr('disabled', 'disabled');
+
+            console.log("pulled data")
           }          
         }
       }
@@ -1072,11 +1068,10 @@ function Submit_Data() {
     console.log("Information failed");
     return 0;      
   }
-  else{
-    if(add_row_counter < 0){
-      alert("At least one action needs to be created");
-      return 0;
-    }
+
+  if(add_row_counter < 0){
+    alert("At least one action needs to be created");
+    return 0;
   }
 
   var payload = {
@@ -1103,69 +1098,82 @@ function Submit_Data() {
   });
 
   //Action Plan row(s) write to DB
+  var tLen = [], tDesc = [], resp = [], dStart = [], dEnd = [],
+      dComplete = [], itemId = [], state = [], eMail = [],
+      act = [], itemId = [];
+
   for(var i = 0; i < (add_row_counter + 1); i++){
-    var t_length        = $('#term_length_' + i).val(),
-        t_descript      = $('#term_description_' + i).val(),
-        responsible     = $('#responsible_' + i).val(),
-        date_start      = $('#date_start_' + i).val(),
-        date_ending     = $('#date_ending_' + i).val(),
-        date_completed  = $('#date_completed_' + i).val(),
-        item_id         = $('#item_id_' + i).val(),
-        state           = $('#state_' + i).html(),
-        email           = 1,
-        active          = 1,
-        item_id         = $('#item_id_' + i).val();
+    tLen[i]      = $('#term_length_' + i).val(),
+    tDesc[i]     = $('#term_description_' + i).val(),
+    resp[i]      = $('#responsible_' + i).val(),
+    dStart[i]    = $('#date_start_' + i).val(),
+    dEnd[i]      = $('#date_ending_' + i).val(),
+    dComplete[i] = $('#date_completed_' + i).val(),
+    itemId[i]    = $('#item_id_' + i).val(),
+    state[i]  = $('#state_' + i).html(),
+    eMail[i]     = 1,
+    act[i]       = 1,
+    itemId[i]    = $('#item_id_' + i).val();
+  }
       
 
-    //*****************************************************
-    // Formatting and error checking
-    if(date_completed == ""){
-      if(!$('#email_' + i).is(':checked')){
-        //depending on what level is in the cookie call a different format email function
-        Format_Email(responsible, dept, location, part_num, issue, cust, t_descript, date_ending);
-      }
-      
-      date_completed = null;
-    }
-    else if(date_completed != "")
-      state = "Closed";
-    
-    //Make sure that important fields are filled in
-    if(t_length == 'Empty' || t_descript.length == 0 || date_ending == ""){
+  //*****************************************************
+  // Formatting and error checking
+  var all_clear = false;
+
+  var all_clear = false;
+  for(var i = 0; i < (add_row_counter + 1); i++){
+    if(tLen[i] == 'Empty' || tDesc[i].length == 0 || dEnd[i] == ""){
       alert("Please make sure 'Type' 'Description' and 'Deadline'are filled in for action " + (i + 1));
-      console.log("Action failed");
+      all_clear = false;
       return 0;
     }
     else{
-      console.log("All action fields filled in");
-
-      var today = GetToday();
-    
-      if(date_ending == today && date_completed == null)
-        state = "Due";      
-
-      var payload2 = {
-        item_id       : item_id,
-        post_id       : post_id,
-        term          : t_length,
-        term_descript : t_descript,
-        owner         : responsible,
-        starting      : date_start,
-        ending        : date_ending,
-        completed     : date_completed,
-        emailed       : email,
-        state         : state,
-        is_active     : active,
-      };
-
-      $.ajax({
-        url         : items_url,
-        type        : "POST",
-        contentType : "application/json",
-        processData : false,
-        data        : JSON.stringify(payload2),
-      });
+      all_clear = true;
     }
+  }
+  
+
+  if(all_clear == true){
+    console.log("All action fields filled in");
+
+    for(var i = 0; i < (add_row_counter + 1); i++){
+      if(dComplete[i] == ""){
+        //If the email hasn't been sent -> send it
+        if(!$('#email_' + i).is(':checked')){
+          //Depending on what level is in the cookie call a different format email function
+          Format_Email(resp[i], dept, location, part_num, issue, cust, tDesc[i], dEnd[i]);
+        }
+        
+        dComplete[i] = 'NULL';
+      }
+      else
+        state[i] = "Closed";
+    }
+
+    //Form a payload of arrays. Let the server deal with the it
+    var payload2 = {
+      item_id       : itemId,
+      post_id       : post_id,
+      term          : tLen,
+      term_descript : tDesc,
+      owner         : resp,
+      starting      : dStart,
+      ending        : dEnd,
+      completed     : dComplete,
+      emailed       : eMail,
+      state         : state,
+      is_active     : act,
+      array_length  : tLen.length
+    };
+
+    $.ajax({
+      url         : items_url,
+      type        : "POST",
+      contentType : "application/json",
+      processData : false,
+      data        : JSON.stringify(payload2),
+    });
   }
 }// End Submit_Data()
 
