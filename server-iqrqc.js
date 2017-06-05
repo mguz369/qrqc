@@ -216,7 +216,7 @@ app.post('/show_current_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
 
-        console.log("\n", result)
+        console.log("Show GR Plant Alerts");
         res.send(JSON.stringify(result));
     });       
 });
@@ -228,7 +228,8 @@ app.post('/show_mixing_alerts', (req, res) => {
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
-        //console.log(result);
+        
+        console.log("Show GR Mixing Alerts");
         res.send(JSON.stringify(result));
     });       
 });
@@ -240,7 +241,8 @@ app.post('/show_auto_alerts', (req, res) => {
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
-        //console.log(result);
+
+        console.log("Show GR Automation Alerts");
         res.send(JSON.stringify(result));
     });       
 });
@@ -252,7 +254,8 @@ app.post('/show_jt_alerts', (req, res) => {
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
-        //console.log(result);
+        
+        console.log("Show GR Executive Alerts");
         res.send(JSON.stringify(result));
     });       
 });
@@ -264,7 +267,8 @@ app.post('/show_cad_alerts', (req, res) => {
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
-        //console.log(result);
+        
+        console.log("Show CD Plant Alerts");
         res.send(JSON.stringify(result));
     });       
 });
@@ -453,6 +457,37 @@ app.post('/update_post_it_items', (req, res) => {
 });
 
 app.post('/cad_post_it_items', (req, res) => {
+    var length = ("{array_length}").formatSQL(req.body);
+
+    for(var i = 0; i < length; i++){
+        var complete;
+        if(req.body.completed[i] == "NULL")
+            complete = " `completed` = NULL";
+        else
+            complete = " `completed` = '"+req.body.completed[i]+"'";
+
+        var sql_update = (
+            "INSERT INTO `post_it_items` VALUES ('"+req.body.item_id[i]+"', {post_id}, '"+req.body.term[i]+"', '"+req.body.term_descript[i]+"', '"+
+                req.body.owner[i]+"', '"+req.body.starting[i]+"', '"+req.body.ending[i]+"', "+complete+", '"+
+                req.body.state[i]+"', '"+req.body.emailed[i]+"', '1') " +
+            "ON DUPLICATE KEY UPDATE `term` = '"+req.body.term[i]+"', `description` = '"+req.body.term_descript[i]+"', `owner` = '"+req.body.owner[i]+
+                "', `initial_date` = '"+req.body.starting[i]+"', `deadline` = '"+req.body.ending[i]+
+                "', "+ complete +", `state` = '"+req.body.state[i]+"', `active` = '"+req.body.is_active[i]+"';"
+        ).formatSQL(req.body);
+        //console.log("\n", sql_update);
+
+        connectionQRQC.query(sql_update, (err, result) => {
+            if (err) throw err;
+            
+            //Write was a success, switch canWrite to false
+            //carWrite = false;
+            console.log("update_post_it_items:  ", result);
+        });
+    }
+
+    console.log("\n\nDONE WITH LOOP");
+    res.send(true);
+
     /*var tempToken = "{token}".format(req.body);
 
     for(var i = 0; i < tokens.length; i++){
@@ -462,7 +497,7 @@ app.post('/cad_post_it_items', (req, res) => {
         }
     }*/
     
-    var sql_update = (
+    /*var sql_update = (
         "INSERT INTO `post_it_items` VALUES ({item_id}, {post_id}, {term}, {term_descript}, {owner}, {starting}, {ending}, {completed}, {state}, '1', {is_active}) " +
         "ON DUPLICATE KEY UPDATE `term` = {term}, `description` = {term_descript}, `owner` = {owner}, `initial_date` = {starting}, `deadline` = {ending}, " +
         " `completed` = {completed}, `state` = {state}, `active` = {is_active};"
@@ -478,7 +513,7 @@ app.post('/cad_post_it_items', (req, res) => {
         });
     //}
 
-    res.send(true);
+    res.send(true);*/
 });
 
 //************************************************************************
@@ -642,36 +677,6 @@ function SendEmail(owner, subject, address, message){
 
     //console.log("\n\nsent email");
 }
-
-app.post('/refresh_tokens', (req, res) => {
-    var tokens = ["plantlevel", "mixLevel", "autolevel", "jtlevel", "cadlevel"];
-
-    res.send("Tokens refreshed");
-});
-
-/*app.post('/send_email', (req, res) => {
-    var recipient = ('{owner} <{email_addr}>').format(req.body);
-    var message = ('{email_text}').format(req.body);
-
-    var message = {
-        from    : 'iQRQC automated email',
-        to      : recipient,
-        subject : 'iQRQC Action Notification', 
-        text    : message
-    };
-
-    transporter.sendMail(message, (error, info) => {
-        if (error) {
-            console.log('Error occurred');
-            console.log(error.message);
-            return;
-        }
-        console.log('Message sent successfully!');
-        //console.log('Server responded with "%s"', info.response);
-    });
-
-    //console.log("\n\nsent email");
-});*/
 
 
 //************************************************************************
