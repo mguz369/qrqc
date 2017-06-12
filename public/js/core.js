@@ -1120,8 +1120,6 @@ function Submit_Data() {
   //*****************************************************
   // Formatting and error checking
   var all_clear = false;
-
-  var all_clear = false;
   for(var i = 0; i < (add_row_counter + 1); i++){
     if(tLen[i] == 'Empty' || tDesc[i].length == 0 || dEnd[i] == ""){
       alert("Please make sure 'Type' 'Description' and 'Deadline'are filled in for action " + (i + 1));
