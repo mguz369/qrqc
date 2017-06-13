@@ -434,14 +434,14 @@ app.post('/update_post_it_items', (req, res) => {
             complete = " `completed` = '"+req.body.completed[i]+"'";
 
         var sql_update = (
-            "INSERT INTO `post_it_items` VALUES ('"+req.body.item_id[i]+"', {post_id}, '"+req.body.term[i]+"', '"+req.body.term_descript[i]+"', '"+
-                req.body.owner[i]+"', '"+req.body.starting[i]+"', '"+req.body.ending[i]+"', "+complete+", '"+
-                req.body.state[i]+"', '"+req.body.emailed[i]+"', '1') " +
-            "ON DUPLICATE KEY UPDATE `term` = '"+req.body.term[i]+"', `description` = '"+req.body.term_descript[i]+"', `owner` = '"+req.body.owner[i]+
-                "', `initial_date` = '"+req.body.starting[i]+"', `deadline` = '"+req.body.ending[i]+
-                "', "+ complete +", `state` = '"+req.body.state[i]+"', `active` = '"+req.body.is_active[i]+"';"
+            'INSERT INTO `post_it_items` VALUES ("'+req.body.item_id[i]+'", {post_id}, "'+req.body.term[i]+'", "'+req.body.term_descript[i]+'", "'+
+                req.body.owner[i]+'", "'+req.body.starting[i]+'", "'+req.body.ending[i]+'", "'+complete+'", "'+
+                req.body.state[i]+'", "'+req.body.emailed[i]+'", "1") ' +
+            'ON DUPLICATE KEY UPDATE `term` = "'+req.body.term[i]+'", `description` = "'+req.body.term_descript[i]+'", `owner` = "'+req.body.owner[i]+
+                '", `initial_date` = "'+req.body.starting[i]+'", `deadline` = "'+req.body.ending[i]+
+                '", '+ complete +', `state` = "'+req.body.state[i]+'", `active` = "'+req.body.is_active[i]+'";'
         ).formatSQL(req.body);
-        //console.log("\n", sql_update);
+        console.log("\n", sql_update);
 
         connectionQRQC.query(sql_update, (err, result) => {
             if (err) throw err;
