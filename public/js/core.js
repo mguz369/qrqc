@@ -437,8 +437,8 @@ $(document).ready(function () {
     var token = "jtlevel";
     var go = Submit_Data();
 
-    if(go != 0)
-      window.location.href = '/index_exec';
+    //if(go != 0)
+      //window.location.href = '/index_exec';
   });//End subit_jt
 
   $('#submit_cad').on('click touchstart', function (){
@@ -1056,7 +1056,6 @@ function Submit_Data() {
     //Information write to DB
     var a_type    = $('#alert_type').val(),
       date_posted = $('#date_initial').val(),
-      dept        = $('#department').val(),
       region      = $('#region').val()
       location    = $('#location').val(),
       part_num    = $('#part_num').val(),
@@ -1070,8 +1069,6 @@ function Submit_Data() {
       payload = {
         type        : a_type,
         date        : date_posted,
-        department  : dept,
-        start_dept  : dept,
         region      : region,
         location    : location,
         part        : part_num,
@@ -1080,8 +1077,8 @@ function Submit_Data() {
         i_desc      : issue,
         c_desc      : cause,      
         post_id     : post_id,
-        is_active   : active,
-      };
+        is_active   : active
+      }
   }
   else{
     //Information write to DB
@@ -1124,7 +1121,6 @@ function Submit_Data() {
     alert("At least one action needs to be created");
     return 0;
   }
-
   
 
   $.ajax({
@@ -1176,9 +1172,12 @@ function Submit_Data() {
     for(var i = 0; i < (add_row_counter + 1); i++){
       if(dComplete[i] == ""){
         //If the email hasn't been sent -> send it
-        if(!$('#email_' + i).is(':checked')){
+        if(!$('#email_' + i).is(':checked') && level !== "Jim"){
           //Depending on what level is in the cookie call a different format email function
-          Format_Email(resp[i], dept, location, part_num, issue, cust, tDesc[i], dEnd[i]);
+          Format_Email(resp[i], dept, location, part_num, issue, cust, tDesc[i], dEnd[i], level);
+        }
+        else if(!$('#email_' + i).is(':checked') && level == "Jim"){
+          Format_JT_Email(resp[i], region, location, part_num, issue, cust, tDesc[i], dEnd[i]);
         }
         
         dComplete[i] = 'NULL';
@@ -1213,120 +1212,10 @@ function Submit_Data() {
   }
 }// End Submit_Data()
 
-function Submit_JT_Data() {
-  var post_id;    
 
-  //Information write to DB
-  var a_type, date_posted, location, part_num, customer, repeat, issue, cause, active, region;
-  a_type      = $('#alert_type').val();
-  date_posted = $('#date_initial').val();
-  region      = $('#region').val();
-  location    = $('#location').val();
-  part_num    = $('#part_num').val();
-  cust        = $('#customer').val();
-  repeat      = $('#recur').val();
-  issue       = $('#issue_desc').val();
-  cause       = $('#cause_desc').val();
-  post_id     = $('#id_number').text();
-  active      = 1;
-
-  var payload = {
-    type       : a_type,
-    date       : date_posted,
-    region     : region,
-    location   : location,
-    part       : part_num,
-    customer   : cust,
-    recurrence : repeat,
-    i_desc     : issue,
-    c_desc     : cause,      
-    post_id    : post_id,
-    is_active  : active,
-  };
-
-  $.ajax({
-    url         : "/update_jt_post_it",
-    type        : "POST",
-    contentType : "application/json",
-    processData : false,
-    data        : JSON.stringify(payload),
-  });
-
-  //Action Plan row(s) write to DB
-  var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, item_id;
-  for(var i = 0; i < add_row_counter + 1; i++){
-    t_length        = $('#term_length_' + i).val();        
-    t_descript      = $('#term_description_' + i).val();
-    responsible     = $('#responsible_' + i).val();
-    date_start      = $('#date_start_' + i).val();
-    date_ending     = $('#date_ending_' + i).val();
-    date_completed  = $('#date_completed_' + i).val();
-    item_id         = $('#item_id_' + i).val();
-    state           = $('#state_' + i).html();
-    email           = 1;
-    active          = '1';
-    item_id         = $('#item_id_' + i).val();
-      
-
-    //*****************************************************
-    // Formatting and error checking
-    if(date_completed == ""){
-      date_completed = null;
-      if(!$('#email_' + i).is(':checked'))
-        Format_JT_Email(responsible, region, location, part_num, issue, cust, t_descript, date_ending);
-    }
-    else if(date_completed != "")
-      state = "Closed";
-    
-    //Make sure that important fields are filled in
-    if(t_length == '---' || responsible == '---' || date_start == "" || date_ending == ""){
-      console.log(t_length + ' ' + responsible + ' ' + date_start + ' ' + date_ending)
-      alert("Please make sure all fields are filled in for action " + (i + 1));
-      return false;
-    }
-    else{
-      window.location.href = '/index_exec';
-
-      var today = GetToday();        
-      if(date_ending == today && date_completed == null){
-        state = "Due";
-      }
-
-      //var weekend_day = new Date(date_ending).getUTCDay();
-      var payload2 = {
-        item_id       : item_id,
-        post_id       : post_id,
-        term          : t_length,
-        term_descript : t_descript,
-        owner         : responsible,
-        starting      : date_start,
-        ending        : date_ending,
-        completed     : date_completed,
-        emailed       : email,
-        state         : state,
-        is_active     : active,
-      };
-
-      $.ajax({
-        url         : "/update_post_it_items",
-        type        : "POST",
-        contentType : "application/json",
-        processData : false,
-        data        : JSON.stringify(payload2),
-      });
-    }//end else
-  }
-}// End Submit_JT_Data()
-
-function Format_Email(responsible, dept, location, part_num, issue, customer, t_descript, date_ending){
-  var level = Cookies.get('level');
-  
+function Format_Email(responsible, dept, location, part_num, issue, customer, t_descript, date_ending, level){  
   if(level == "Cadillac"){
     url = 'get_cad_email';
-  }
-  else if(level == "Jim"){
-     Format_JT_Email();
-     return 0;
   }
   else{
      url = 'get_email';

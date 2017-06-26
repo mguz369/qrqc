@@ -257,6 +257,7 @@ app.post('/show_jt_alerts', (req, res) => {
         
         console.log("Show GR Executive Alerts");
         res.send(JSON.stringify(result));
+        console.log(result);
     });       
 });
 
@@ -355,7 +356,7 @@ app.post('/create_jt', (req, res) => {
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `region`, `location`, `part`, `customer`, `issue`, `cause`, `active`) "+
                       "VALUES ({category}, CURRENT_DATE, 'Jim', '---', 'TBD', '---', '---', 'TBD', 'TBD', '1'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
-        console.log(sql_create)
+        console.log("Create JT ", sql_create)
    
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
@@ -384,7 +385,10 @@ app.post('/update_post_it', (req, res) => {
         "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
         "`alert_type` = {type}, `department` = {department}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
         "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
-      console.log(sql_update);
+    
+    console.log("UPDATE POSTIT ", sql_update);
+    
+
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
 
@@ -402,7 +406,7 @@ app.post('/update_jt_post_it', (req, res) => {
         "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}, " +
         "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
 
-    console.log("UPDATE JT: ", sql_update);
+    console.log("UPDATE JT Post IT: ", sql_update);
     
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
@@ -429,7 +433,7 @@ app.post('/cad_post_it', (req, res) => {
 
 app.post('/update_post_it_items', (req, res) => {
     var length = ("{array_length}").formatSQL(req.body);
-
+    console.log("UPDATE ITEMS");
     for(var i = 0; i < length; i++){
         var complete;
         if(req.body.completed[i] == "NULL")
@@ -619,6 +623,7 @@ app.post('/get_email', (req, res) => {
         if (err) throw err;
         
         SendEmail(owner, subject, result[0].email, message);
+        res.send(true);
     });
 });
 
@@ -638,6 +643,7 @@ app.post('/get_cad_email', (req,res) => {
         if (err) throw err;
         
         SendEmail(owner, subject, result[0].email, message);
+        res.send(true);
     });
 })
 
@@ -654,6 +660,7 @@ app.post('/get_jt_email', (req, res) => {
         if (err) throw err;
     
         SendEmail(owner, subject, result[0].email, message);
+        res.send(true);
     });
 });
 
