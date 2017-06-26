@@ -421,6 +421,7 @@ $(document).ready(function () {
   $('#submit_mix').on('click touchstart', function (){
     var token = "mixlevel";
     var go = Submit_Data();
+    
     if(go != 0)
       window.location.href = '/index_mixing';
   });//End submit_mix
@@ -434,7 +435,7 @@ $(document).ready(function () {
 
   $('#submit_jt').on('click touchstart', function (){
     var token = "jtlevel";
-    var go = Submit_JT_Data();
+    var go = Submit_Data();
 
     if(go != 0)
       window.location.href = '/index_exec';
@@ -1050,8 +1051,41 @@ function Submit_Data() {
     items_url = "cad_post_it_items";
   }
 
-  //Information write to DB
-  var a_type      = $('#alert_type').val(),
+  var payload;
+  if(level == "Jim"){
+    //Information write to DB
+    var a_type    = $('#alert_type').val(),
+      date_posted = $('#date_initial').val(),
+      dept        = $('#department').val(),
+      region      = $('#region').val()
+      location    = $('#location').val(),
+      part_num    = $('#part_num').val(),
+      cust        = $('#customer').val(),
+      repeat      = $('#recur').val(),
+      issue       = $('#issue_desc').val(),
+      cause       = $('#cause_desc').val(),
+      post_id     = $('#id_number').text(),
+      active      = 1;
+
+      payload = {
+        type        : a_type,
+        date        : date_posted,
+        department  : dept,
+        start_dept  : dept,
+        region      : region,
+        location    : location,
+        part        : part_num,
+        customer    : cust,
+        recurrence  : repeat,
+        i_desc      : issue,
+        c_desc      : cause,      
+        post_id     : post_id,
+        is_active   : active,
+      };
+  }
+  else{
+    //Information write to DB
+    var a_type    = $('#alert_type').val(),
       date_posted = $('#date_initial').val(),
       dept        = $('#department').val(),
       location    = $('#location').val(),
@@ -1062,6 +1096,23 @@ function Submit_Data() {
       cause       = $('#cause_desc').val(),
       post_id     = $('#id_number').text(),
       active      = 1;
+
+      payload = {
+        type        : a_type,
+        date        : date_posted,
+        department  : dept,
+        start_dept  : dept,
+        location    : location,
+        part        : part_num,
+        customer    : cust,
+        recurrence  : repeat,
+        i_desc      : issue,
+        c_desc      : cause,      
+        post_id     : post_id,
+        is_active   : active,
+      };
+  }
+  
 
   if(issue.length == 0 || location.length == 0 || cause.length == 0){
     alert("Please fill in all Information fields");
@@ -1074,20 +1125,7 @@ function Submit_Data() {
     return 0;
   }
 
-  var payload = {
-    type        : a_type,
-    date        : date_posted,
-    department  : dept,
-    start_dept  : dept,
-    location    : location,
-    part        : part_num,
-    customer    : cust,
-    recurrence  : repeat,
-    i_desc      : issue,
-    c_desc      : cause,      
-    post_id     : post_id,
-    is_active   : active,
-  };
+  
 
   $.ajax({
     url         : post_url,
@@ -1288,6 +1326,7 @@ function Format_Email(responsible, dept, location, part_num, issue, customer, t_
   }
   else if(level == "Jim"){
      Format_JT_Email();
+     return 0;
   }
   else{
      url = 'get_email';
@@ -1314,6 +1353,7 @@ function Format_Email(responsible, dept, location, part_num, issue, customer, t_
 }//End Format_Email()
 
 function Format_JT_Email(responsible, region, location, part_num, issue, customer, t_descript, date_ending){
+  console.log("IN JT EMAIL");
   var payload3 = {
     owner      : responsible,
     location   : location,

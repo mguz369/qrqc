@@ -352,9 +352,10 @@ app.post('/create_auto', (req, res) => {
 });
 
 app.post('/create_jt', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `part`, `customer`, `active`) "+
-                      "VALUES ({category}, CURRENT_DATE, 'Jim', '---', '---', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `region`, `location`, `part`, `customer`, `issue`, `cause`, `active`) "+
+                      "VALUES ({category}, CURRENT_DATE, 'Jim', '---', 'TBD', '---', '---', 'TBD', 'TBD', '1'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
+        console.log(sql_create)
    
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
@@ -383,7 +384,7 @@ app.post('/update_post_it', (req, res) => {
         "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
         "`alert_type` = {type}, `department` = {department}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
         "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
-
+      console.log(sql_update);
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
 
@@ -398,11 +399,15 @@ app.post('/update_jt_post_it', (req, res) => {
     
     var sql_update = (
         "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
-        "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}," +
+        "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}, " +
         "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
 
+    console.log("UPDATE JT: ", sql_update);
+    
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
+
+        console.log(result);
     });
 });
 
@@ -422,7 +427,6 @@ app.post('/cad_post_it', (req, res) => {
 });
 
 
-
 app.post('/update_post_it_items', (req, res) => {
     var length = ("{array_length}").formatSQL(req.body);
 
@@ -435,7 +439,7 @@ app.post('/update_post_it_items', (req, res) => {
 
         var sql_update = (
             'INSERT INTO `post_it_items` VALUES ("'+req.body.item_id[i]+'", {post_id}, "'+req.body.term[i]+'", "'+req.body.term_descript[i]+'", "'+
-                req.body.owner[i]+'", "'+req.body.starting[i]+'", "'+req.body.ending[i]+'", "'+complete+'", "'+
+                req.body.owner[i]+'", "'+req.body.starting[i]+'", "'+req.body.ending[i]+'", '+complete+', "'+
                 req.body.state[i]+'", "'+req.body.emailed[i]+'", "1") ' +
             'ON DUPLICATE KEY UPDATE `term` = "'+req.body.term[i]+'", `description` = "'+req.body.term_descript[i]+'", `owner` = "'+req.body.owner[i]+
                 '", `initial_date` = "'+req.body.starting[i]+'", `deadline` = "'+req.body.ending[i]+
@@ -444,7 +448,7 @@ app.post('/update_post_it_items', (req, res) => {
         console.log("\n", sql_update);
 
         connectionQRQC.query(sql_update, (err, result) => {
-            if (err) throw err;
+            if (err) console.log("Update error: ", err);
             
             //Write was a success, switch canWrite to false
             //carWrite = false;
