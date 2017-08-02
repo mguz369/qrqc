@@ -705,8 +705,8 @@ function Load_Create(disabled){
 
         for(var i = 0; i < parsed_data.length; i++){
           var part = parsed_data[i].number;
-
           $('#part_num').append("<option value='" + part + "'>" + part + "</option>" );
+          $('#part_list').append("<option value='" + part + "'>" + part + "</option>" );
         }
     }
   });

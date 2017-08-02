@@ -317,8 +317,8 @@ app.post('/pull_jt_data', (req, res) => {
 //************************************************************************
 app.post('/create_plant', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) " +
-                      "VALUES ({category}, CURRENT_DATE, 'Plant', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
+    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `customer`, `issue`, `cause`, `active`) " +
+                      "VALUES ({category}, CURRENT_DATE, 'Plant', 'TBD', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
 
     connectionQRQC.query(sql_create, (err, result) => {

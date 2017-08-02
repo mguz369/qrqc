@@ -727,6 +727,13 @@ section.log-button {
   width: 40%;
 }
 
+.part_num{
+  height:50px !important;
+  max-height:80px !important;
+  overflow: scroll;
+  display:block !important;
+}
+
 #token{
   visibility: hidden;
 }
