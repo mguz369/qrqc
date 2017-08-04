@@ -623,7 +623,6 @@ app.post('/get_email', (req, res) => {
         if (err) throw err;
         
         SendEmail(owner, subject, result[0].email, message);
-        res.send(true);
     });
 });
 
@@ -643,11 +642,12 @@ app.post('/get_cad_email', (req,res) => {
         if (err) throw err;
         
         SendEmail(owner, subject, result[0].email, message);
-        res.send(true);
     });
 })
 
 app.post('/get_jt_email', (req, res) => {
+    res.send(true);
+    
     var sql = ("SELECT `email` FROM `owner_exec` WHERE `name` = {owner}").formatSQL(req.body);
     var owner = "{owner}".formatSQL(req.body);
     var subject = "iQRQC Task: {issue}".formatSQL(req.body);
@@ -660,7 +660,6 @@ app.post('/get_jt_email', (req, res) => {
         if (err) throw err;
     
         SendEmail(owner, subject, result[0].email, message);
-        res.send(true);
     });
 });
 
