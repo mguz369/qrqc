@@ -6,7 +6,7 @@
 //************************************************************************
 // Requires
 //************************************************************************
-var ejs  = require('ejs');
+var ejs        = require('ejs');
 var express    = require('express');
 var favicon    = require('static-favicon');
 var session    = require('express-session');
@@ -25,6 +25,8 @@ var app = express();
 //app.engine('html', ejs.renderFile)
 app.use( bodyParser.json() );
 
+
+//Use gmail as an email client since I can't use Lotus
 var transporter = nodemailer.createTransport(smtpTransport({
     service     : 'gmail',
     host        : 'smtp.gmail.com',
@@ -105,7 +107,6 @@ var connectionQRQC;
 function ConnectToQRQC(){
     connectionQRQC = mysql.createConnection({
         host                : 'localhost',
-        //host                : '172.24.253.4',
         user                : 'qrqc',
         password            : 'Paulstra1',
         database            : 'qrqc',
@@ -140,47 +141,6 @@ ConnectToQRQC();
 
 
 //************************************************************************
-// Connect to smartplant database
-//************************************************************************
-var connectionSp;
-function ConnectToSp(){
-    connectionSp = mysql.createConnection({
-        host                : 'localhost',
-        //host                : '172.24.253.4',
-        user                : 'ind_maint',
-        password            : 'zJC2LKjN6XHq5ETX',
-        database            : 'smartplant',
-        multipleStatements  : true
-    });
-
-    //Establish connection
-    connectionSp.connect((err) => {
-        if(err){
-            throw err;
-            console.log("DB Connection Error - Retrying", err)
-            setTimeout(ConnectToQRQC(), 2000);
-        }
-    });
-
-    connectionSp.query('USE `smartplant`', function(err){
-        if(err)
-            console.log('Error connecting to `smartplant` - ',err);
-        else
-            console.log('`smartplant` selected');
-    });
-
-    connectionSp.on('error', (err) => {
-        console.log('DB Error', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST')
-            ConnectToSp();
-        else 
-            throw err;
-    });
-}//End ConnectToQRQC
-ConnectToSp();
-
-
-//************************************************************************
 // Login - This doesn't use HTTPS or TLS/SSL (yet)
 // It only check if the user is authorized
 //************************************************************************
@@ -189,9 +149,9 @@ app.post('/login_user', (req, res) => {
     var password = "{pass}".format(req.body);
 
     password = md5(password);
-    var validate_user = ("SELECT `Level` FROM `executive_login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
+    var validate_user = ("SELECT `Level` FROM `smartplant`.`executive_login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
 
-    connectionSp.query(validate_user, (err, result) => {
+    connectionQRQC.query(validate_user, (err, result) => {
         if (err) console.log(err);
 
         
@@ -528,9 +488,9 @@ app.post('/cad_post_it_items', (req, res) => {
 // Grab parts numbers
 //************************************************************************
 app.post('/get_part_nums', (req, res) => {
-    var sql = ("SELECT `number` FROM `part` ORDER BY `number`");
+    var sql = ("SELECT `number` FROM `smartplant`.`part` ORDER BY `number`");
 
-    connectionSp.query(sql, (err, result) => {
+    connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
         res.send(JSON.stringify(result));
