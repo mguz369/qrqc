@@ -151,6 +151,7 @@ app.post('/login_user', (req, res) => {
     password = md5(password);
     var validate_user = ("SELECT `Level` FROM `smartplant`.`executive_login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
 
+    console.log(validate_user);
     connectionQRQC.query(validate_user, (err, result) => {
         if (err) console.log(err);
 
