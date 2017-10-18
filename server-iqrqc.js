@@ -37,7 +37,7 @@ var transporter = nodemailer.createTransport(smtpTransport({
     debug       : true, // include SMTP traffic in the logs
     auth: {
         user: 'smartplant3@gmail.com',
-        pass: 'Paulstra1'
+        pass: 'ComputerBattery3'
     }
 }));
 
