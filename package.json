@@ -11,8 +11,7 @@
         "js-cookie": "^2.1.4",
         "md5": "^2.2.1",
         "mysql": "^2.15.0",
-        "nodemailer": "^4.2.0",
-        "nodemailer-smtp-transport": "^2.7.4",
+        "nodemailer": "x",
         "path": "x",
         "static-favicon": "1.0.2"
     },
