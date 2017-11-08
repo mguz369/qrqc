@@ -45,11 +45,36 @@ $.urlParam = function(name){
 var add_row_counter = '-1';
 var interval_timer = 3600000;   //1 hour
 var users, username, password;
+var idleTime = 0;
 
 $(document).ready(function () {
+  
+  //Check if user is idle
+  var idleInterval = setInterval(IncrementIdle, 60000); //Every minute
+
+  //Look for mouse movement and key presses
+  $(this).mousemove(function(e){
+    idleTime = 0;
+  });
+
+  $(this).keypress(function(e){
+    idleTime = 0;
+  });
+
+  //Increment the counter, at 60 go back to main index and invalidate cookie
+  function IncrementIdle(){
+    idleTime++;
+
+    if(idleTime > 59){
+      window.location.href = '/';
+      Cookies.set('is_valid', 'false');
+    }
+  }
+
+  //For the login page
   $('#login_button').click(function (){
-    var level = Cookies.get('level');
-    Press_Enter();
+    var level;
+
     password = $('#password').val().trim();
     username = $('#username').val().trim();
     
@@ -67,18 +92,23 @@ $(document).ready(function () {
       complete    : function(data){
         const parsed_data = JSON.parse(data.responseText);
 
+        //Direct user to correct QRQC
         if(parsed_data != "0"){
+          Cookies.set('level', parsed_data);
           Cookies.set('is_valid', 'valid');
-          if(level == 'Plant')
-            window.location.href = "/index";
-          else if(level == 'Mixing')
-            window.location.href = "/index_mixing";
-          else if(level == 'Auto')
-            window.location.href = "/index_auto";
-          else if(level == "Jim")
-            window.location.href = "/index_exec";
-          else if(level == "Cadillac")
-            window.location.href = "/icad";
+
+          level = Cookies.get('level');
+          console.log(Cookies.get('level'));
+
+          if     (parsed_data == 'Plant')   { window.location.href = "/index_plant";  }
+          else if(parsed_data == 'Mixing')  { window.location.href = "/index_mixing";  }
+          else if(parsed_data == 'Auto')    { window.location.href = "/index_auto";  }
+          else if(parsed_data == 'Jim')     { window.location.href = "/index_exec";  }
+          else if(parsed_data == 'Cadillac'){ window.location.href = "/icad";  }
+          else{
+            $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
+            Cookies.set('is_valid', 'invalid');
+          }
         }
         else{
           $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
@@ -88,42 +118,20 @@ $(document).ready(function () {
     });
   });
 
-  //************************************************************************
-  // When the home page is loaded, populate with a list of existing issues
-  // based on the days of the week
-  function Start_Timer(){
-    setTimeout(function(){
-      var level = Cookies.get('level');
-
-      if(level == "Plant")
-        window.location.href = "/";
-      else if(level == "Mixing")
-        window.location.href = "/view_mixing"; 
-      else if(level == 'Auto')
-        window.location.href = "/view_auto";
-      else if(level == 'Cadillac')
-        window.location.href = "/vcad";
-    }, interval_timer);
-  }
-
   function Check_Valid(){
     var validity = Cookies.get('is_valid');
     var level = Cookies.get('level');
 
-    if(level != "Cadillac"){
-      if(validity == "invalid" && level == "Plant")
-        window.location.href = "/";
-      else if(validity == "invalid" && level == "Mixing")
-          window.location.href = "/view_mixing";
-      else if(validity == "invalid" && level == "Auto")
-          window.location.href = "/view_auto";
-      else if(validity == "invalid" && level == "Jim")
-          window.location.href = "/view_exec";
-    }   
-    else{ 
-      if(validity == "invalid")
-        window.location.href = "/vcad";
-    }
+    if(validity == "invalid" && level == "Plant")
+      window.location.href = "/";
+    else if(validity == "invalid" && level == "Mixing")
+        window.location.href = "/view_mixing";
+    else if(validity == "invalid" && level == "Auto")
+        window.location.href = "/view_auto";
+    else if(validity == "invalid" && level == "Jim")
+        window.location.href = "/view_exec";
+    else if(validity == "invalid" && level == "Cadillac")
+      window.location.href = "/vcad";
   }
 
   //View pages, not logged in
@@ -182,7 +190,7 @@ $(document).ready(function () {
     var url = "create?id=";
     var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
-    Start_Timer();    
+        
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
     $('.categories').on('click touchstart', function () {
@@ -212,7 +220,7 @@ $(document).ready(function () {
     var url = "create_mixing?id=";
     var query_url = "/show_mixing_alerts";
     Show_Current(query_url, url);
-    Start_Timer();
+    
 
     $('.categories').on('click touchstart', function () {
       var elem_id = event.target.id;
@@ -242,7 +250,7 @@ $(document).ready(function () {
     var url = "create_auto?id=";
     var query_url = "/show_auto_alerts";
     Show_Current(query_url, url);
-    Start_Timer();
+    
 
     $('.categories').on('click touchstart', function () {
       var elem_id = event.target.id;
@@ -271,7 +279,7 @@ $(document).ready(function () {
     var url = "create_exec?id=";
     var query_url = "/show_jt_alerts";
     Show_Current(query_url, url);
-    Start_Timer();
+    
 
      $('.categories').on('click touchstart', function () {
       var elem_id = event.target.id;
@@ -300,7 +308,7 @@ $(document).ready(function () {
     var url = "ccad?id=";
     var query_url = "/show_cad_alerts";
     Show_Current(query_url, url);
-    Start_Timer();
+    
 
     $('.categories').on('click touchstart', function () {
       var elem_id = event.target.id;
@@ -334,14 +342,14 @@ $(document).ready(function () {
         body = "";
       
       Check_Valid();
-      Start_Timer();
+      
     }
     Load_Create(body);    
 
     $('#return_home').on('click touchstart', function () {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/index';
+        window.location.href = '/index_plant';
       else
         return false;
     });
@@ -379,8 +387,7 @@ $(document).ready(function () {
       if(body === undefined)
         body = "";
       
-      Check_Valid();
-      Start_Timer();
+      Check_Valid();      
     }
 
     Load_JT_Create(body);
@@ -411,15 +418,13 @@ $(document).ready(function () {
   // to the server as a JSON string
   //************************************************************************
   $('#submit_plant').on('click touchstart', function (){
-    var token = "plantlevel";
     var go = Submit_Data();
 
     if(go != 0)
-      window.location.href = '/index';
+      window.location.href = '/index_plant';
   });//End submit_plant
 
   $('#submit_mix').on('click touchstart', function (){
-    var token = "mixlevel";
     var go = Submit_Data();
     
     if(go != 0)
@@ -427,22 +432,19 @@ $(document).ready(function () {
   });//End submit_mix
 
   $('#submit_auto').on('click touchstart', function (){
-    var token = "autolevel";
     var go = Submit_Data();
     if(go != 0)
       window.location.href = '/index_auto';
   });//End submit_auto
 
   $('#submit_jt').on('click touchstart', function (){
-    var token = "jtlevel";
     var go = Submit_Data();
 
-    //if(go != 0)
-      //window.location.href = '/index_exec';
+    if(go != 0)
+      window.location.href = '/index_exec';
   });//End subit_jt
 
   $('#submit_cad').on('click touchstart', function (){
-    var token = "cadlevel";
     var go = Submit_Data();
     
     if(go != 0)
@@ -453,7 +455,7 @@ $(document).ready(function () {
     var level = Cookies.get('level');
 
     if(level == "Plant")
-        window.location.href = "/";
+        window.location.href = "/view_plant";
     else if(level == "Mixing")
         window.location.href = "/view_mixing";
     else if(level == "Auto")
@@ -814,7 +816,7 @@ function Show_Current(query_url, url){
     contentType : "application/json",
     processData : false,
     complete    : function(data){
-      var today = GetToday()    
+      var today = GetToday(); 
       loadAlerts(data, today, url);
       console.log("show current")
     }

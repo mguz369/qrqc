@@ -1,0 +1,77 @@
+@font-face {
+  font-family: 'ATSackersGothic-Medium';
+  src: url('fonts/ATSackersGothic-Medium.ttf');
+}
+
+body {
+  background-color: #132057;
+  font-family: "ATSackersGothic-Medium";
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2{
+  color: white;
+  
+}
+
+div{
+  padding: 5px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 20px 0px;
+  margin: 10px 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  width: 20%;
+  height: 20%;
+}
+
+.btn-white {
+  -webkit-transition: background-color 0.2s, color 0.2s;
+  -moz-transition: background-color 0.2s, color 0.2s;
+  -o-transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
+  color: #fff;
+  border: 2px solid #fff;
+  background-color: transparent;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.pulsor {
+  width: 21%;
+  font-size: 32px;
+  cursor: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #333;
+}
+.pulsor:hover {
+  -webkit-animation: pusate 1s infinite alternate;
+  -moz-animation: pusate 1s infinite alternate;
+  -animation: pusate 1s infinite alternate;
+  text-shadow: 0 0 8px #ccc;
+}
+@-webkit-keyframes pusate {
+  from { box-shadow: 0 0 10px #333; }
+  to { box-shadow: 0 0 40px #fff; }
+}
+@-moz-keyframes pusate {
+  from { box-shadow: 0 0 10px #333; }
+  to { box-shadow: 0 0 40px #fff; }
+}
+@keyframes pusate {
+  from { box-shadow: 0 0 10px #333; }
+  to { box-shadow: 0 0 40px #fff; }
+}
+
+#interface_body{
+  border-style: solid;
+  border-color: #fff;
+  border-width: 1px;
+  width: 90%;
+  margin: 0 5%;
+  overflow-x: auto;
+}
