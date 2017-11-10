@@ -1036,6 +1036,9 @@ function Pull_JT_Data(id, disabled){
   });
 }// End Pull_JT_Data()
 
+
+var lock_out_post = false,
+    lock_out_action = false;
 function Submit_Data() {
   var post_id, post_url, items_url,
       level = Cookies.get('level');
@@ -1124,15 +1127,17 @@ function Submit_Data() {
     return 0;
   }
   
+  if(lock_out_post == false){
+    $.ajax({
+      url         : post_url,
+      type        : "POST",
+      contentType : "application/json",
+      processData : false,
+      data        : JSON.stringify(payload),
+    });
 
-  $.ajax({
-    url         : post_url,
-    type        : "POST",
-    contentType : "application/json",
-    processData : false,
-    data        : JSON.stringify(payload),
-  });
-
+    lock_out_post = true;
+  }
   //Action Plan row(s) write to DB
   var tLen = [], tDesc = [], resp = [], dStart = [], dEnd = [],
       dComplete = [], itemId = [], state = [], eMail = [],
@@ -1204,13 +1209,17 @@ function Submit_Data() {
       array_length  : tLen.length
     };
 
-    $.ajax({
-      url         : items_url,
-      type        : "POST",
-      contentType : "application/json",
-      processData : false,
-      data        : JSON.stringify(payload2),
-    });
+    if(lock_out_action == false){
+      $.ajax({
+        url         : items_url,
+        type        : "POST",
+        contentType : "application/json",
+        processData : false,
+        data        : JSON.stringify(payload2),
+      });
+
+      lock_out_action = true;
+    }
   }
 }// End Submit_Data()
 
