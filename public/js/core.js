@@ -165,6 +165,7 @@ $(document).ready(function () {
     }
     else if(Cookies.get('level') == "Jim"){
       query_url = "/show_jt_alerts";
+      url = "view2?id=";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Executive Level");
     }
     
@@ -173,7 +174,10 @@ $(document).ready(function () {
 
     // var url = "view?id=";
     // var query_url = "/show_current_alerts"
-    Show_Current(query_url, url);
+    if(Cookies.get('level') == "Jim")
+      Show_JT_Current(query_url, url);
+    else
+      Show_Current(query_url, url);
   });//End view_page
 
 
