@@ -15,7 +15,7 @@
   </head>
 
 
-  <body id="view_cadillac">
+  <body id="index_page">
     <div class="page-header">
       <section class="user-logged-in">
         <div id="clock" class="dark display">
@@ -26,9 +26,8 @@
           <div class="digits"></div>
         </div>
       </section>
-      
       <section class="page-title">
-        <h2>iQRQC - Cadillac - Plant View</h2>
+        <h2 id="iqrqc_header"></h2>
       </section>      
       <section class="log-button ng-scope">
         <img src="../images/logo.jpg" alt="" height="50px" width="250px">
@@ -38,12 +37,13 @@
 
     <table id="issues_table">
       <tr>
-        <td class="days_column">Monday</td>    
-        <td class="days_column">Tuesday</td>    
-        <td class="days_column">Wednesday</td>    
+        <td class="days_column">Monday</td>
+        <td class="days_column">Tuesday</td>
+        <td class="days_column">Wednesday</td>
         <td class="days_column">Thursday</td>
         <td class="days_column">Friday</td>
       </tr>
+
     </table>      
     
 
@@ -54,31 +54,28 @@
     <table id="category_table">
       <tr class="category_rows">
           <td> 
-              <div class="categories Safety"    >Safety/ Environment</div>
-              <div class="categories Quality"   >Quality</div>
-              <div class="categories Activity"  >Activity (Sales)</div>
-              <div class="categories Inventory" >Inventory</div>
-              <div class="categories Scrap"     >Scrap</div>
+              <button type="button" class="categories Safety"    id="Safety">Safety/ Environment</button>
+              <button type="button" class="categories Quality"   id="Quality">Quality</button>
+              <button type="button" class="categories Activity"  id="Activity">Activity (Sales)</button>
+              <button type="button" class="categories Inventory" id="Inventory">Inventory</button>
+              <button type="button" class="categories Scrap"     id="Scrap">Scrap</button>
           </td>
       </tr>
       <tr class="category_rows">
           <td >
-              <div class="categories Hr"        >HR/ Labor</div>
-              <div class="categories Delivery"  >Delivery</div>
-              <div class="categories Operation" >Operations Efficiency</div>
-              <div class="categories Supply"    >Supply Chain</div>
-              <div class="categories Misc"      >Miscellaneaous</div>
+              <button type="button" class="categories Hr"        id="Hr">HR/ Labor</button>
+              <button type="button" class="categories Delivery"  id="Delivery">Delivery</button>
+              <button type="button" class="categories Operation" id="Operation">Operations Efficiency</button>
+              <button type="button" class="categories Supply"    id="Supply">Supply Chain</button>
+              <button type="button" class="categories Misc"      id="Misc">Miscellaneaous</button>
           </td>
       </tr>
     </table>
 
     <div class="mycontainer">
-      <table class="page-footer">
-        <tr>
-          <td><a href="login" class="btn btn-white table_button" id="login_redirect">Login to edit</a></td>
-        </tr>
-      </table>
-
+      <div class="page-footer">
+        <a href="/" class="btn btn-white">Logout of Post-It</a>
+      </div>
     </div>
 
     <script type="text/javascript" src="../js/clock.js"></script>

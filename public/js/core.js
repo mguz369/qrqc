@@ -47,7 +47,9 @@ var interval_timer = 3600000;   //1 hour
 var users, username, password;
 var idleTime = 0;
 
+
 $(document).ready(function () {
+  console.log(Cookies.get('level'));
   
   //Check if user is idle
   var idleInterval = setInterval(IncrementIdle, 60000); //Every minute
@@ -100,11 +102,13 @@ $(document).ready(function () {
           level = Cookies.get('level');
           console.log(Cookies.get('level'));
 
-          if     (parsed_data == 'Plant')   { window.location.href = "/index_plant";  }
-          else if(parsed_data == 'Mixing')  { window.location.href = "/index_mixing";  }
-          else if(parsed_data == 'Auto')    { window.location.href = "/index_auto";  }
-          else if(parsed_data == 'Jim')     { window.location.href = "/index_exec";  }
-          else if(parsed_data == 'Cadillac'){ window.location.href = "/icad";  }
+          if (parsed_data == 'Jim'){
+            window.location.href = "/index_exec";
+          }
+          else if(parsed_data == 'Plant' || parsed_data == 'Mixing' || parsed_data == 'Auto' || 
+                  parsed_data == 'Cadillac'){ 
+            window.location.href = "/index";
+          }
           else{
             $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
             Cookies.set('is_valid', 'invalid');
@@ -136,59 +140,84 @@ $(document).ready(function () {
 
   //View pages, not logged in
   $('#view_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Plant');
-
     var url = "view?id=";
-    var query_url = "/show_current_alerts"
+    var query_url = "";
+
+    if(Cookies.get('level') == "Plant"){
+      query_url = "/show_current_alerts";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Plant Level");
+    }
+    else if(Cookies.get('level') == "Mixing"){
+      query_url = "/show_mixing_alerts";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Mixing Level");
+    }
+    else if(Cookies.get('level') == "Auto"){
+      query_url = "/show_auto_alerts";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Auto Level");
+    }
+    else if(Cookies.get('level') == "Cement"){
+      query_url = "/show_jt_alerts";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Cementing Level");
+    }
+    else if(Cookies.get('level') == "Cadillac"){
+      query_url = "/show_cad_alerts";
+      $('#iqrqc_header').html("iQRQC - Cadillac - Plant Level");
+    }
+    
+    // Cookies.set('is_valid', 'invalid');
+    // Cookies.set('level', 'Plant');
+
+    // var url = "view?id=";
+    // var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
   });//End view_page
 
-  $('#view_mixing_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Mixing');
-
-    var url = "view?id=";
-    var query_url = "/show_mixing_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
-
-  $('#view_auto_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Auto');
-
-    var url = "view?id=";
-    var query_url = "/show_auto_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
-
-  //View pages, not logged in
-  $('#view_jt_page').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Jim');
-
-    var url = "view2?id=";
-    var query_url = "/show_jt_alerts"
-    Show_JT_Current(query_url, url);
-  });//End view_page
-
-
-  $('#view_cadillac').exists(function() {
-    Cookies.set('is_valid', 'invalid');
-    Cookies.set('level', 'Cadillac');
-
-    var url = "view?id=";
-    var query_url = "/show_cad_alerts"
-    Show_Current(query_url, url);
-  });//End view_page
 
   //************************************************************************
   // Index Pages
   $('#index_page').exists(function() {
-    Check_Valid();
+    //Check_Valid();
 
-    var url = "create?id=";
-    var query_url = "/show_current_alerts"
+    var url = "";
+    var query_url = "";
+    var category_url = "";
+
+    console.log(Cookies.get('level'))
+
+    if(Cookies.get('level') == "Plant"){
+      url = "/create?id=";
+      query_url = "/show_current_alerts";
+      category_url = "/create_plant";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Plant Level");
+    }
+    else if(Cookies.get('level') == "Mixing"){
+      url = "/create?id=";
+      query_url = "/show_mixing_alerts";
+      category_url="/create_mixing";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Mixing Level");
+    }
+    else if(Cookies.get('level') == "Auto"){
+      url = "/create?id=";
+      query_url = "/show_auto_alerts";
+      category_url="/create_auto";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Auto Level");
+    }
+    else if(Cookies.get('level') == "Cement"){
+      url = "/create?id=";
+      query_url = "/show_jt_alerts";
+      category_url="/create_cement";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Cementing Level");
+    }
+    else if(Cookies.get('level') == "Cadillac"){
+      url = "/create?id=";
+      query_url = "/show_cad_alerts";
+      category_url="/create_cad";
+      $('#iqrqc_header').html("iQRQC - Cadillac - Plant Level");
+    }
+
+
+    //var url = "create?id=";
+    //var query_url = "/show_current_alerts"
     Show_Current(query_url, url);
         
 
@@ -201,7 +230,7 @@ $(document).ready(function () {
       };
 
       $.ajax({
-        url         : "/create_plant",
+        url         : category_url,
         type        : "POST",
         contentType : "application/json",
         data        : JSON.stringify(payload),
@@ -214,123 +243,6 @@ $(document).ready(function () {
     });  
   });//End index_page
 
-  $('#mixing_page').exists(function(){
-    Check_Valid();
-
-    var url = "create_mixing?id=";
-    var query_url = "/show_mixing_alerts";
-    Show_Current(query_url, url);
-    
-
-    $('.categories').on('click touchstart', function () {
-      var elem_id = event.target.id;
-      
-      var payload = {
-        category : elem_id
-      };
-
-      $.ajax({
-        url         : "/create_mixing",
-        type        : "POST",
-        contentType : "application/json",
-        data        : JSON.stringify(payload),
-        processData : false,
-        complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-          window.location.href = url + parsed_data[0].insertId;
-        }
-      });
-    });
-  });// End index_mixing
-  
-  $('#auto_page').exists(function(){
-    Check_Valid();
-
-
-    var url = "create_auto?id=";
-    var query_url = "/show_auto_alerts";
-    Show_Current(query_url, url);
-    
-
-    $('.categories').on('click touchstart', function () {
-      var elem_id = event.target.id;
-      
-      var payload = {
-        category : elem_id
-      };
-
-      $.ajax({
-        url         : "/create_auto",
-        type        : "POST",
-        contentType : "application/json",
-        data        : JSON.stringify(payload),
-        processData : false,
-        complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-          window.location.href = url + parsed_data[0].insertId;
-        }
-      });
-    });  
-  });
-
-  $('#jt_page').exists(function(){
-    Check_Valid();
-
-    var url = "create_exec?id=";
-    var query_url = "/show_jt_alerts";
-    Show_Current(query_url, url);
-    
-
-     $('.categories').on('click touchstart', function () {
-      var elem_id = event.target.id;
-      
-      var payload = {
-        category : elem_id
-      };
-      
-      $.ajax({
-        url           : "/create_jt",
-        type          : "POST",
-        contentType   : "application/json",
-        data          : JSON.stringify(payload),
-        processData   : false,
-        complete      : function(data){
-            var parsed_data = JSON.parse(data.responseText);
-            window.location.href = url + parsed_data[0].insertId;
-        }
-      });
-    });
-  });//End index_jt
-
-  $('#cadillac_page').exists(function(){
-    Check_Valid();
-
-    var url = "ccad?id=";
-    var query_url = "/show_cad_alerts";
-    Show_Current(query_url, url);
-    
-
-    $('.categories').on('click touchstart', function () {
-      var elem_id = event.target.id;
-      
-      var payload = {
-        category : elem_id
-      };
-
-      $.ajax({
-        url         : "/create_cad",
-        type        : "POST",
-        contentType : "application/json",
-        data        : JSON.stringify(payload),
-        processData : false,
-        complete    : function(data){
-          var parsed_data = JSON.parse(data.responseText);
-          window.location.href = url + parsed_data[0].insertId;
-        }
-      });
-    });  
-  });// End index_mixing
-
   //************************************************************************
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){
@@ -341,39 +253,22 @@ $(document).ready(function () {
       if(body === undefined)
         body = "";
       
-      Check_Valid();
-      
+      Check_Valid();    
     }
-    Load_Create(body);    
+
+    if(Cookies.get('level') == "Plant"){         $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
+    else if(Cookies.get('level') == "Mixing"){   $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
+    else if(Cookies.get('level') == "Auto"){     $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
+    else if(Cookies.get('level') == "Cement"){   $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
+    else if(Cookies.get('level') == "Cadillac"){ $('#iqrqc_header').html("iQRQC - Cadillac - eLert"); }
+
+
+    Load_Create(body);
 
     $('#return_home').on('click touchstart', function () {
       var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
       if(option == true)
-        window.location.href = '/index_plant';
-      else
-        return false;
-    });
-
-    $('#mixing_home').on('click touchstart', function () {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/index_mixing';
-      else
-        return false;
-    });
-
-    $('#auto_home').on('click touchstart', function () {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/index_auto';
-      else
-        return false;
-    });
-
-    $('#cad_home').on('click touchstart', function () {
-      var option = confirm("Warning - Any unsaved date will be lost\n\nProceed?");
-      if(option == true)
-        window.location.href = '/icad';
+        window.location.href = '/index';
       else
         return false;
     });
@@ -421,49 +316,17 @@ $(document).ready(function () {
     var go = Submit_Data();
 
     if(go != 0)
-      window.location.href = '/index_plant';
+      window.location.href = '/index';
   });//End submit_plant
-
-  $('#submit_mix').on('click touchstart', function (){
-    var go = Submit_Data();
-    
-    if(go != 0)
-      window.location.href = '/index_mixing';
-  });//End submit_mix
-
-  $('#submit_auto').on('click touchstart', function (){
-    var go = Submit_Data();
-    if(go != 0)
-      window.location.href = '/index_auto';
-  });//End submit_auto
-
-  $('#submit_jt').on('click touchstart', function (){
-    var go = Submit_Data();
-
-    if(go != 0)
-      window.location.href = '/index_exec';
-  });//End subit_jt
-
-  $('#submit_cad').on('click touchstart', function (){
-    var go = Submit_Data();
-    
-    if(go != 0)
-      window.location.href = '/icad';
-  });//End submit_cad
 
   $('#view_return').on('click touchstart', function (){
     var level = Cookies.get('level');
 
-    if(level == "Plant")
+    if(level == "Plant" || level == "Mixing" ||
+       level == "Auto"  || level == "Cadillac")
         window.location.href = "/view_plant";
-    else if(level == "Mixing")
-        window.location.href = "/view_mixing";
-    else if(level == "Auto")
-        window.location.href = "/view_auto";
     else if(level == "Jim")
         window.location.href = "/view_exec";
-    else if(level == "Cadillac")
-        window.location.href = "/vcad";
   });
 
   //Remove the last newly added action row
@@ -490,7 +353,6 @@ $(document).ready(function () {
     var elem_id = event.target.id;
     var elem_data = $("#" + elem_id).val();
     var column_name = $("#" + elem_id).attr("name");
-    console.log("Column id: ", column_name);
 
     if(column_name == 'deadline'){
       var today = GetToday();
@@ -679,6 +541,7 @@ function Load_Create(disabled){
 
   //preload users[] so that changing can be done
     if(level == "Cadillac"){
+      $('#department').val("Plant");
       url = "/get_cad_users";
       console.log(url);
     }
@@ -1098,6 +961,9 @@ function Submit_Data() {
       cause       = $('#cause_desc').val(),
       post_id     = $('#id_number').text(),
       active      = 1;
+
+      if(level == 'Cadillac')
+        dept = "CP";
 
       payload = {
         type        : a_type,

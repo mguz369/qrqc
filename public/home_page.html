@@ -8,34 +8,43 @@
   <link rel="stylesheet" type="text/css" href="css/select_page.css">
 
   <script src="js/jquery.min.js"></script>
+  <script src="js/home_page.js"></script>
+  <script src='js/js.cookie.js'></script>
 </head>
 
-<body>
+<body class="home_page">
   <h1 align="center">Select a QRQC Post-It Level</h1>
   <div id="interface_body">
 
     <h2 align="center">Grand Rapids</h2>
     <div class="Cell">
       <span>
-        <a href="/view_plant" class="btn btn-white pulsor">Plant</a>
+        <a href="/view_current" id="gr_plant" class="btn btn-white pulsor">Plant</a>
       </span>
       <span>
-        <a href="/view_mixing" class="btn btn-white pulsor">Mixing</a>
+        <a href="/view_current" id="gr_mixing" class="btn btn-white pulsor">Mixing</a>
       </span>
       <span>
-        <a href="/view_auto" class="btn btn-white pulsor">Automation</a>
+        <a href="/view_current" id="gr_auto" class="btn btn-white pulsor">Automation</a>
       </span>
       <span disabled>
-        <a href="" class="btn btn-white pulsor">Cementing</a>
+        <a href="" id="gr_cement" class="btn btn-white pulsor">Cementing</a>
+      </span>
+    </div>
+    <div class="Cell">
+      <span>
+        <a href="/view_exec" id="gr_exec" class="btn btn-white pulsor">Executive</a>
       </span>
     </div> 
+
 
     <h2 align="center">Cadillac</h2>
     <div class="Cell">
       <span>
-        <a href="/vcad" class="btn btn-white pulsor">Plant</a>
+        <a href="/view_current" id="cd_plant" class="btn btn-white pulsor">Plant</a>
       </span>
     </div>
   </div>
+  
 </body>
 </html>

@@ -39,6 +39,7 @@ div{
   background-color: transparent;
   text-transform: uppercase;
   text-align: center;
+  overflow-x: hidden;
 }
 
 .pulsor {

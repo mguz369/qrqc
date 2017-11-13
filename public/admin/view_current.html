@@ -5,8 +5,8 @@
     <title>Current e-Alerts</title>
     
     <!-- Load CSS -->  
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/clock.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/clock.css">
 
     <!-- Load JavaScript files -->
     <script src='../js/jquery.min.js'></script>
@@ -15,7 +15,7 @@
   </head>
 
 
-  <body id="view_mixing_page">
+  <body id="view_page">
     <div class="page-header">
       <section class="user-logged-in">
         <div id="clock" class="dark display">
@@ -26,8 +26,9 @@
           <div class="digits"></div>
         </div>
       </section>
+      
       <section class="page-title">
-        <h2>iQRQC - Grand Rapids - Mixing View</h2>
+        <h2 id="iqrqc_header"></h2>
       </section>      
       <section class="log-button ng-scope">
         <img src="../images/logo.jpg" alt="" height="50px" width="250px">
@@ -77,9 +78,10 @@
           <td><a href="login" class="btn btn-white table_button" id="login_redirect">Login to edit</a></td>
         </tr>
       </table>
+
     </div>
 
-    <script type="text/javascript" src="../js/clock.js"></script>
-    <script type="text/javascript" src="../js/moment.js"></script>
+    <script type="text/javascript" src="js/clock.js"></script>
+    <script type="text/javascript" src="js/moment.js"></script>
   </body>
 </html>
