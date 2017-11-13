@@ -156,12 +156,16 @@ $(document).ready(function () {
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Auto Level");
     }
     else if(Cookies.get('level') == "Cement"){
-      query_url = "/show_jt_alerts";
+      query_url = "/show_cement_alerts";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Cementing Level");
     }
     else if(Cookies.get('level') == "Cadillac"){
       query_url = "/show_cad_alerts";
       $('#iqrqc_header').html("iQRQC - Cadillac - Plant Level");
+    }
+    else if(Cookies.get('level') == "Jim"){
+      query_url = "/show_jt_alerts";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Executive Level");
     }
     
     // Cookies.set('is_valid', 'invalid');
@@ -207,6 +211,12 @@ $(document).ready(function () {
       query_url = "/show_jt_alerts";
       category_url="/create_cement";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Cementing Level");
+    }
+    else if(Cookies.get('level') == "Jim"){
+      url = "/create_exec?id=";
+      query_url = "/show_jt_alerts";
+      category_url="/create_jt";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Executive Level");
     }
     else if(Cookies.get('level') == "Cadillac"){
       url = "/create?id=";
@@ -274,7 +284,7 @@ $(document).ready(function () {
     });
   });
 
-  $('#create_jt_page').exists(function(){
+  $('#create_jt').exists(function(){
     var body;
     try{
        body = document.getElementsByClassName('disabled')[0].className;
@@ -312,7 +322,7 @@ $(document).ready(function () {
   // Stores data entered in the fields from the webpage and sends them
   // to the server as a JSON string
   //************************************************************************
-  $('#submit_plant').on('click touchstart', function (){
+  $('#submit').on('click touchstart', function (){
     var go = Submit_Data();
 
     if(go != 0)
