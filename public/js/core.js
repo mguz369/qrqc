@@ -324,7 +324,7 @@ $(document).ready(function () {
 
     if(level == "Plant" || level == "Mixing" ||
        level == "Auto"  || level == "Cadillac")
-        window.location.href = "/view_plant";
+        window.location.href = "/view_current";
     else if(level == "Jim")
         window.location.href = "/view_exec";
   });
