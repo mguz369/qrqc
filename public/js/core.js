@@ -329,8 +329,15 @@ $(document).ready(function () {
   $('#submit').on('click touchstart', function (){
     var go = Submit_Data();
 
-    if(go != 0)
-      window.location.href = '/index';
+
+
+    if(go != 0){
+      var option = confirm("All actions will be submitted\n\nProceed?");
+      if(option == true)
+        window.location.href = '/index';
+      else
+        return false;
+    }
   });//End submit_plant
 
   $('#view_return').on('click touchstart', function (){
