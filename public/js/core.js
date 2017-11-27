@@ -345,8 +345,10 @@ $(document).ready(function () {
 
   //Remove the last newly added action row
   $(document).on('click', '#delete', function () {
+	  console.log("Delete clicked, add_row_counter started at: ", add_row_counter)
     $('.' + (add_row_counter - 1)).closest('tr').remove();
     add_row_counter--;
+	console.log("add_row_counter is now at: ", add_row_counter)
     return false;
   });
 
@@ -448,7 +450,8 @@ function Add_New_Alert(){
     " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
     " <td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
     " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-    " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
+	" <td class='table_data' style='text-align: center'>X</td>" +
+    //" <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
     " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
   );
   
