@@ -345,10 +345,9 @@ $(document).ready(function () {
 
   //Remove the last newly added action row
   $(document).on('click', '#delete', function () {
-	  console.log("Delete clicked, add_row_counter started at: ", add_row_counter)
-    $('.' + (add_row_counter - 1)).closest('tr').remove();
+    $('.info_rows_' + add_row_counter).closest('tr').remove();
     add_row_counter--;
-	console.log("add_row_counter is now at: ", add_row_counter)
+	  
     return false;
   });
 
@@ -414,7 +413,7 @@ function Add_Alert(disabled){
   add_row_counter++;  //Increment
   
   $("#action_table").append(
-    " <tr class='info_rows'>" +
+    " <tr class='info_rows_" + add_row_counter +"' >" +
     " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Immediate</option>" +
@@ -437,7 +436,7 @@ function Add_Alert(disabled){
 function Add_New_Alert(){
   add_row_counter++;  //Increment
   $("#action_table").append(
-    " <tr class='info_rows "+ add_row_counter + "'>" +
+    " <tr class='info_rows_" + add_row_counter + "'>" +
     " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Immediate</option>" +
@@ -450,8 +449,7 @@ function Add_New_Alert(){
     " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
     " <td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
     " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-	" <td class='table_data' style='text-align: center'>X</td>" +
-    //" <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
+    " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
     " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
   );
   
@@ -469,7 +467,7 @@ function Add_JT_Alert(disabled){
   add_row_counter++;  //Increment
   
   $("#action_table").append(
-    " <tr class='info_rows'>" +
+    " <tr class='info_rows_" + add_row_counter + "'>" +
     " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Project</option>" +
@@ -493,7 +491,7 @@ function Add_New_JT_Alert(){
   add_row_counter++;  //Increment
 
   $("#action_table").append(
-    " <tr class='info_rows "+ add_row_counter + "'>" +
+    " <tr class='info_rows_" + add_row_counter + "'>" +
     " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Project</option>" +
