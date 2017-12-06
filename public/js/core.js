@@ -1115,6 +1115,7 @@ function Submit_Data() {
 function Format_Email(responsible, dept, location, part_num, issue, customer, t_descript, date_ending, level){  
   if(level == "Cadillac"){
     url = 'get_cad_email';
+	dept = "Plant";
   }
   else{
      url = 'get_email';
