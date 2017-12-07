@@ -555,7 +555,7 @@ app.post('/get_email', (req, res) => {
             console.log(address);
         }catch (err){}
 
-        SendEmail(owner, subject, address, message);
+        SendEmail(subject, address, message);
 	});
 	
 	
