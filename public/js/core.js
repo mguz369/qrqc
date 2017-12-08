@@ -523,9 +523,9 @@ function Add_New_JT_Alert(){
 
 function Load_Create(disabled){
   //Press_Enter();
-  var url = "";
+  var url_users, url_parts = "";
   var level = Cookies.get('level');
-  console.log("Level: ", level);
+  
 
   var dept = $('#department').val();
   var payload = { department : dept };
@@ -539,14 +539,16 @@ function Load_Create(disabled){
 
     
     if(level == "Cadillac"){
-      url = "/get_cad_users";
-      console.log(url);
+      url_users = "/get_cad_users";
+      url_parts = "/get_cad_part_nums";
     }
-    else
-      url = "/get_users";
+    else{
+      url_users = "/get_users";
+      url_parts = "/get_part_nums"
+    }
 
     $.ajax({
-      url         : url,
+      url         : url_users,
       type        : "POST",
       contentType : "application/json",
       data        : JSON.stringify(payload),
@@ -562,16 +564,17 @@ function Load_Create(disabled){
 
 
   //preload users[] so that changing can be done
-    if(level == "Cadillac"){
-      $('#department').val("Plant");
-      url = "/get_cad_users";
-      console.log(url);
-    }
-    else
-      url = "/get_users";
+  if(level == "Cadillac"){
+    url_users = "/get_cad_users";
+    url_parts = "/get_cad_part_nums";
+  }
+  else{
+    url_users = "/get_users";
+    url_parts = "/get_part_nums"
+  }
 
-    $.ajax({
-    url         : url,
+  $.ajax({
+    url         : url_users,
     type        : "POST",
     contentType : "application/json",
     data        : JSON.stringify(payload),
@@ -584,7 +587,7 @@ function Load_Create(disabled){
   });
 
   $.ajax({
-    url         : "/get_part_nums",
+    url         : url_parts,
     type        : "POST",
     contentType : "application/json",
     complete    : function(data){
