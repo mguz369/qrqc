@@ -1,0 +1,88 @@
+@font-face {
+  font-family: 'ATSackersGothic-Medium';
+  src: url('fonts/ATSackersGothic-Medium.ttf');
+}
+
+body {
+  font-family: "ATSackersGothic-Medium";
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2{
+  color: white; 
+}
+
+div{
+  padding: 5px;
+}
+
+.navbar-text, #nav-id{
+  font-size: 35px;
+  font-weight: bold;
+  color: #bdbdbd;
+}
+
+.navbar{
+  background: #132057; 
+}
+
+img{
+  float: left;
+  margin-top: 26px;
+  margin-left:5px;
+  margin-right: 8px;
+}
+
+
+/**********************************************************/
+/*   Id's   */
+#modal-img{
+   float: left;
+   font-size: 15px;
+   margin-top: 0px;
+}
+
+#container_add_new{
+   background: #132057;
+   border: none;
+}
+
+
+
+
+/**********************************************************/
+/*   Classes   */
+.modal-header{
+  background: #132057; 
+
+}
+.modal-title{
+  color:#bdbdbd;
+  font-weight: bold;
+ 
+}
+
+.btn {
+  display: inline-block;
+  padding: 20px 0px;
+  margin: 10px 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  width: 20%;
+  height: 20%;
+}
+
+.btn-white {
+  -webkit-transition: background-color 0.2s, color 0.2s;
+  -moz-transition: background-color 0.2s, color 0.2s;
+  -o-transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
+  color: #fff;
+  border: 2px solid #fff;
+  background-color: transparent;
+}
+
+.hidden {
+  display: hidden;
+}

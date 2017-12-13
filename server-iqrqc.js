@@ -30,7 +30,7 @@ var transporter = nodemailer.createTransport({
     port : 25,
     requireTLS : false,
     secure: false,
-	//logger : true, // log to console
+    //logger : true, // log to console
     //debug  : true, // include SMTP traffic in the logs
 });
 
@@ -70,7 +70,7 @@ String.prototype.format = function() {
 // DB query string formatting
 //************************************************************************
 String.prototype.formatSQL = function() {
-    var args = arguments;					//arugemens is a keyword
+    var args = arguments;                   //arugemens is a keyword
     this.unkeyed_index = 0;
     return this.replace(/\{(\w*)\}/g, function(match, key) {
         if (key === '') {
@@ -540,25 +540,268 @@ app.post('/get_cad_users', (req, res) => {
         res.send(JSON.stringify(result));
     });
 });
+
+
+//Add and delete owners for the various post-it levels
+app.post('/get_full_users_plant', (req, res) => {
+    //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
+
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = 'Plant' ").formatSQL(req.body);
+
+    console.log(sql);
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        var ret = {
+            'draw' : parseInt(req.query['draw']),
+            "recordsTotal": result[0][0]['COUNT(*)'],
+            "recordsFiltered":result[0][0]['COUNT(*)'], //data[1].length,
+        };
+
+        var d = [];
+        for(var i = 0; i < result[1].length; i++){
+            var item = []
+            var keys = Object.keys(result[1][i])
+            
+            for (var j = 0; j < keys.length; j++){
+                item.push(result[1][i][keys[j]])
+            }
+
+            d.push(item)
+        }
+
+        ret['data'] = d;
+        // console.log("RET:",ret);
+        res.send( JSON.stringify(ret) );
+    });
+});
+
+app.post('/get_full_users_mixing', (req, res) => {
+    //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
+
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Mixing'; SELECT * FROM `owner` WHERE `department` = 'Mixing' ").formatSQL(req.body);
+
+    console.log(sql);
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        var ret = {
+            'draw' : parseInt(req.query['draw']),
+            "recordsTotal": result[0][0]['COUNT(*)'],
+            "recordsFiltered":result[0][0]['COUNT(*)'], //data[1].length,
+        };
+
+        var d = [];
+        for(var i = 0; i < result[1].length; i++){
+            var item = []
+            var keys = Object.keys(result[1][i])
+            
+            for (var j = 0; j < keys.length; j++){
+                item.push(result[1][i][keys[j]])
+            }
+
+            d.push(item)
+        }
+
+        ret['data'] = d;
+        // console.log("RET:",ret);
+        res.send( JSON.stringify(ret) );
+    });
+});
+
+app.post('/get_full_users_auto', (req, res) => {
+    //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
+
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = 'Plant' ").formatSQL(req.body);
+
+    console.log(sql);
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        var ret = {
+            'draw' : parseInt(req.query['draw']),
+            "recordsTotal": result[0][0]['COUNT(*)'],
+            "recordsFiltered":result[0][0]['COUNT(*)'], //data[1].length,
+        };
+
+        var d = [];
+        for(var i = 0; i < result[1].length; i++){
+            var item = []
+            var keys = Object.keys(result[1][i])
+            
+            for (var j = 0; j < keys.length; j++){
+                item.push(result[1][i][keys[j]])
+            }
+
+            d.push(item)
+        }
+
+        ret['data'] = d;
+        // console.log("RET:",ret);
+        res.send( JSON.stringify(ret) );
+    });
+});
+
+app.post('/get_full_users_exec', (req, res) => {
+    //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
+
+    var sql = ("SELECT COUNT(*) FROM `owner_exec`; SELECT * FROM `owner_exec`").formatSQL(req.body);
+
+    console.log(sql);
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        var ret = {
+            'draw' : parseInt(req.query['draw']),
+            "recordsTotal": result[0][0]['COUNT(*)'],
+            "recordsFiltered":result[0][0]['COUNT(*)'], //data[1].length,
+        };
+
+        var d = [];
+        for(var i = 0; i < result[1].length; i++){
+            var item = []
+            var keys = Object.keys(result[1][i])
+            
+            for (var j = 0; j < keys.length; j++){
+                item.push(result[1][i][keys[j]])
+            }
+
+            d.push(item)
+        }
+
+        ret['data'] = d;
+        // console.log("RET:",ret);
+        res.send( JSON.stringify(ret) );
+    });
+});
+
+app.post('/get_full_users_cad', (req, res) => {
+    //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
+
+    var sql = ("SELECT COUNT(*) FROM `owner_cad` WHERE `department` = 'Plant'; SELECT * FROM `owner_cad` WHERE `department` = 'Plant' ").formatSQL(req.body);
+
+    console.log(sql);
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        var ret = {
+            'draw' : parseInt(req.query['draw']),
+            "recordsTotal": result[0][0]['COUNT(*)'],
+            "recordsFiltered":result[0][0]['COUNT(*)'], //data[1].length,
+        };
+
+        var d = [];
+        for(var i = 0; i < result[1].length; i++){
+            var item = []
+            var keys = Object.keys(result[1][i])
+            
+            for (var j = 0; j < keys.length; j++){
+                item.push(result[1][i][keys[j]])
+            }
+
+            d.push(item)
+        }
+
+        ret['data'] = d;
+        // console.log("RET:",ret);
+        res.send( JSON.stringify(ret) );
+    });
+});
+
+// Add and delete owners
+app.post('/add_new_owner', (req, res) => {
+    var sql = ("INSERT INTO `owner` (`name`, `email`, `department`) VALUES ({name}, {email}, {department});").formatSQL(req.body);
+
+    console.log(sql);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(true);
+    });
+});
+
+app.post('/add_new_exec_owner', (req, res) => {
+    var sql = ("INSERT INTO `owner_exec` (`name`, `email`, `department`) VALUES ({name}, {email}, {department});").formatSQL(req.body);
+
+    console.log(sql);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(true);
+    });
+});
+
+app.post('/add_new_cad_owner', (req, res) => {
+    var sql = ("INSERT INTO `owner_cad` (`name`, `email`, `department`) VALUES ({name}, {email}, {department});").formatSQL(req.body);
+
+    console.log(sql);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(true);
+    });
+});
+
+
+
+app.post('/delete_owner', (req, res) => {
+    var sql = ("DELETE FROM `owner` WHERE `id` = {id};").formatSQL(req.body);
+
+    console.log(sql);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(true);
+    });
+});
+
+app.post('/delete_exec_owner', (req, res) => {
+    var sql = ("DELETE FROM `owner_exec` WHERE `id` = {id};").formatSQL(req.body);
+
+    console.log(sql);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(true);
+    });
+});
+
+app.post('/delete_cad_owner', (req, res) => {
+    var sql = ("DELETE FROM `owner_cad` WHERE `id` = {id};").formatSQL(req.body);
+
+    console.log(sql);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if (err) throw err;
+
+        res.send(true);
+    });
+});
+
 //************************************************************************
 // 1) Get the required email address based on the user
 // 2) Create the email transporter to send the email
 //************************************************************************
 app.post('/get_email', (req, res) => {
     res.send(true);
-	
-	var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
-	var subject = "iQRQC Task: {issue}".formatSQL(req.body);
-	var message = ("You have been assigned a task for QRQC:\n\n" +
-				   "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
-				   "\nIssue Description: {issue}" +
-				   "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
+    
+    var sql = ("SELECT `email` FROM `owner` WHERE `name` = {owner} AND `department` = {department}").formatSQL(req.body);
+    var subject = "iQRQC Task: {issue}".formatSQL(req.body);
+    var message = ("You have been assigned a task for QRQC:\n\n" +
+                   "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
+                   "\nIssue Description: {issue}" +
+                   "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
     var address;
-	
-	connectionQRQC.query(sql, (err, result) => {
-		if(err) throw err;
+    
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
 
-		console.log(result);
+        console.log(result);
 
         try{
             address = result[0].email;
@@ -566,9 +809,7 @@ app.post('/get_email', (req, res) => {
         }catch (err){}
 
         SendEmail(subject, address, message);
-	});
-	
-	
+    });   
 });
 
 app.post('/get_cad_email', (req,res) => {
@@ -582,11 +823,11 @@ app.post('/get_cad_email', (req,res) => {
                    "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
 
     console.log(sql);
-	
-	connectionQRQC.query(sql, (err, result) => {
-		if(err) throw err;
+    
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
 
-		console.log(result);
+        console.log(result);
 
         try{
             address = result[0].email;
@@ -594,7 +835,7 @@ app.post('/get_cad_email', (req,res) => {
         }catch (err){}
 
         SendEmail(subject, address, message);
-	});
+    });
 });
 
 app.post('/get_jt_email', (req, res) => {
@@ -606,32 +847,29 @@ app.post('/get_jt_email', (req, res) => {
                    "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
                    "\nIssue Description: {issue}" +
                    "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
-				   
-	connectionQRQC.query(sql, (err, result) => {
-		if(err) throw err;
-
-		console.log(result);
+                   
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
 
         try{
             address = result[0].email;
-            console.log(address);
         }catch (err){}
 
         SendEmail(subject, address, message);
-	});
+    });
 });
 
 
 function SendEmail(subject, address, message){
     //var recipient = ('<%s>', address)
     //var message = ('{email_text}').format(req.body);
-	
-	// transporter.sendMail({
-     // from: 'qrqc-task@hutchinsonna.com',
-	 // to: 'remy.guegan@hutchinsonna.com',
-	 // subject : 'test emailing with IT', 
-     // text    : 'Hi. Did you receive this?'
-     // });
+    
+    // transporter.sendMail({
+    // from: 'qrqc-task@hutchinsonna.com',
+    // to: 'remy.guegan@hutchinsonna.com',
+    // subject : 'test emailing with IT', 
+    // text    : 'Hi. Did you receive this?'
+    // });
     var msg_body = {
         from    : 'qrqc-task@hutchinsonna.com',
         to      : address,
@@ -661,7 +899,7 @@ var admin_path = 'public/admin/';
 var each = ["images", "css", "js", "datetimepicker", "jquery"];
 
 for (var i = 0; i < each.length; i++){
-        app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));
+    app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));
 }
 
 app.use(favicon(path.join(__dirname, dir_path + '/images' + '/favicon.ico')));
@@ -701,42 +939,56 @@ app.get('/view_exec',   (req, res) => { res.sendFile(path.join(__dirname, admin_
 app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'index_jt.html' )); });
 app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'create_jt.html')); });
 
- 
+//Allow for the editing of owners
+app.get('/modify_owners', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_owners.html')); });
+app.get('/login_util', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_utils.html' )); });
 
 //Prototype pdf for Electron
 app.get('/pdf', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'pdf_test.html')); });
 
 
 
-
+/*
 var buffer = Buffer.from("foo");
-var table = new Uint32Array(256);
 
-function unsigned_crc_table(buffer) {
-  var i, j;
-  var byte, crc, mask = new Uint32Array(1);
-  
+// var crc32CXResult = crc32cx(buffer);
+var crc32CResult = crc32c(buffer);
 
-   /* Set up the table, if necessary. */
+// console.log("crc result: ", crc32CXResult.toString(16));
+console.log("crc result: ", crc32CResult.toString(16));
 
+
+function crc32c(buffer) {
+    var i, j;
+    var byte = new Uint32Array(1);
+    var crc = new Uint32Array(1);
+    var mask = new Uint32Array(1);
+    var table = new Uint32Array(256);
+
+    /* Set up the table, if necessary. *
     if (table[1] == 0) {
         for (byte = 0; byte <= 255; byte++) {
             crc = byte;
+            // console.log("crc: ", crc);
             for (j = 7; j >= 0; j--) {    // Do eight times.
                 mask = -(crc & 1);
                 crc = (crc >> 1) ^ (0xEDB88320 & mask);
             }
             table[byte] = crc;
         }
+
+        console.log("byte: %s\ncrc: %s\ni: %s\n", byte, crc, i)
     }
 
-   /* Through with table setup, now calculate the CRC. */
-
+    /* Through with table setup, now calculate the CRC. *
     i = 0;
     crc = 0xFFFFFFFF;
-    while ((byte = buffer[i]) != 0) {
+    for(var i = 0; i < buffer.length; i++) {
+        byte = buffer[i]
        crc = (crc >> 8) ^ table[(crc ^ byte) & 0xFF];
        i = i + 1;
+
+       console.log("byte: %s\ncrc: %s\ni: %s\n", byte, crc, i)
     }
     return ~crc;
-}
+}*/

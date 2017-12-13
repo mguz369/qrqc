@@ -270,10 +270,10 @@ $(document).ready(function () {
       Check_Valid();    
     }
 
-    if(Cookies.get('level') == "Plant"){         $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
-    else if(Cookies.get('level') == "Mixing"){   $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
-    else if(Cookies.get('level') == "Auto"){     $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
-    else if(Cookies.get('level') == "Cement"){   $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); }
+    if(Cookies.get('level') == "Plant" || Cookies.get('level') == "Mixing" ||
+       Cookies.get('level') == "Auto" || Cookies.get('level') == "Cement"){
+        $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); 
+    }
     else if(Cookies.get('level') == "Cadillac"){ $('#iqrqc_header').html("iQRQC - Cadillac - eLert"); }
 
 
