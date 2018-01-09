@@ -888,7 +888,7 @@ function SendEmail(subject, address, message){
         from    : 'qrqc-task@hutchinsonna.com',
         to      : address,
         subject : subject, 
-        text    : message
+        html    : message
     };
 
     transporter.sendMail(msg_body, (error, info) => {
