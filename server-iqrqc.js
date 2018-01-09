@@ -843,10 +843,24 @@ app.post('/get_jt_email', (req, res) => {
     
     var sql = ("SELECT `email` FROM `owner_exec` WHERE `name` = {owner}").formatSQL(req.body);
     var subject = "iQRQC Task: {issue}".formatSQL(req.body);
-    var message = ("You have been assigned a task for QRQC:\n\n" +
-                   "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
-                   "\nIssue Description: {issue}" +
-                   "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
+    
+    var message = (
+    "<div>" +
+      "<div style='background: linear-gradient(45deg, white, #132057); width: 100%; height: 100px;''></div>"+
+        "<b>You have been assigned a task for QRQC:</b>"+
+        "<p><b>Location:</b> {location}</p>"+
+        "<p><b>Part Number:</b> {part}</p>"+
+        "<p><b>Customer:</b> {customer}</p>"+
+        "<p><b>Issue Description:</b> {issue}</p>"+
+        "<p><b>Action to be Taken:</b> {description</p>"+
+        "<p><b>Task deadline is:</b> {ending}</p>"+
+      "<div style='background: linear-gradient(to left, white, #132057); width: 100%; height: 100px;'></div>"+
+   "</div>").formatSQL(req.body);
+
+    // var message = ("You have been assigned a task for QRQC:\n\n" +
+    //                "Location: {location}\nPart Number: {part}\nCustomer: {customer}" +
+    //                "\nIssue Description: {issue}" +
+    //                "\nAction to be Taken: {description}\nTask deadline is: {ending}").formatSQL(req.body);
                    
     connectionQRQC.query(sql, (err, result) => {
         if(err) throw err;
@@ -945,50 +959,3 @@ app.get('/login_util', (req, res) => { res.sendFile(path.join(__dirname, admin_p
 
 //Prototype pdf for Electron
 app.get('/pdf', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'pdf_test.html')); });
-
-
-
-/*
-var buffer = Buffer.from("foo");
-
-// var crc32CXResult = crc32cx(buffer);
-var crc32CResult = crc32c(buffer);
-
-// console.log("crc result: ", crc32CXResult.toString(16));
-console.log("crc result: ", crc32CResult.toString(16));
-
-
-function crc32c(buffer) {
-    var i, j;
-    var byte = new Uint32Array(1);
-    var crc = new Uint32Array(1);
-    var mask = new Uint32Array(1);
-    var table = new Uint32Array(256);
-
-    /* Set up the table, if necessary. *
-    if (table[1] == 0) {
-        for (byte = 0; byte <= 255; byte++) {
-            crc = byte;
-            // console.log("crc: ", crc);
-            for (j = 7; j >= 0; j--) {    // Do eight times.
-                mask = -(crc & 1);
-                crc = (crc >> 1) ^ (0xEDB88320 & mask);
-            }
-            table[byte] = crc;
-        }
-
-        console.log("byte: %s\ncrc: %s\ni: %s\n", byte, crc, i)
-    }
-
-    /* Through with table setup, now calculate the CRC. *
-    i = 0;
-    crc = 0xFFFFFFFF;
-    for(var i = 0; i < buffer.length; i++) {
-        byte = buffer[i]
-       crc = (crc >> 8) ^ table[(crc ^ byte) & 0xFF];
-       i = i + 1;
-
-       console.log("byte: %s\ncrc: %s\ni: %s\n", byte, crc, i)
-    }
-    return ~crc;
-}*/
