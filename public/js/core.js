@@ -528,6 +528,7 @@ function Load_Create(disabled){
   
 
   var dept = $('#department').val();
+  console.log(dept);
   var payload = { department : dept };
 
   //When department changes, change all owner boxes
