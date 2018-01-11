@@ -526,10 +526,7 @@ function Load_Create(disabled){
   var url_users, url_parts = "";
   var level = Cookies.get('level');
   
-
-  var dept = $('#department').val();
-  console.log(dept);
-  var payload = { department : dept };
+  var payload = { department : level };
 
   //When department changes, change all owner boxes
   $('#department').on('change', function(){
