@@ -274,7 +274,9 @@ $(document).ready(function () {
        Cookies.get('level') == "Auto" || Cookies.get('level') == "Cement"){
         $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); 
     }
-    else if(Cookies.get('level') == "Cadillac"){ $('#iqrqc_header').html("iQRQC - Cadillac - eLert"); }
+    else if(Cookies.get('level') == "Cadillac"){ 
+      $('#iqrqc_header').html("iQRQC - Cadillac - eLert"); 
+    }
 
 
     Load_Create(body);
