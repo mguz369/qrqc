@@ -560,16 +560,20 @@ function Load_Create(disabled){
 
 
   //preload users[] so that changing can be done
+  
+  var payload;
   if(level == "Cadillac"){
     url_users = "/get_cad_users";
     url_parts = "/get_cad_part_nums";
+    payload = { department : "Plant" };
   }
   else{
     url_users = "/get_users";
     url_parts = "/get_part_nums"
+    payload = { department : level };
   }
-  var payload = { department : level };
-  
+   
+
 
   $.ajax({
     url         : url_users,
