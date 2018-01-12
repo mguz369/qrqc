@@ -525,8 +525,6 @@ function Load_Create(disabled){
   //Press_Enter();
   var url_users, url_parts = "";
   var level = Cookies.get('level');
-  
-  var payload = { department : level };
 
   //When department changes, change all owner boxes
   $('#department').on('change', function(){
@@ -570,6 +568,8 @@ function Load_Create(disabled){
     url_users = "/get_users";
     url_parts = "/get_part_nums"
   }
+  var payload = { department : level };
+  
 
   $.ajax({
     url         : url_users,
