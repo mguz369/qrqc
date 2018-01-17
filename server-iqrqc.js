@@ -612,7 +612,7 @@ app.post('/get_full_users_mixing', (req, res) => {
 app.post('/get_full_users_auto', (req, res) => {
     //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
 
-    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = 'Plant' ").formatSQL(req.body);
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = 'Auto' ").formatSQL(req.body);
 
     console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
