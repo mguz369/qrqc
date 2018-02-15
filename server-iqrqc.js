@@ -852,7 +852,7 @@ app.post('/get_jt_email', (req, res) => {
         "<p><b>Part Number:</b> {part}</p>"+
         "<p><b>Customer:</b> {customer}</p>"+
         "<p><b>Issue Description:</b> {issue}</p>"+
-        "<p><b>Action to be Taken:</b> {description</p>"+
+        "<p><b>Action to be Taken:</b> {description}</p>"+
         "<p><b>Task deadline is:</b> {ending}</p>"+
       "<div style='background: linear-gradient(to left, white, #132057); width: 100%; height: 100px;'></div>"+
    "</div>").formatSQL(req.body);
