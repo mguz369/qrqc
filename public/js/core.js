@@ -679,7 +679,9 @@ function Load_JT_Create(disabled){
 
 function Empty_Owners(){
   for(var j = 0; j <= add_row_counter; j++){
-    $('#responsible_' + j).empty();
+    var task_complete = $("#date_completed_" + j).val();
+    if(task_complete == "")
+      $('#responsible_' + j).empty();
   }
 }//End Empty_Owners()
 
