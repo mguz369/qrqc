@@ -224,8 +224,15 @@ textarea {
   display: inline-block;
   padding: 5px 10px;
   text-decoration: none;
-  /*text-transform: uppercase;*/
   font-size: 0.8em;
+}
+
+.btn-alert {
+  display: inline-block;
+  padding: 5px 10px;
+  text-decoration: none;
+  font-size: 0.8em;
+  height: 85px;
 }
 
 .btn-blue {
@@ -605,6 +612,14 @@ section.log-button {
   padding: 21px;
 }
 
+.div_footer{
+  width: 100%;
+  background-color: #132057;
+  color: #fff;
+  padding: 21px;
+}
+
+
 
 /* FORMATTING FOR LOGIN.HTML */
 #logo{
@@ -618,6 +633,7 @@ section.log-button {
 /* FORMATTING FOR INDEX.HTML  */
 #issues_table{
   width: 95%;
+  /*height: -webkit-fill-available;*/
   border-style: inset;
   border-color: #132057;
   margin-top: 20px;
@@ -674,6 +690,7 @@ section.log-button {
   border-width: 1px;
   width: 70%;
   word-wrap: break-word;
+  overflow: auto;
 }
 
 /*   FORMATTING FOR CREATE.HTML  */

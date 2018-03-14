@@ -105,7 +105,7 @@ $(document).ready(function () {
           if (parsed_data == 'Jim'){
             window.location.href = "/index_exec";
           }
-          else if(parsed_data == 'Plant' || parsed_data == 'Mixing' || parsed_data == 'Auto' || 
+          else if(parsed_data == 'Plant' || parsed_data == 'Mixing' || parsed_data == 'Automation' || 
                   parsed_data == 'Cadillac'){ 
             window.location.href = "/index";
           }
@@ -130,8 +130,8 @@ $(document).ready(function () {
       window.location.href = "/";
     else if(validity == "invalid" && level == "Mixing")
         window.location.href = "/view_mixing";
-    else if(validity == "invalid" && level == "Auto")
-        window.location.href = "/view_auto";
+    else if(validity == "invalid" && level == "Automation")
+        window.location.href = "/view_Automation";
     else if(validity == "invalid" && level == "Jim")
         window.location.href = "/view_exec";
     else if(validity == "invalid" && level == "Cadillac")
@@ -151,9 +151,9 @@ $(document).ready(function () {
       query_url = "/show_mixing_alerts";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Mixing Level");
     }
-    else if(Cookies.get('level') == "Auto"){
-      query_url = "/show_auto_alerts";
-      $('#iqrqc_header').html("iQRQC - Grand Rapids - Auto Level");
+    else if(Cookies.get('level') == "Automation"){
+      query_url = "/show_Automation_alerts";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Automation Level");
     }
     else if(Cookies.get('level') == "Cement"){
       query_url = "/show_cement_alerts";
@@ -190,8 +190,6 @@ $(document).ready(function () {
     var query_url = "";
     var category_url = "";
 
-    console.log(Cookies.get('level'))
-
     if(Cookies.get('level') == "Plant"){
       url = "/create?id=";
       query_url = "/show_current_alerts";
@@ -204,11 +202,11 @@ $(document).ready(function () {
       category_url="/create_mixing";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Mixing Level");
     }
-    else if(Cookies.get('level') == "Auto"){
+    else if(Cookies.get('level') == "Automation"){
       url = "/create?id=";
-      query_url = "/show_auto_alerts";
-      category_url="/create_auto";
-      $('#iqrqc_header').html("iQRQC - Grand Rapids - Auto Level");
+      query_url = "/show_Automation_alerts";
+      category_url="/create_Automation";
+      $('#iqrqc_header').html("iQRQC - Grand Rapids - Automation Level");
     }
     else if(Cookies.get('level') == "Cement"){
       url = "/create?id=";
@@ -271,7 +269,7 @@ $(document).ready(function () {
     }
 
     if(Cookies.get('level') == "Plant" || Cookies.get('level') == "Mixing" ||
-       Cookies.get('level') == "Auto" || Cookies.get('level') == "Cement"){
+       Cookies.get('level') == "Automation" || Cookies.get('level') == "Cement"){
         $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); 
     }
     else if(Cookies.get('level') == "Cadillac"){ 
@@ -346,7 +344,7 @@ $(document).ready(function () {
     var level = Cookies.get('level');
 
     if(level == "Plant" || level == "Mixing" ||
-       level == "Auto"  || level == "Cadillac")
+       level == "Automation"  || level == "Cadillac")
         window.location.href = "/view_current";
     else if(level == "Jim")
         window.location.href = "/view_exec";
@@ -354,7 +352,7 @@ $(document).ready(function () {
 
   //Remove the last newly added action row
   $(document).on('click', '#delete', function () {
-    $('.info_rows_' + add_row_counter).closest('tr').remove();
+    $('.info_rows_' + add_row_counter).closest('tr').hide(1000).remove();
     add_row_counter--;
 	  
     return false;
@@ -421,46 +419,44 @@ $(document).ready(function () {
 function Add_Alert(disabled){
   add_row_counter++;  //Increment
   
-  $("#action_table").append(
-    " <tr class='info_rows_" + add_row_counter +"' >" +
-    " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
+  $("<tr class='info_rows_" + add_row_counter +"' >" +
+    "<td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Immediate</option>" +
     "   <option value='2'>Temporary</option>" +
     "   <option value='3'>Permanent</option> </select></td>" +
-    " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' name='description'" + disabled + "> </input> </td>" +
-    " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' "    + disabled + "> </select> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' "                 + disabled + "> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
-    " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
-    " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-    " <td class='table_data' style='text-align: center'>X</td>" +
-    " <td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
-  );
+    "<td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' name='description'" + disabled + "> </input> </td>" +
+    "<td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' "    + disabled + "> </select> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' "                 + disabled + "> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
+    "<td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
+    "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+    "<td class='table_data' style='text-align: center'>X</td>" +
+    "<td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
+  ).hide().appendTo("#action_table").show(1000);
   
   Update_Owners(users.length);
 }// End Add_alert()
 
 function Add_New_Alert(){
   add_row_counter++;  //Increment
-  $("#action_table").append(
-    " <tr class='info_rows_" + add_row_counter + "'>" +
-    " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+  $("<tr class='info_rows_" + add_row_counter + "'>" +
+    "<td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Immediate</option>" +
     "   <option value='2'>Temporary</option>" +
     "   <option value='3'>Permanent</option> </select></td>" +
-    " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' name='description'> </input> </td>" +
-    " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
-    " <td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
-    " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-    " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
-    " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-  );
+    "<td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' name='description'> </input> </td>" +
+    "<td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
+    "<td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
+    "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+    "<td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
+    "<td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+  ).hide().appendTo("#action_table").show(1000);
   
   var today = GetToday();
   
@@ -475,23 +471,22 @@ function Add_New_Alert(){
 function Add_JT_Alert(disabled){
   add_row_counter++;  //Increment
   
-  $("#action_table").append(
-    " <tr class='info_rows_" + add_row_counter + "'>" +
-    " <td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
+  $("<tr class='info_rows_" + add_row_counter + "'>" +
+    "<td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "' " + disabled + ">"+ 
     "   <option value='Empty'>---</option>" + 
     "   <option value='1'>Project</option>" +
     "   <option value='2'>System</option>" +
     "   <option value='3'>Task</option> </select></td>" +
-    " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' " + disabled + "> </input> </td>" +
-    " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' " + disabled + "> </select> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' " + disabled + "> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
-    " <td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
-    " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-    " <td class='table_data' style='text-align: center'>X</td>" +
-    " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-  );
+    "<td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text' " + disabled + "> </input> </td>" +
+    "<td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner' " + disabled + "> </select> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' " + disabled + "> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline' " + disabled + "> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete' " + disabled + "> </input> </td>" +
+    "<td class='table_data'> <div    class='added_row' id='state_"            + add_row_counter + "' " + disabled + ">Open</div></td>" +
+    "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+    "<td class='table_data' style='text-align: center'>X</td>" +
+    "<td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+  ).hide().appendTo("#action_table").show(1000);;
   
   Update_Owners(users.length);
 }// End Add_alert()
@@ -499,23 +494,22 @@ function Add_JT_Alert(disabled){
 function Add_New_JT_Alert(){
   add_row_counter++;  //Increment
 
-  $("#action_table").append(
-    " <tr class='info_rows_" + add_row_counter + "'>" +
-    " <td  class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
-    "   <option value='Empty'>---</option>" + 
-    "   <option value='1'>Project</option>" +
-    "   <option value='2'>System</option>" +
-    "   <option value='3'>Task</option> </select></td>" +
-    " <td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
-    " <td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
-    " <td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
-    " <td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
-    " <td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
-    " <td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
-    " <td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-  );
+  $("<tr class='info_rows_" + add_row_counter + "'>" +
+    "<td class='table_data'><select class='added_row' id='term_length_" + add_row_counter + "'>"+ 
+    "  <option value='Empty'>---</option>" + 
+    "  <option value='1'>Project</option>" +
+    "  <option value='2'>System</option>" +
+    "  <option value='3'>Task</option> </select></td>" +
+    "<td class='table_data'> <input  class='added_row' id='term_description_" + add_row_counter + "' type='text'> </input> </td>" +
+    "<td class='table_data'> <select class='added_row' id='responsible_"      + add_row_counter + "' type='text' name='owner'> </select> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_start_"       + add_row_counter + "' type='date' disabled> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_ending_"      + add_row_counter + "' type='date' name='deadline'> </input> </td>" +
+    "<td class='table_data'> <input  class='added_row' id='date_completed_"   + add_row_counter + "' type='date' name='complete'> </input> </td>" +
+    "<td class='table_data'> <div    class='added_row task_new' id='state_"   + add_row_counter + "'>Open</div></td>" +
+    "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
+    "<td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
+    "<td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
+  ).hide().appendTo("#action_table").show(1000);
   var today = GetToday();
   
   $('#date_start_' + add_row_counter).val(today);
@@ -712,7 +706,6 @@ function Show_Current(query_url, url){
     complete    : function(data){
       var today = GetToday(); 
       loadAlerts(data, today, url);
-      console.log("show current")
     }
   });
 }// End Show_Current();
@@ -824,8 +817,6 @@ function Pull_Data(id, disabled){
               $('#state_' + j).removeClass('task_late task_open task_new').addClass('task_due');
             }
             $('#email_' + j).attr('disabled', 'disabled');
-
-            console.log("pulled data")
           }          
         }
       }
@@ -937,7 +928,7 @@ function Submit_Data() {
   var post_id, post_url, items_url,
       level = Cookies.get('level');
 
-  if(level == "Plant" || level == "Mixing" || level == "Auto"){
+  if(level == "Plant" || level == "Mixing" || level == "Automation"){
     post_url = "update_post_it";
     items_url = "update_post_it_items";
   }
@@ -1213,20 +1204,20 @@ function loadAlerts(data, today, url){
       
       var e = $('#row_' + j + ' .' + day);    //create a variable to hold query data. Look for class="row_j" and id=""
       if(rg[day][j].deadline < today){
-        e.html(("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:red; color: white;'>{short}</td>" + 
-                "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
+        e.html(("<td class='btn-alert date' data-part_num='{post_it_id}' id='deadline' style='background-color:red; color: white;'>{short}</td>" + 
+                "<td class='btn-alert alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else if(rg[day][j].deadline == today){
-        e.html(("<td class='btn date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey; color: white;'>{short}</td>" + 
-                "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
+        e.html(("<td class='btn-alert date' data-part_num='{post_it_id}' id='deadline' style='background-color:grey; color: white;'>{short}</td>" + 
+                "<td class='btn-alert alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
       else{
-        e.html(("<td class='btn date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
-                "<td class='btn alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
+        e.html(("<td class='btn-alert date' data-part_num='{post_it_id}' id='deadline'>{short}</td>" + 
+                "<td class='btn-alert alert' id='{alert_type}' data-part_num='{post_it_id}'>{owner} - {description}</td>").format(rg[day][j]));
       }
         
       e.promise().done(function(){
-        $(".btn", this).on('click touchstart', function(){ 
+        $(".btn-alert", this).on('click touchstart', function(){ 
           window.location.href = url + jQuery.attr(this, "data-part_num");
         });
       });    
