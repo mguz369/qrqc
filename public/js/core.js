@@ -493,7 +493,9 @@ function Add_JT_Alert(disabled){
     "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
     "<td class='table_data' style='text-align: center'>X</td>" +
     "<td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-  ).hide().appendTo("#action_table").show(1000);;
+  ).hide().appendTo("#action_table").show(2000);
+
+  $(".div_footer").animate({ bottom: "-=30px" }, 50);
   
   Update_Owners(users.length);
 }// End Add_alert()
@@ -516,9 +518,11 @@ function Add_New_JT_Alert(){
     "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
     "<td class='table_data'> <button class='added_row btn btn-blue' id='delete' type='button'>Delete</button></td>" +
     "<td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
-  ).hide().appendTo("#action_table").show(1000);
-  var today = GetToday();
-  
+  ).hide().appendTo("#action_table").show(2000);
+
+  $(".div_footer").animate({ bottom: "-=30px" }, 50);
+
+  var today = GetToday();  
   $('#date_start_' + add_row_counter).val(today);
   $('#date_ending_'+ add_row_counter).val(today);
   Update_Owners(users.length);
