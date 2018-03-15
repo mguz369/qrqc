@@ -219,7 +219,6 @@ app.post('/show_jt_alerts', (req, res) => {
         
         console.log("Show GR Executive Alerts");
         res.send(JSON.stringify(result));
-        console.log(result);
     });
 });
 
@@ -269,7 +268,6 @@ app.post('/pull_jt_data', (req, res) => {
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
         
-        console.log(result);
         res.send(JSON.stringify(result));
     });
 });    
@@ -745,8 +743,6 @@ app.post('/add_new_cad_owner', (req, res) => {
     });
 });
 
-
-
 app.post('/delete_owner', (req, res) => {
     var sql = ("DELETE FROM `owner` WHERE `id` = {id};").formatSQL(req.body);
 
@@ -955,6 +951,7 @@ app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_
 
 //Allow for the editing of owners
 app.get('/modify_owners', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_owners.html')); });
+app.get('/modify_cadillac_parts', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_cad_parts.html')); });
 app.get('/login_util', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_utils.html' )); });
 
 //Prototype pdf for Electron

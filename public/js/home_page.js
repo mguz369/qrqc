@@ -12,7 +12,7 @@ $(document).ready(function(){
   });
 
   $('#gr_auto').click(function(){
-    Cookies.set('level', 'Auto');
+    Cookies.set('level', 'Automation');
   });
 
 
@@ -27,5 +27,14 @@ $(document).ready(function(){
 
   $('#cd_plant').click(function(){
     Cookies.set('level', 'Cadillac');
+  });
+  
+  //For the modification links
+  $('#cd_plant').click(function(){
+    Cookies.set('level', 'modUsers');
+  });
+  
+  $('#cd_plant').click(function(){
+    Cookies.set('level', 'modParts');
   });
 });
