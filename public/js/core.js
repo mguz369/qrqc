@@ -438,7 +438,7 @@ function Add_Alert(disabled){
     "<td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
   ).hide().appendTo("#action_table").show(2000);
 
-  $(".div_footer").animate({ bottom: "-=29.5px" }, 50);
+  $(".div_footer").animate({ bottom: "-=30px" }, 50);
   
   Update_Owners(users.length);
 }// End Add_alert()
@@ -463,7 +463,7 @@ function Add_New_Alert(){
   ).hide().appendTo("#action_table").show(1000);
   
 
-  $(".div_footer").animate({ bottom: "-=29.5px" }, 50);
+  $(".div_footer").animate({ bottom: "-=30px" }, 50);
 
   var today = GetToday();
   
