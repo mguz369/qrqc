@@ -355,7 +355,7 @@ $(document).ready(function () {
     $('.info_rows_' + add_row_counter).closest('tr').hide(1000).remove();
     add_row_counter--;
 
-    $(".div_footer").animate({ bottom: "+=29.5px" }, 50);
+    $(".div_footer").animate({ top: "-=29px" }, 50);
 	  
     return false;
   });
