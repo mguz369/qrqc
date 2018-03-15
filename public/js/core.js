@@ -354,6 +354,8 @@ $(document).ready(function () {
   $(document).on('click', '#delete', function () {
     $('.info_rows_' + add_row_counter).closest('tr').hide(1000).remove();
     add_row_counter--;
+
+    $(".div_footer").animate({ bottom: "+=29.5px" }, 50);
 	  
     return false;
   });
@@ -434,7 +436,9 @@ function Add_Alert(disabled){
     "<td class='table_data'> <input  class='added_row' id='email_"            + add_row_counter + "' type='checkbox' disabled readonly> </div></td>" +
     "<td class='table_data' style='text-align: center'>X</td>" +
     "<td class='hidden_element'> <input type='text' id='item_id_" + add_row_counter + "'/></td></tr>"
-  ).hide().appendTo("#action_table").show(1000);
+  ).hide().appendTo("#action_table").show(2000);
+
+  $(".div_footer").animate({ bottom: "-=29.5px" }, 50);
   
   Update_Owners(users.length);
 }// End Add_alert()
@@ -458,6 +462,9 @@ function Add_New_Alert(){
     "<td class='hidden_element'> <input type='text' id='item_id_"       + add_row_counter + "'/></td></tr>"
   ).hide().appendTo("#action_table").show(1000);
   
+
+  $(".div_footer").animate({ bottom: "-=29.5px" }, 50);
+
   var today = GetToday();
   
   $('#date_start_' + add_row_counter).val(today);
@@ -1196,7 +1203,7 @@ function loadAlerts(data, today, url){
     for (var j = 0; j < rg[day].length; j++){
       while ($(".row").length < rg[day].length){
         $("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
-          + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>").appendTo('#issues_table').slideDown('slow')//.hide().appendTo('#issues_table').show(1000);
+          + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>").hide().appendTo('#issues_table').show(1000);
         
         $('#_table').append("<tr id='row_" + rows + "' class='row'><td class='day_of_week Monday'></td><td class='day_of_week Tuesday'></td>"
           + "<td class='day_of_week Wednesday'></td><td class='day_of_week Thursday'></td><td class='day_of_week Friday'></td></tr>");

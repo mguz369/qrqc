@@ -617,6 +617,8 @@ section.log-button {
   background-color: #132057;
   color: #fff;
   padding: 21px;
+  position: absolute;
+  bottom: 22%;
 }
 
 
@@ -699,7 +701,6 @@ section.log-button {
 }
 
 #action_table{
-  border-style: solid;
   width: 100%;
 }
 
