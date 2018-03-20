@@ -1,6 +1,9 @@
 $(document).ready(function(){
   Cookies.set('level', ' ');
+  Cookies.set('utility', ' ');
   Cookies.set('is_valid', 'false');
+
+  console.log("utility: ", Cookies.get('utility'));
 
   //Set Cookies
   $('#gr_plant').click(function(){
@@ -30,11 +33,11 @@ $(document).ready(function(){
   });
   
   //For the modification links
-  $('#cd_plant').click(function(){
-    Cookies.set('level', 'modUsers');
+  $('#mod_owners').click(function(){
+    Cookies.set('utility', 'modOwners');
   });
   
-  $('#cd_plant').click(function(){
-    Cookies.set('level', 'modParts');
+  $('#mod_parts').click(function(){
+    Cookies.set('utility', 'modParts');
   });
 });

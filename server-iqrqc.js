@@ -482,6 +482,61 @@ app.post('/get_jt_part_nums', (req, res) => {
     });
 });
 
+app.post('/get_full_cad_part_info',  (req, res) => {
+    //var sql = ("SELECT COUNT(*) FROM `part_cad`; SELECT `id`, `number`, `p_cust`, `p_dest` FROM `part_cad` ORDER BY `id`;");
+    var sql = ("SELECT COUNT(*) FROM `part_cad`; SELECT * FROM `part_cad` ORDER BY `id`;");
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        var ret = {
+            'draw' : parseInt(req.query['draw']),
+            "recordsTotal": result[0][0]['COUNT(*)'],
+            "recordsFiltered":result[0][0]['COUNT(*)'], //data[1].length,
+        };
+
+        var d = [];
+        for(var i = 0; i < result[1].length; i++){
+            var item = []
+            var keys = Object.keys(result[1][i])
+            
+            for (var j = 0; j < keys.length; j++){
+                item.push(result[1][i][keys[j]])
+            }
+
+            d.push(item)
+        }
+
+        ret['data'] = d;
+        // console.log("RET:",ret);
+        res.send( JSON.stringify(ret) );
+    });
+});
+
+//Add new part to Cadillac list
+app.post('/add_cad_part', (req, res) => {
+    var sql = ("INSERT INTO `part_cad` (`number`, `p_cust`, `p_dest`, `p_part`, `tier_12`, `pintcs`, `customer`) " +
+               "VALUES({part_num}, {cust}, {dest}, {part_num}, {tier}, {pintcs}, {cust_num});").formatSQL(req.body);
+
+
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        res.send(true);
+    });
+});
+
+//Delete Cadillac part from list
+app.post('/delete_cad_part', (req, res) => {
+    var sql = ("DELETE FROM `part_cad` WHERE `id` = {id}").formatSQL(req.body);
+
+
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        res.send(true);
+    });
+});
+
 //************************************************************************
 // Grab customers
 //************************************************************************
