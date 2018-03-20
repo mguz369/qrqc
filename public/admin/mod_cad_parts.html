@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Modify Part Numbers</title>
+
+  <script type="text/javascript" src="../js/jquery.min.js"></script>
+  <script type="text/javascript" src="../js/mod_core.js"></script>
+
+  <meta name="description" content="Bootstrap.">
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/mod_owners.css">
+  
+
+  <script type="text/javascript" src="../js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../js/js.cookie.js"></script>
+</head>
+
+
+<body id="parts_page">
+
+  <div id="modal_add_part" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img id="modal-img" src="../images/logo.png">
+          <h4 class="modal-title">Add New Part</h4>
+        </div>
+        
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label>Part Number</label>
+              <input type="text" class="form-control" id="add_part_num">
+            </div>
+            
+            <div class="form-group" >
+              <label>Customer</label>
+              <input type="email" class="form-control" id="add_customer" required />
+            </div>
+           
+            <div class="form-group">
+              <label>Destination</label>
+              <input type="text" class="form-control" id="add_dest" >
+            </div>
+
+            <div class="form-group">
+              <label>Tier 12</label>
+              <input type="text" class="form-control" id="add_tier" >
+            </div>
+
+            <div class="form-group">
+              <label>Pintcs</label>
+              <input type="text" class="form-control" id="add_pintcs" >
+            </div>
+
+            <div class="form-group">
+              <label>Customer Number</label>
+              <input type="text" class="form-control" id="add_cust_num" >
+            </div>
+          </form>          
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="submit_part" onclick="">Submit</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div id="modal_edit_part" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img id="modal-img" src="../images/logo.png">
+            <h4 class="modal-title">View Details</h4>
+        </div>
+        
+        <div class="modal-body">
+          <div class="form-group">
+            <label>ID</label>
+            <input type="text" class="form-control" id="delete_id" disabled>
+          </div>
+
+          <div class="form-group" >
+            <label>Part Number</label>
+            <input type="text" class="form-control" id="delete_part_number" />
+          </div>
+           
+          <div class="form-group">
+            <label>Customer</label>
+            <input type="text" class="form-control" id="delete_customer" >
+          </div>
+
+          <div class="form-group">
+            <label>Destination</label>
+            <input type="text" class="form-control" id="delete_destination">
+          </div>
+
+          <div class="form-group">
+            <label>Tier 12</label>
+            <input type="text" class="form-control" id="delete_tier">
+          </div>
+
+          <div class="form-group">
+            <label>PINTCS</label>
+            <input type="text" class="form-control" id="delete_PINTCS">
+          </div>
+
+          <div class="form-group">
+            <label>Customer Number</label>
+            <input type="text" class="form-control" id="delete_customer_num">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-default" data-dismiss="modal" id="edit_part">Edit</button> -->
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="delete_part">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <img src="../images/logo.png">
+        <p class="navbar-text" id="nav-id">POST-IT CADILLAC PARTS</p>
+      </div>
+    </div>
+  </nav>
+
+  <div class ="table-responsive">
+    <table id="table_parts" class= "cell-border"  width="90%">
+      <thead class='thead-inverse'>
+        <tr>
+          <th>ID</th>
+          <th>Part Number</th>
+          <th>Customer</th>
+          <th>Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+    
+    <div id="container_add_new">
+      <button type="button" class="btn btn-white btn-lg" data-toggle="modal" data-target="#modal_add_part" id="new_person">Add New Part</button>
+      <a href="/" class="btn btn-white btn-lg">Return to Main Page</a>
+    </div>
+  </div>
+</body>
+</html>
