@@ -854,5 +854,14 @@ section.log-button {
   color: white;
 }
 
-
 /**************************************/
+
+#pass_container{
+  display: inline-block;
+  padding: 15px 10px;
+}
+
+.input_spacing{
+  display: inline-block;
+  /*position: absolute;*/
+}

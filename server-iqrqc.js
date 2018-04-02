@@ -24,14 +24,14 @@ var Cookies    = require('js-cookie');
 var app = express();
 app.use( bodyParser.json() );
 
-
+//************************************************************************
+// Lotus Notes connection
+//************************************************************************
 var transporter = nodemailer.createTransport({
     host : '10.36.96.206',
     port : 25,
     requireTLS : false,
     secure: false,
-    //logger : true, // log to console
-    //debug  : true, // include SMTP traffic in the logs
 });
 
 transporter.verify(function(error, success) {
@@ -149,7 +149,6 @@ app.post('/login_user', (req, res) => {
     password = md5(password);
     var validate_user = ("SELECT `Level` FROM `login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
 
-    console.log(validate_user);
 
     //   Login disabled
     //res.send(JSON.stringify(0));  
@@ -178,7 +177,8 @@ app.post('/show_current_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
 
-        console.log("Show GR Plant Alerts");
+        var now = GetDateTime();
+        console.log("Show GR Plant Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
@@ -191,7 +191,7 @@ app.post('/show_mixing_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
-        console.log("Show GR Mixing Alerts");
+        console.log("Show GR Mixing Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
@@ -204,7 +204,7 @@ app.post('/show_automation_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
 
-        console.log("Show GR Automation Alerts");
+        console.log("Show GR Automation Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
@@ -217,7 +217,7 @@ app.post('/show_jt_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
-        console.log("Show GR Executive Alerts");
+        console.log("Show GR Executive Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
@@ -230,7 +230,7 @@ app.post('/show_cad_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
-        console.log("Show CD Plant Alerts");
+        console.log("Show CD Plant Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
@@ -801,8 +801,6 @@ app.post('/add_new_cad_owner', (req, res) => {
 app.post('/delete_owner', (req, res) => {
     var sql = ("DELETE FROM `owner` WHERE `id` = {id};").formatSQL(req.body);
 
-    console.log(sql);
-
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
@@ -813,8 +811,6 @@ app.post('/delete_owner', (req, res) => {
 app.post('/delete_exec_owner', (req, res) => {
     var sql = ("DELETE FROM `owner_exec` WHERE `id` = {id};").formatSQL(req.body);
 
-    console.log(sql);
-
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
@@ -824,8 +820,6 @@ app.post('/delete_exec_owner', (req, res) => {
 
 app.post('/delete_cad_owner', (req, res) => {
     var sql = ("DELETE FROM `owner_cad` WHERE `id` = {id};").formatSQL(req.body);
-
-    console.log(sql);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
@@ -956,6 +950,38 @@ function SendEmail(subject, address, message){
 }
 
 
+function GetDateTime(){
+    var datetime = new Date();
+    
+    //Get the current time
+    var hour    = datetime.getHours();
+    var minutes = datetime.getMinutes();
+
+    //Get today's date
+    var day   = datetime.getDate();
+    var month = datetime.getMonth() + 1;
+    var year  = datetime.getFullYear();
+
+
+    //Format time
+    if(hour < 10)
+        hour = '0' + hour;
+    if(minutes < 10)
+        minutes = '0' + minutes;
+
+    //Format date
+    if(day < 10)
+        day = '0' + day;
+    if(month < 10)
+        month = '0' + month;
+    
+    var now = (year + "-" + month + "-" + day + " " + hour + ":" + minutes);
+    console.log(now)
+
+    return now;
+}
+
+
 //************************************************************************
 // Get paths setup, load css, js, etc for the browser
 //************************************************************************
@@ -979,8 +1005,9 @@ app.get('/', (req, res) => {
     }   
 });
 
-
-//Views
+//************************************************************************
+// Serve up the pages
+//************************************************************************
 app.get('/view_current', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'view_current.html')); });
 app.get('/view',         (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'disabled_view.html')); });
 app.get('/view2',        (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'disabled_exec.html')); });
@@ -1008,6 +1035,7 @@ app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_
 app.get('/modify_owners', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_owners.html')); });
 app.get('/modify_cadillac_parts', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_cad_parts.html')); });
 app.get('/login_util', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_utils.html' )); });
+app.get('/forgot_password', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'forgot_pass.html' )); });
 
 //Prototype pdf for Electron
 app.get('/pdf', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'pdf_test.html')); });
