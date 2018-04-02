@@ -191,6 +191,7 @@ app.post('/show_mixing_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
+        var now = GetDateTime();
         console.log("Show GR Mixing Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
@@ -204,6 +205,7 @@ app.post('/show_automation_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
 
+        var now = GetDateTime();
         console.log("Show GR Automation Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
@@ -217,6 +219,7 @@ app.post('/show_jt_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
+        var now = GetDateTime();
         console.log("Show GR Executive Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
@@ -230,6 +233,7 @@ app.post('/show_cad_alerts', (req, res) => {
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
+        var now = GetDateTime();
         console.log("Show CD Plant Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
@@ -976,7 +980,6 @@ function GetDateTime(){
         month = '0' + month;
     
     var now = (year + "-" + month + "-" + day + " " + hour + ":" + minutes);
-    console.log(now)
 
     return now;
 }
