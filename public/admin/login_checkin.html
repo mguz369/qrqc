@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>iQRQC Login</title>
+
+     <!-- Load CSS -->  
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Load JavaScript files -->
+    <script src='../js/jquery.min.js'></script>
+    <script src='../js/core.js'></script>
+    <script src='../js/js.cookie.js'></script>
+    </head>
+        
+
+
+    <body id="page-id-index" class="blue_background">
+        <div id="logo" class="login-logo">
+            <img src="/images/hutchinson_logo.png" alt="Hutchinson Logo" />
+        </div>
+
+         <div class="admin-login-form">
+                    <div class="error-message">
+                <p class="error"></p>
+            </div>
+            <form id="login_form" ng-submit="handleLoginForm()" >
+        <!-- <div>
+                    <div id="login_button" class="btn btn-white" method="post" style="width: 100%; text-align: center; ">Login is now working</div>
+                </div> -->
+                <div>
+                    <input onkeypress="return Press_Enter(event);" id="username" type="text" name="username" placeholder="Username" required />
+                </div>
+                <div>
+                    <input onkeypress="return Press_Enter(event);" id="password" type="password" name="password" placeholder="Password" required />
+                </div>
+                <div>
+                    <button id="login_button_checkin" type="button" class="btn btn-white" method="post">Login</button>
+                </div>
+        
+        <!-- <div>
+                    <a href='/' id="login_button" class="btn btn-white" style="width: 100%; text-align: center; ">Go back to main page</a>
+                </div> -->
+            </form>
+        </div>
+
+         <script>
+          function Press_Enter(e){
+            // look for window.event in case event isn't passed in
+            e = e || window.event;
+            if (e.keyCode == 13)
+            {
+                document.getElementById('login_button').click();
+                return false;
+            }
+            return true;
+          }
+        </script>
+    </body>
+</html>

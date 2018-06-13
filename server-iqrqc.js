@@ -166,6 +166,65 @@ app.post('/login_user', (req, res) => {
 });
 
 
+
+app.post('/get_participants', (req, res) => {
+    var sql = ("SELECT `name` FROM `owner` WHERE `department` = {department};"
+               ).formatSQL(req.body);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/get_cad_participants', (req, res) => {
+    var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};"
+               ).formatSQL(req.body);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/get_exec_participants', (req, res) => {
+    var sql = ("SELECT `name` FROM `owner_exec` WHERE `department` = {department};"
+               ).formatSQL(req.body);
+
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+});
+
+app.post('/submit_participants', (req, res) => {
+    // console.log(req.body);
+
+
+    var parsed_data = req.body.value;
+    var today = GetDate();
+    var department = req.body.level;
+
+    if(parsed_data.length > 0){
+        for(var i = 0; i < parsed_data.length; i++){
+            var sql = ("INSERT INTO `checkin_log`(`name`, `date`, `department`) VALUES('" + parsed_data[i] + "', '" + today + "', '" + department +"');");
+            // console.log(sql);
+        
+            connectionQRQC.query(sql, (err, result) => {
+                if(err) throw err;
+            }); 
+        }
+    }
+
+    res.sendFile(path.join(__dirname, admin_path + 'index.html'));
+});
+
+
+
+
 //************************************************************************
 // Query any current alerts 
 //************************************************************************
@@ -589,7 +648,7 @@ app.post('/get_jt_users', (req, res) => {
 });
 
 app.post('/get_cad_users', (req, res) => {
-    var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department}").formatSQL(req.body);
+    var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};").formatSQL(req.body);
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
@@ -984,6 +1043,26 @@ function GetDateTime(){
     return now;
 }
 
+function GetDate(){
+    var datetime = new Date();
+
+    //Get today's date
+    var day   = datetime.getDate();
+    var month = datetime.getMonth() + 1;
+    var year  = datetime.getFullYear();
+
+
+    //Format date
+    if(day < 10)
+        day = '0' + day;
+    if(month < 10)
+        month = '0' + month;
+    
+    var now = (year + "-" + month + "-" + day);
+
+    return now;
+}
+
 
 //************************************************************************
 // Get paths setup, load css, js, etc for the browser
@@ -1026,7 +1105,7 @@ app.get('/create', (req, res) => { res.sendFile(path.join(__dirname, admin_path 
 
 // login page
 app.get('/login', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login.html' )); });
-
+app.get('/login_checkin', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_checkin.html' )); });
 
 
 //Todoroff's island
@@ -1035,10 +1114,11 @@ app.get('/index_exec',  (req, res) => { res.sendFile(path.join(__dirname, admin_
 app.get('/create_exec', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'create_jt.html')); });
 
 //Allow for the editing of owners
-app.get('/modify_owners', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_owners.html')); });
+app.get('/modify_owners',         (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_owners.html')); });
 app.get('/modify_cadillac_parts', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'mod_cad_parts.html')); });
-app.get('/login_util', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_utils.html' )); });
-app.get('/forgot_password', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'forgot_pass.html' )); });
+app.get('/login_util',            (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_utils.html' )); });
+app.get('/forgot_password',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'forgot_pass.html' )); });
+app.get('/checkin',               (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'checkin.html' )); });
 
 //Prototype pdf for Electron
 app.get('/pdf', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'pdf_test.html')); });

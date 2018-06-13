@@ -52,9 +52,8 @@ $(document).ready(function () {
   console.log(Cookies.get('level'));
   
   //Check if user is idle
-  var idleInterval = setInterval(IncrementIdle, 60000); //Every minute
-
   //Look for mouse movement and key presses
+  var idleInterval = setInterval(IncrementIdle, 60000); //Every minute  
   $(this).mousemove(function(e){
     idleTime = 0;
   });
@@ -309,6 +308,134 @@ $(document).ready(function () {
         return false;
     });    
   });//End create_page
+
+
+  //************************************************************************
+  // Extra pages
+  $('#login_button_checkin').click(function (){
+    var level;
+
+    password = $('#password').val().trim();
+    username = $('#username').val().trim();
+    
+    var login_info = {
+      user : username,
+      pass : password
+    };
+
+    $.ajax({
+      url         : "/login_user",
+      method      : "POST",
+      contentType : "application/json",
+      data        : JSON.stringify(login_info),
+      processData : false,
+      complete    : function(data){
+        const parsed_data = JSON.parse(data.responseText);
+
+        //Direct user to correct QRQC
+        if(parsed_data != "0"){
+          Cookies.set('level', parsed_data);
+          Cookies.set('is_valid', 'valid');
+
+          level = Cookies.get('level');
+          console.log(Cookies.get('level'));
+
+          if (parsed_data == 'Jim'){
+            window.location.href = "/checkin";
+          }
+          else if(parsed_data == 'Plant' || parsed_data == 'Mixing' || parsed_data == 'Automation' || 
+                  parsed_data == 'Cadillac'){ 
+            window.location.href = "/checkin";
+          }
+          else{
+            $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
+            Cookies.set('is_valid', 'invalid');
+          }
+        }
+        else{
+          $('.admin-login-form .error').text("Invalid login").show().addClass('invalid');
+          Cookies.set('is_valid', 'invalid');
+        }
+      }
+    });
+  });
+
+  $('#checkin').exists(function(){
+    $('#iqrqc_header').html("Check-In Participants");
+
+    var url = "";
+    if(Cookies.get('level') == "Cadillac")
+      url = "get_cad_participants";
+    else if(Cookies.get('level') == "Jim")
+      url = "get_exec_participants";
+    else
+      url = "get_participants";
+
+
+    var payload = {
+      department : Cookies.get('level'),
+    };
+
+    $.ajax({
+      url         : url,
+      type        : "POST",
+      data        : JSON.stringify(payload),
+      contentType : "application/json",
+      processData : false,
+      complete    : function(data){
+        //Show the names for this cookie
+        var parsed_data = JSON.parse(data.responseText);
+        var row_count = 0;
+
+
+        //Create at least 1 row
+        $("#checkin_list").append('<tr id="row_'+ row_count +'"> </tr>');
+        row_count++
+
+        for(var i = 1; i <= parsed_data.length; i++){
+          if((i % 3) == 0){
+            $("#row_" + (row_count - 1)).append('<td class="row_checkbox"><label><input class="name_checkbox" type="checkbox" value="' + parsed_data[i - 1].name + '"/>' + parsed_data[i - 1].name +'</label></td>'); 
+            
+            //Add another row and increase counter
+            $("#checkin_list").append('<tr id="row_'+ row_count +'"> </tr>');
+            row_count++;
+          }
+          else{
+            $("#row_" + (row_count - 1)).append('<td class="row_checkbox"><label><input class="name_checkbox" type="checkbox" value="' + parsed_data[i - 1].name + '"/>' + parsed_data[i - 1].name +'</label></td>'); 
+          }
+        }
+
+      } 
+    })
+  });
+
+  $('#submit_checkin').on('click touchstart', function(){
+    var value = [];
+    $(':checkbox:checked').each(function(i){
+      value[i] = $(this).val();
+    })
+
+    if(value.length == 0){
+      alert("At least one person needs to be checked");
+    }
+
+
+    var payload = {
+      value : value,
+      level : Cookies.get('level')
+    }
+
+
+    $.ajax({
+      url         : "/submit_participants",
+      type        : "POST",
+      data        : JSON.stringify(payload),
+      contentType : "application/json",
+      complete    : function(){
+        window.location.href = "/index";
+      }
+    });
+  });
 
   //************************************************************************
   // Adds another row to the Additional Info section

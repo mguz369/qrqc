@@ -141,7 +141,8 @@ input {
 
 input[type="checkbox"]{
   box-sizing: border-box; /* 1 */
-  padding: 0; /* 2 */
+  padding: 0px; /* 2 */
+  margin-right: 5px;
 }
 
 /**
@@ -864,4 +865,36 @@ section.log-button {
 .input_spacing{
   display: inline-block;
   /*position: absolute;*/
+}
+
+
+/**************************************/
+/*      Participation CSS             */
+.row_checkbox{
+  /*padding: 3px 7% 3px 0;  top right bottom left*/
+  width: 20%;
+  padding: 5px 0;
+}
+
+
+#checkin_form{
+  border-style: solid;
+  border-color: #132057;
+  border-width: 1px;
+  border-radius: 10px;
+  width: 50%;
+  margin: 20px 5%;
+}
+
+#checkin_list{
+  width: 95%;
+  /*height: -webkit-fill-available;*/
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+}
+
+#submit_checkin{
+  margin: 10px 10px; 
 }
