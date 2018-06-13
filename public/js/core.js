@@ -362,18 +362,23 @@ $(document).ready(function () {
 
   $('#checkin').exists(function(){
     $('#iqrqc_header').html("Check-In Participants");
+    var level = Cookies.get('level');
 
     var url = "";
-    if(Cookies.get('level') == "Cadillac")
+    if(Cookies.get('level') == "Cadillac"){
       url = "get_cad_participants";
-    else if(Cookies.get('level') == "Jim")
+      level = "Plant";
+    }
+    else if(Cookies.get('level') == "Jim"){
       url = "get_exec_participants";
+      level = "Executive";
+    }
     else
       url = "get_participants";
 
 
     var payload = {
-      department : Cookies.get('level'),
+      department : level,
     };
 
     $.ajax({

@@ -182,6 +182,8 @@ app.post('/get_cad_participants', (req, res) => {
     var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};"
                ).formatSQL(req.body);
 
+    console.log(sql);
+
     connectionQRQC.query(sql, (err, result) => {
         if(err) throw err;
 
