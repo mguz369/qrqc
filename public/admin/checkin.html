@@ -34,13 +34,44 @@
       <img src="../images/logo.jpg" alt="" height="50px" width="250px">
     </section>
 
-    <form id="checkin_form">
-      <table id="checkin_list">
+    <form id="checkin_form" class="checkin_boarders">
+      <table id="checkin_table">
       </table>
 
       <button type="button" id="submit_checkin" class="btn btn-blue">Submit</button>
       <a href="/" id="retun_home" class="btn btn-blue">Return Home</a>
     </form>
+
+    <div id="past_list" class="checkin_boarders">
+      <h3 id="attend_header">See Past Attendance</h3>
+      
+      <label id="start_label" class="label_attend">
+        <p class="p_attend">Start Date:</p>
+        <input type="date" id="checkin_date_start">
+      </label>
+      </br>
+      <label id="end_label" class="label_attend">
+        <p class="p_attend">End Date:</p>
+        <input type="date" id="checkin_date_end">
+      </label>
+
+      <button type="button" id="submit_date" class="btn btn-blue">Go</button>
+      
+      <table id="table_attend">
+        <thead id="table_attend_header">
+          <tr>
+            <td class="days_column">Name</td>
+            <td class="days_column">Date</td>
+          </tr>
+        </thead>
+
+        <tbody id="table_attend_body">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="div_footer">
+    </div>
 
 
     <script type="text/javascript" src="../js/clock.js"></script>

@@ -394,7 +394,7 @@ $(document).ready(function () {
 
 
         //Create at least 1 row
-        $("#checkin_list").append('<tr id="row_'+ row_count +'"> </tr>');
+        $("#checkin_table").append('<tr id="row_'+ row_count +'"> </tr>');
         row_count++
 
         for(var i = 1; i <= parsed_data.length; i++){
@@ -402,7 +402,7 @@ $(document).ready(function () {
             $("#row_" + (row_count - 1)).append('<td class="row_checkbox"><label><input class="name_checkbox" type="checkbox" value="' + parsed_data[i - 1].name + '"/>' + parsed_data[i - 1].name +'</label></td>'); 
             
             //Add another row and increase counter
-            $("#checkin_list").append('<tr id="row_'+ row_count +'"> </tr>');
+            $("#checkin_table").append('<tr id="row_'+ row_count +'"> </tr>');
             row_count++;
           }
           else{
@@ -441,6 +441,39 @@ $(document).ready(function () {
       }
     });
   });
+
+
+  $('#submit_date').click(function(){
+    var start = $('#checkin_date_start').val();
+    var end = $('#checkin_date_end').val();
+    var dept = Cookies.get('level');
+
+    var payload = {
+      start : start,
+      end   : end,
+      department : dept
+    }
+
+
+    $.ajax({
+      url   : "/attend_dates",
+      type  : "POST",
+      data  : JSON.stringify(payload),
+      contentType : "application/json",
+      success     : function(data){
+        //Clear any old data
+        $('.attend_row').remove();
+        
+
+        var parsed_data = JSON.parse(data);
+
+        for(var i = 0; i < parsed_data.length; i++){
+          $('#table_attend_body').append("<tr class='attend_row'><td>" + parsed_data[i].name + "</td><td>" + parsed_data[i].date + "</td></tr>");
+        }
+      }
+    });
+  });
+
 
   //************************************************************************
   // Adds another row to the Additional Info section

@@ -109,7 +109,7 @@ var connectionQRQC;
 function ConnectToQRQC(){
     //connectionQRQC = mysql.createConnection({
     connectionQRQC = mysql.createPool({
-        connectionLimit    : 10,
+        connectionLimit     : 10,
         //host                : '172.24.253.4',
         host                : 'localhost',
         user                : 'qrqc',
@@ -225,7 +225,16 @@ app.post('/submit_participants', (req, res) => {
 });
 
 
+app.post('/attend_dates', (req, res) => {
+    var sql = ("SELECT `name`, DATE_FORMAT(`date`, '%Y-%m-%d') as date FROM `checkin_log` WHERE `date` BETWEEN {start} AND {end} AND `department` = {department}").formatSQL(req.body);
+    console.log(sql)
 
+    connectionQRQC.query(sql, (err, result) => {
+        if(err) throw err;
+
+        res.send(JSON.stringify(result));
+    });
+})
 
 //************************************************************************
 // Query any current alerts 

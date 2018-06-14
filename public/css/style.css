@@ -876,25 +876,68 @@ section.log-button {
   padding: 5px 0;
 }
 
-
-#checkin_form{
+.checkin_boarders{
   border-style: solid;
   border-color: #132057;
   border-width: 1px;
   border-radius: 10px;
-  width: 50%;
-  margin: 20px 5%;
 }
 
-#checkin_list{
+.label_attend{
+  margin: 0 5px;
+}
+
+.p_attend{
+  display: inline-block;
+  margin: 10px 0 10px 10px;
+}
+
+#checkin_form{  
+  width: 50%;
+  margin: 20px 5%;
+  display: inline-block;
+  min-height: 150px;
+}
+
+#checkin_table{
   width: 95%;
-  /*height: -webkit-fill-available;*/
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
+  margin: 20px 2.5%;
+}
+
+#attend_header{
+  text-align: center;
+  color: #dd002a;
+}
+#checkin_date_start{
+  display: inline-block;
+  position: absolute;
+  right: 20px;
+  margin: 2.5px 0;
+  width: 65%;
+}
+
+#checkin_date_end{
+  display: inline-block;
+  position: absolute;
+  right: 20px;
+  margin: 2.5px 0;
+  width: 65%;
+}
+
+#submit_date{
+  display: table;
+  margin: 20px;
+  width: 90%;
+}
+
+#past_list{
+  width: 25%;
+  position: absolute;
+  display: inline-block;
+  min-height: 150px;
+  margin: 20px 0;
 }
 
 #submit_checkin{
-  margin: 10px 10px; 
+  margin: 10px;
 }
