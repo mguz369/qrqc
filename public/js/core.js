@@ -703,7 +703,6 @@ function Load_Create(disabled){
 
     dept = $('#department').val();
     payload = { department : dept };
-    console.log("Value changed to: ", dept);
 
     
     if(level == "Cadillac"){
@@ -743,8 +742,7 @@ function Load_Create(disabled){
     url_users = "/get_users";
     url_parts = "/get_part_nums"
     payload = { department : level };
-  }
-   
+  }   
 
 
   $.ajax({

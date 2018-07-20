@@ -431,6 +431,7 @@ section.log-button {
 #view_page{
   /*background-color: #03050f;*/
 }
+
 /*Alert type formatting*/
 #Safety{
   background-color: #006600;
@@ -483,6 +484,9 @@ section.log-button {
   background-color: #c3c388;
 }
 
+#Maint{
+  background-color: #187192;
+}
 
 /********************************/
 .Safety{
@@ -592,6 +596,15 @@ section.log-button {
   padding: 0.8%;
 }
 
+.Maint{
+  background-color: #187192;
+  color: white;
+  width: 95%;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.8%;
+}
+
 .hidden_element{
   width: 20px;
   display: none;
@@ -633,6 +646,7 @@ section.log-button {
   background-color: #132057;
 }
 
+/*********************************************************/
 /* FORMATTING FOR INDEX.HTML  */
 #issues_table{
   width: 95%;
@@ -662,6 +676,26 @@ section.log-button {
   display: inline-block;
   height: 60px;
   width: 17%;
+  word-wrap: break-word;
+  margin-left: 2%;
+}
+
+.upper_categories{
+  border-style: solid;
+  border-color: black;
+  display: inline-block;
+  height: 60px;
+  width: 17.26%;
+  word-wrap: break-word;
+  margin-left: 2%;
+}
+
+.lower_categories{
+  border-style: solid;
+  border-color: black;
+  display: inline-block;
+  height: 60px;
+  width: 14%;
   word-wrap: break-word;
   margin-left: 2%;
 }
