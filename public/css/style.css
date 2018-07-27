@@ -476,7 +476,7 @@ section.log-button {
   background-color: #003366;
   color: white;
 }
-#It{
+#It, #Productivity{
   background-color: #400080;
   color: white;
 }
@@ -484,7 +484,7 @@ section.log-button {
   background-color: #c3c388;
 }
 
-#Maint{
+#Maint, #Tooling{
   background-color: #187192;
 }
 
@@ -580,7 +580,7 @@ section.log-button {
   vertical-align: middle;
   padding: 0.8%;
 }
-.It{
+.It, .Productivity{
   background-color: #400080;
   color: white;
   width: 95%;
@@ -596,7 +596,7 @@ section.log-button {
   padding: 0.8%;
 }
 
-.Maint{
+.Maint, .Tooling{
   background-color: #187192;
   color: white;
   width: 95%;

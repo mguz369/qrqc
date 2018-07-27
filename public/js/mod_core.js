@@ -42,10 +42,12 @@ $(document).ready(function (){
     var level, utility;
     password = $('#password').val().trim();
     username = $('#username').val().trim();
+    level = Cookies.get('level');
     
     var login_info = {
       user : username,
-      pass : password
+      pass : password,
+      level : level
     };
 
     $.ajax({
@@ -58,7 +60,7 @@ $(document).ready(function (){
         const parsed_data = JSON.parse(data.responseText);
 
         utility = Cookies.get('utility')
-        level = Cookies.get('level');
+        
 
         if(utility == "modOwners"){
           if(parsed_data != "0"){
@@ -97,23 +99,21 @@ $(document).ready(function (){
     var url_add    = "/add_new_owner";
     var url_delete = "/delete_owner";
 
-    if(level == 'Plant'){
+    if(level == 'gr_plant'){
       url = "/get_full_users_plant";
     }
-    else if(level == 'Mixing'){
+    else if(level == 'gr_mixing'){
       url = "/get_full_users_mixing";
     }
-    else if(level == 'Auto'){
+    else if(level == 'gr_auto'){
       url = "/get_full_users_auto";
     }
-    else if(level == 'Jim'){
-      level = "Executive";
+    else if(level == 'gr_exec'){
       url_add = "/add_new_exec_owner";
       url_delete = "/delete_exec_owner"
       url = "/get_full_users_exec";
     }
-    else if(level == 'Cadillac'){
-      level = 'Plant';
+    else if(level == 'cd_plant'){
       url_add = "/add_new_cad_owner";
       url_delete = "/delete_cad_owner"
       url = "/get_full_users_cad";
@@ -142,12 +142,7 @@ $(document).ready(function (){
         //serverSide : true,
         ajax       : {
           url  : url,
-          method: "POST",
-          //contentType: "application/json",
-          // data : function(level) {
-          //   console.log(level);
-          //   return { 'department' : JSON.stringify(level) };
-          // }
+          method: "POST"
         }
       });
     } catch(err){}

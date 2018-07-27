@@ -145,32 +145,44 @@ ConnectToQRQC();
 app.post('/login_user', (req, res) => {
     var username = "{user}".format(req.body);
     var password = "{pass}".format(req.body);
+    var level = "{level}".format(req.body);
+
+    if(level == "{level}" || level == " ")
+        level = "Level";
 
     password = md5(password);
-    var validate_user = ("SELECT `Level` FROM `login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
+    var validate_user = ("SELECT `" + level + "` as access FROM `login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
 
-
+    console.log(validate_user)
     //   Login disabled
     //res.send(JSON.stringify(0));  
 
     connectionQRQC.query(validate_user, (err, result) => {
         if (err) console.log(err);
+        console.log("Result: ", result[0].access)
+        access = result[0].access;
 
-        if(result.length > 0){
-            console.log("Level: ", result[0].Level);
-            res.send(JSON.stringify(result[0].Level));
+        //Send response
+        if(access != 0 || access == 'gr_plant' || access == 'gr_mixing' || access == 'gr_auto' || access == 'gr_exec'){
+            res.send(JSON.stringify(access));
         }
-        else
+        else{;
             res.send(JSON.stringify(0));
+        }
     });
 });
 
-
-
 app.post('/get_participants', (req, res) => {
-    var sql = ("SELECT `name` FROM `owner` WHERE `department` = {department};"
-               ).formatSQL(req.body);
+    var department = "{department}".formatSQL(req.body);
+    // if(department == "Plant")
+    //     department = "gr_plant";
+    // else if(department == "Mixing")
+    //     department = "gr_mixing";
+    // else if(department == "Automation")
+    //     department = "gr_auto";
 
+
+    var sql = ("SELECT `name` FROM `owner` WHERE `department` = " + department + ";").formatSQL(req.body);
     connectionQRQC.query(sql, (err, result) => {
         if(err) throw err;
 
@@ -179,11 +191,18 @@ app.post('/get_participants', (req, res) => {
 });
 
 app.post('/get_cad_participants', (req, res) => {
-    var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};"
-               ).formatSQL(req.body);
+    var department = "{department}".formatSQL(req.body);
+    // if(department == "Plant")
+    //     department = "cd_plant";
+    // else if(department == "Mixing")
+    //     department = "cd_mixing";
+    // else if(department == "Automation")
+    //     department = "cd_auto";
+    // else if(department = "Tooling")
+    //     department = "cd_tooling";
 
-    console.log(sql);
 
+    var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};").formatSQL(req.body);
     connectionQRQC.query(sql, (err, result) => {
         if(err) throw err;
 
@@ -224,7 +243,6 @@ app.post('/submit_participants', (req, res) => {
     res.sendFile(path.join(__dirname, admin_path + 'index.html'));
 });
 
-
 app.post('/attend_dates', (req, res) => {
     var sql = ("SELECT `name`, DATE_FORMAT(`date`, '%Y-%m-%d') as date FROM `checkin_log` WHERE `date` BETWEEN {start} AND {end} AND `department` = {department}").formatSQL(req.body);
     console.log(sql)
@@ -242,7 +260,7 @@ app.post('/attend_dates', (req, res) => {
 app.post('/show_current_alerts', (req, res) => {
     var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Plant' ORDER BY t1.deadline ASC;");
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = {department} ORDER BY t1.deadline ASC;").formatSQL(req.body);
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
@@ -253,38 +271,10 @@ app.post('/show_current_alerts', (req, res) => {
     });
 });
 
-app.post('/show_mixing_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
-        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Mixing' ORDER BY t1.deadline ASC;");
-
-    connectionQRQC.query(select_dates, (err, result) => {
-        if(err) throw err;
-        
-        var now = GetDateTime();
-        console.log("Show GR Mixing Alerts at: %s", now);
-        res.send(JSON.stringify(result));
-    });
-});
-
-app.post('/show_automation_alerts', (req, res) => {
-    var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
-        "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Automation' ORDER BY t1.deadline ASC;");
-
-    connectionQRQC.query(select_dates, (err, result) => {
-        if(err) throw err;
-
-        var now = GetDateTime();
-        console.log("Show GR Automation Alerts at: %s", now);
-        res.send(JSON.stringify(result));
-    });
-});
-
 app.post('/show_jt_alerts', (req, res) => {
     var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'Jim' ORDER BY t1.deadline ASC;");
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'gr_exec' ORDER BY t1.deadline ASC;");
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
@@ -298,13 +288,13 @@ app.post('/show_jt_alerts', (req, res) => {
 app.post('/show_cad_alerts', (req, res) => {
     var select_dates = ("SELECT t1.`id`, DATE_FORMAT(t1.`deadline`, '%Y-%m-%d') AS deadline, DATE_FORMAT(t1.deadline, '%b-%d') AS `short`, t1.`term`, t1.`description`, t1.`owner`, t2.`id` AS post_it_id, t2.alert_type, t2.location " +
         "FROM `post_it_items` as t1 INNER JOIN `post_it` AS t2 ON t1.`post_it_id` = t2.`id` " + 
-        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = 'CP' ORDER BY t1.deadline ASC;");
+        "WHERE t1.`completed` IS NULL AND t1.`deadline` IS NOT NULL AND t2.`active` = '1' AND `department` = {department} ORDER BY t1.deadline ASC;").formatSQL(req.body);
 
     connectionQRQC.query(select_dates, (err, result) => {
         if(err) throw err;
         
         var now = GetDateTime();
-        console.log("Show CD Plant Alerts at: %s", now);
+        console.log("Show CD Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
@@ -349,36 +339,12 @@ app.post('/pull_jt_data', (req, res) => {
 //************************************************************************
 // Write a new alert to the QRQC DB
 //************************************************************************
-app.post('/create_plant', (req, res) => {
+app.post('/create_gr', (req, res) => {
     //Send the new QRQC Alert to the DB, info is in 2 
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `customer`, `issue`, `cause`, `active`) " +
-                      "VALUES ({category}, CURRENT_DATE, 'Plant', 'TBD', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
+                      "VALUES ({category}, CURRENT_DATE, {department}, 'TBD', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
 
-    connectionQRQC.query(sql_create, (err, result) => {
-        if (err) throw err;
-
-        res.send(JSON.stringify(result));
-    });
-});
-
-app.post('/create_mixing', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `part`, `customer`, `issue`, `cause`, `active`) "+
-                      "VALUES ({category}, CURRENT_DATE, 'Mixing', 'TBD', '---', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
-                     ).formatSQL(req.body); 
-   
-    connectionQRQC.query(sql_create, (err, result) => {
-        if (err) throw err;
-
-        res.send(JSON.stringify(result));
-    });
-});
-
-app.post('/create_auto', (req, res) => {
-    var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `customer`, `issue`, `cause`, `active`) "+
-                      "VALUES ({category}, CURRENT_DATE, 'Automation', 'TBD', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
-                     ).formatSQL(req.body); 
-   
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
 
@@ -388,9 +354,8 @@ app.post('/create_auto', (req, res) => {
 
 app.post('/create_jt', (req, res) => {
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `region`, `location`, `customer`, `issue`, `cause`, `active`) "+
-                      "VALUES ({category}, CURRENT_DATE, 'Jim', '---', 'TBD', '---', 'TBD', 'TBD', '1'); SELECT LAST_INSERT_ID();"
+                      "VALUES ({category}, CURRENT_DATE, 'gr_exec', '---', 'TBD', '---', 'TBD', 'TBD', '1'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
-    //console.log("Create JT ", sql_create)
    
     connectionQRQC.query(sql_create, (err, result) => {
         if (err) throw err;
@@ -399,9 +364,9 @@ app.post('/create_jt', (req, res) => {
     });
 });
 
-app.post('/create_cad', (req, res) => {
+app.post('/create_cd', (req, res) => {
     var sql_create = ("INSERT INTO `post_it`(`alert_type`, `date`, `department`, `location`, `customer`, `issue`, `cause`, `active`) "+
-                      "VALUES ({category}, CURRENT_DATE, 'CP', 'TBD', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
+                      "VALUES ({category}, CURRENT_DATE, {department}, 'TBD', '---', 'TBD', 'TBD', '0'); SELECT LAST_INSERT_ID();"
                      ).formatSQL(req.body); 
    
     connectionQRQC.query(sql_create, (err, result) => {
@@ -434,13 +399,12 @@ app.post('/update_post_it', (req, res) => {
 
 app.post('/update_jt_post_it', (req, res) => {
     res.send(true);
+
     
     var sql_update = (
         "INSERT INTO `post_it`(`id`) VALUES ({post_id}) ON DUPLICATE KEY UPDATE " +
         "`alert_type` = {type}, `region` = {region}, `location` = {location}, `part` = {part}, `customer` = {customer}, " +
         "`recurrence` = {recurrence}, `issue` = {i_desc}, `cause` = {c_desc}, `active` = {is_active};").formatSQL(req.body);
-
-    // console.log("UPDATE JT Post IT: ", sql_update);
     
     connectionQRQC.query(sql_update, (err, result) => {
         if (err) throw err;
@@ -519,7 +483,6 @@ app.post('/cad_post_it_items', (req, res) => {
         });
     }
 
-    console.log("\n\nDONE WITH LOOP");
     res.send(true);
 });
 
@@ -660,6 +623,7 @@ app.post('/get_jt_users', (req, res) => {
 
 app.post('/get_cad_users', (req, res) => {
     var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};").formatSQL(req.body);
+    console.log(sql)
 
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
@@ -672,10 +636,9 @@ app.post('/get_cad_users', (req, res) => {
 //Add and delete owners for the various post-it levels
 app.post('/get_full_users_plant', (req, res) => {
     //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
+    console.log(req.body)
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'gr_plant'; SELECT * FROM `owner` WHERE `department` = 'gr_plant'").formatSQL(req.body);
 
-    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = 'Plant' ").formatSQL(req.body);
-
-    console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
         if (err) throw err;
 
@@ -706,7 +669,7 @@ app.post('/get_full_users_plant', (req, res) => {
 app.post('/get_full_users_mixing', (req, res) => {
     //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
 
-    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Mixing'; SELECT * FROM `owner` WHERE `department` = 'Mixing' ").formatSQL(req.body);
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'gr_mixing'; SELECT * FROM `owner` WHERE `department` = 'gr_mixing' ").formatSQL(req.body);
 
     console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
@@ -739,7 +702,7 @@ app.post('/get_full_users_mixing', (req, res) => {
 app.post('/get_full_users_auto', (req, res) => {
     //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
 
-    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = 'Auto' ").formatSQL(req.body);
+    var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'gr_auto'; SELECT * FROM `owner` WHERE `department` = 'gr_auto' ").formatSQL(req.body);
 
     console.log(sql);
     connectionQRQC.query(sql, (err, result) => {
@@ -805,7 +768,7 @@ app.post('/get_full_users_exec', (req, res) => {
 app.post('/get_full_users_cad', (req, res) => {
     //var sql = ("SELECT COUNT(*) FROM `owner` WHERE `department` = 'Plant'; SELECT * FROM `owner` WHERE `department` = {department} ").formatSQL(req.body);
 
-    var sql = ("SELECT COUNT(*) FROM `owner_cad` WHERE `department` = 'Plant'; SELECT * FROM `owner_cad` WHERE `department` = 'Plant' ").formatSQL(req.body);
+    var sql = ("SELECT COUNT(*) FROM `owner_cad` WHERE `department` = 'cd_plant'; SELECT * FROM `owner_cad` WHERE `department` = 'cd_plant' ").formatSQL(req.body);
 
     console.log(sql);
     connectionQRQC.query(sql, (err, result) => {

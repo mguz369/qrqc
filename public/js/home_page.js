@@ -7,15 +7,15 @@ $(document).ready(function(){
 
   //Set Cookies
   $('#gr_plant').click(function(){
-    Cookies.set('level', 'Plant');
+    Cookies.set('level', 'gr_plant');
   });
 
   $('#gr_mixing').click(function(){
-    Cookies.set('level', 'Mixing');
+    Cookies.set('level', 'gr_mixing');
   });
 
   $('#gr_auto').click(function(){
-    Cookies.set('level', 'Automation');
+    Cookies.set('level', 'gr_auto');
   });
 
 
@@ -25,13 +25,17 @@ $(document).ready(function(){
   // });
 
   $('#gr_exec').click(function(){
-    Cookies.set('level', 'Jim');
+    Cookies.set('level', 'gr_exec');
   });
 
   $('#cd_plant').click(function(){
-    Cookies.set('level', 'Cadillac');
+    Cookies.set('level', 'cd_plant');
   });
   
+  $('#cd_tooling').click(function(){
+    Cookies.set('level', 'cd_tooling');
+  });
+
   //For the modification links
   $('#mod_owners').click(function(){
     Cookies.set('utility', 'modOwners');

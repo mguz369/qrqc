@@ -49,7 +49,7 @@ var idleTime = 0;
 
 
 $(document).ready(function () {
-  console.log(Cookies.get('level'));
+  console.log("Cookie on load: ", Cookies.get('level'));
   
   //Check if user is idle
   //Look for mouse movement and key presses
@@ -74,14 +74,13 @@ $(document).ready(function () {
 
   //For the login page
   $('#login_button').click(function (){
-    var level;
-
     password = $('#password').val().trim();
     username = $('#username').val().trim();
     
     var login_info = {
-      user : username,
-      pass : password
+      user  : username,
+      pass  : password,
+      level : Cookies.get('level')
     };
 
     $.ajax({
@@ -92,20 +91,25 @@ $(document).ready(function () {
       processData : false,
       complete    : function(data){
         const parsed_data = JSON.parse(data.responseText);
+        var cleared = parsed_data;
+        console.log("Parsed: ", parsed_data)
 
         //Direct user to correct QRQC
-        if(parsed_data != "0"){
-          Cookies.set('level', parsed_data);
+        if(parsed_data != 0){
           Cookies.set('is_valid', 'valid');
 
-          level = Cookies.get('level');
-          console.log(Cookies.get('level'));
+          if(parsed_data.length > 1){
+            Cookies.set('level', parsed_data);
+            cleared = 1;
+          }
 
-          if (parsed_data == 'Jim'){
+
+          var postit_level = Cookies.get('level');
+          if (postit_level == 'gr_exec' && cleared == 1){
             window.location.href = "/index_exec";
           }
-          else if(parsed_data == 'Plant' || parsed_data == 'Mixing' || parsed_data == 'Automation' || 
-                  parsed_data == 'Cadillac'){ 
+          else if((postit_level == 'gr_plant' || postit_level == 'gr_mixing' || postit_level == 'gr_auto' || 
+                   postit_level == 'cd_plant' || postit_level == 'cd_tooling') && cleared == 1){ 
             window.location.href = "/index";
           }
           else{
@@ -125,15 +129,17 @@ $(document).ready(function () {
     var validity = Cookies.get('is_valid');
     var level = Cookies.get('level');
 
-    if(validity == "invalid" && level == "Plant")
+    if(validity == "invalid" && level == "gr_plant")
       window.location.href = "/";
-    else if(validity == "invalid" && level == "Mixing")
+    else if(validity == "invalid" && level == "gr_mixing")
         window.location.href = "/view_mixing";
-    else if(validity == "invalid" && level == "Automation")
+    else if(validity == "invalid" && level == "gr_auto")
         window.location.href = "/view_Automation";
-    else if(validity == "invalid" && level == "Jim")
+    else if(validity == "invalid" && level == "gr_exec")
         window.location.href = "/view_exec";
-    else if(validity == "invalid" && level == "Cadillac")
+    else if(validity == "invalid" && level == "cd_plant")
+      window.location.href = "/vcad";
+    else if(validity == "invalid" && level == "cd_tooling")
       window.location.href = "/vcad";
   }
 
@@ -141,42 +147,43 @@ $(document).ready(function () {
   $('#view_page').exists(function() {
     var url = "view?id=";
     var query_url = "";
+    var level = Cookies.get('level');
 
-    if(Cookies.get('level') == "Plant"){
+    if(level == "gr_plant"){
       query_url = "/show_current_alerts";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Plant Level");
     }
-    else if(Cookies.get('level') == "Mixing"){
-      query_url = "/show_mixing_alerts";
+    else if(level == "gr_mixing"){
+      query_url = "/show_current_alerts";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Mixing Level");
     }
-    else if(Cookies.get('level') == "Automation"){
-      query_url = "/show_Automation_alerts";
+    else if(level == "gr_auto"){
+      query_url = "/show_current_alerts";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Automation Level");
     }
-    else if(Cookies.get('level') == "Cement"){
-      query_url = "/show_cement_alerts";
-      $('#iqrqc_header').html("iQRQC - Grand Rapids - Cementing Level");
-    }
-    else if(Cookies.get('level') == "Cadillac"){
-      query_url = "/show_cad_alerts";
-      $('#iqrqc_header').html("iQRQC - Cadillac - Plant Level");
-    }
-    else if(Cookies.get('level') == "Jim"){
+    else if(level == "gr_exec"){
       query_url = "/show_jt_alerts";
       url = "view2?id=";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Executive Level");
     }
-    
+    else if(level == "cd_plant"){
+      query_url = "/show_cad_alerts";
+      $('#iqrqc_header').html("iQRQC - Cadillac - Plant Level");
+    }    
+    else if(level == "cd_tooling"){
+      query_url = "/show_cad_alerts";
+      $('#iqrqc_header').html("iQRQC - Cadillac - Tooling");
+    }
+
     // Cookies.set('is_valid', 'invalid');
     // Cookies.set('level', 'Plant');
 
     // var url = "view?id=";
     // var query_url = "/show_current_alerts"
-    if(Cookies.get('level') == "Jim")
-      Show_JT_Current(query_url, url);
+    if(Cookies.get('level') == "gr_exec")
+      Show_JT_Current(query_url, url, level);
     else
-      Show_Current(query_url, url);
+      Show_Current(query_url, url, level);
   });//End view_page
 
 
@@ -184,52 +191,51 @@ $(document).ready(function () {
   // Index Pages
   $('#index_page').exists(function() {
     //Check_Valid();
+    var level = Cookies.get('level');
 
     var url = "";
     var query_url = "";
     var category_url = "";
 
-    if(Cookies.get('level') == "Plant"){
+    if(level == "gr_plant"){
       url = "/create?id=";
       query_url = "/show_current_alerts";
-      category_url = "/create_plant";
+      category_url = "/create_gr";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Plant Level");
     }
-    else if(Cookies.get('level') == "Mixing"){
+    else if(level == "gr_mixing"){
       url = "/create?id=";
-      query_url = "/show_mixing_alerts";
-      category_url="/create_mixing";
+      query_url = "/show_current_alerts";
+      category_url = "/create_gr";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Mixing Level");
     }
-    else if(Cookies.get('level') == "Automation"){
+    else if(level == "gr_auto"){
       url = "/create?id=";
-      query_url = "/show_Automation_alerts";
-      category_url="/create_Automation";
+      query_url = "/show_current_alerts";
+      category_url = "/create_gr";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Automation Level");
     }
-    else if(Cookies.get('level') == "Cement"){
-      url = "/create?id=";
-      query_url = "/show_jt_alerts";
-      category_url="/create_cement";
-      $('#iqrqc_header').html("iQRQC - Grand Rapids - Cementing Level");
-    }
-    else if(Cookies.get('level') == "Jim"){
+    else if(level == "gr_exec"){
       url = "/create_exec?id=";
       query_url = "/show_jt_alerts";
       category_url="/create_jt";
       $('#iqrqc_header').html("iQRQC - Grand Rapids - Executive Level");
     }
-    else if(Cookies.get('level') == "Cadillac"){
+    else if(level == "cd_plant"){
       url = "/create?id=";
       query_url = "/show_cad_alerts";
-      category_url="/create_cad";
+      category_url = "/create_cd";
       $('#iqrqc_header').html("iQRQC - Cadillac - Plant Level");
     }
-
-
+    else if(level == "cd_tooling"){
+      url = "/create?id=";
+      query_url = "/show_cad_alerts";
+      category_url = "/create_cd";
+      $('#iqrqc_header').html("iQRQC - Cadillac - Tooling");
+    }
     //var url = "create?id=";
     //var query_url = "/show_current_alerts"
-    Show_Current(query_url, url);
+    Show_Current(query_url, url, level);
         
 
     //If needing to make a new alert, create an entry in the DB and update it on submit later on
@@ -237,7 +243,8 @@ $(document).ready(function () {
       var elem_id = event.target.id;
       
       var payload = {
-        category : elem_id
+        category   : elem_id,
+        department : level
       };
 
       $.ajax({
@@ -258,6 +265,7 @@ $(document).ready(function () {
   // Page is a template to be used by the various level (Plant, Mixing, etc)
   $('#create_page').exists(function(){
     var body;
+
     try{
        body = document.getElementsByClassName('disabled')[0].className;
     }catch(e){
@@ -266,15 +274,6 @@ $(document).ready(function () {
       
       Check_Valid();    
     }
-
-    if(Cookies.get('level') == "Plant" || Cookies.get('level') == "Mixing" ||
-       Cookies.get('level') == "Automation" || Cookies.get('level') == "Cement"){
-        $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert"); 
-    }
-    else if(Cookies.get('level') == "Cadillac"){ 
-      $('#iqrqc_header').html("iQRQC - Cadillac - eLert"); 
-    }
-
 
     Load_Create(body);
 
@@ -312,6 +311,7 @@ $(document).ready(function () {
 
   //************************************************************************
   // Extra pages
+  //************************************************************************
   $('#login_button_checkin').click(function (){
     var level;
 
@@ -331,20 +331,20 @@ $(document).ready(function () {
       processData : false,
       complete    : function(data){
         const parsed_data = JSON.parse(data.responseText);
-
+        
         //Direct user to correct QRQC
         if(parsed_data != "0"){
           Cookies.set('level', parsed_data);
           Cookies.set('is_valid', 'valid');
 
           level = Cookies.get('level');
-          console.log(Cookies.get('level'));
+          console.log("Level: ", Cookies.get('level'));
 
-          if (parsed_data == 'Jim'){
+          if (parsed_data == 'gr_exec'){
             window.location.href = "/checkin";
           }
-          else if(parsed_data == 'Plant' || parsed_data == 'Mixing' || parsed_data == 'Automation' || 
-                  parsed_data == 'Cadillac'){ 
+          else if(parsed_data == 'gr_plant' || parsed_data == 'gr_mixing' || parsed_data == 'gr_auto' || 
+                  parsed_data == 'cd_plant' || parsed_data == 'cd_tooling'){ 
             window.location.href = "/checkin";
           }
           else{
@@ -365,13 +365,11 @@ $(document).ready(function () {
     var level = Cookies.get('level');
 
     var url = "";
-    if(Cookies.get('level') == "Cadillac"){
+    if(level == "cd_plant" || level == "cd_tooling"){
       url = "get_cad_participants";
-      level = "Plant";
     }
-    else if(Cookies.get('level') == "Jim"){
+    else if(level == "gr_exec"){
       url = "get_exec_participants";
-      level = "Executive";
     }
     else
       url = "get_participants";
@@ -409,7 +407,6 @@ $(document).ready(function () {
             $("#row_" + (row_count - 1)).append('<td class="row_checkbox"><label><input class="name_checkbox" type="checkbox" value="' + parsed_data[i - 1].name + '"/>' + parsed_data[i - 1].name +'</label></td>'); 
           }
         }
-
       } 
     })
   });
@@ -441,7 +438,6 @@ $(document).ready(function () {
       }
     });
   });
-
 
   $('#submit_date').click(function(){
     var start = $('#checkin_date_start').val();
@@ -508,10 +504,10 @@ $(document).ready(function () {
   $('#view_return').on('click touchstart', function (){
     var level = Cookies.get('level');
 
-    if(level == "Plant" || level == "Mixing" ||
-       level == "Automation"  || level == "Cadillac")
+    if(level == "gr_plant" || level == "gr_mixing" || level == "gr_auto" ||
+       level == "cd_tooling"  || level == "cd_plant")
         window.location.href = "/view_current";
-    else if(level == "Jim")
+    else if(level == "gr_exec")
         window.location.href = "/view_exec";
   });
 
@@ -705,7 +701,7 @@ function Load_Create(disabled){
     payload = { department : dept };
 
     
-    if(level == "Cadillac"){
+    if(level == "cd_plant" || level == "cd_tooling"){
       url_users = "/get_cad_users";
       url_parts = "/get_cad_part_nums";
     }
@@ -729,21 +725,19 @@ function Load_Create(disabled){
     });
   });
 
-
   //preload users[] so that changing can be done
   
   var payload;
-  if(level == "Cadillac"){
+  if(level == "cd_plant" || level == "cd_tooling"){
     url_users = "/get_cad_users";
-    url_parts = "/get_cad_part_nums";
-    payload = { department : "Plant" };
+    url_parts = "/get_cad_part_nums"; 
   }
   else{
     url_users = "/get_users";
-    url_parts = "/get_part_nums"
-    payload = { department : level };
-  }   
+    url_parts = "/get_part_nums";
+  }
 
+  payload = { department : level };
 
   $.ajax({
     url         : url_users,
@@ -871,10 +865,51 @@ function Repopulate_Owners(length){
   }
 }// End Repopulate_Owners
 
-function Show_Current(query_url, url){
+function Show_Current(query_url, url, level){
+  var payload = {
+    department : level
+  };
+
+  if(level == "cd_plant" || level == "gr_plant" || level == "gr_mixing" || level == "gr_auto"){
+    $('#category_table').append(
+      '<tr class="category_rows">' +
+        '<td> ' +
+          '<button type="button" class="upper_categories categories Safety"    id="Safety">Safety/ Environment</button>' +
+          '<button type="button" class="upper_categories categories Quality"   id="Quality">Quality</button>' +
+          '<button type="button" class="upper_categories categories Activity"  id="Activity">Activity (Sales)</button>' +
+          '<button type="button" class="upper_categories categories Inventory" id="Inventory">Inventory</button>' +
+          '<button type="button" class="upper_categories categories Scrap"     id="Scrap">Scrap</button>' +
+        '</td>' +
+      '</tr>' +
+      '<tr class="category_rows">' +
+        '<td >' +
+          '<button type="button" class="lower_categories categories Hr"        id="Hr">HR/ Labor</button>' +
+          '<button type="button" class="lower_categories categories Delivery"  id="Delivery">Delivery</button>' +
+          '<button type="button" class="lower_categories categories Operation" id="Operation">Operations Efficiency</button>' +
+          '<button type="button" class="lower_categories categories Supply"    id="Supply">Supply Chain</button>' +
+          '<button type="button" class="lower_categories categories Misc"      id="Misc">Miscellaneaous</button>' +
+          '<button type="button" class="lower_categories categories Maint"     id="Maint">Maintenance</button>' +
+        '</td>' +
+      '</tr>'
+    );
+  }
+  else if(level == "cd_tooling"){ 
+    $('#category_table').append(
+      '<tr class="category_rows">' +
+        '<td> ' +
+          '<button type="button" class="upper_categories categories Productivity" id="Productivity">Productivity</button>' +
+          '<button type="button" class="upper_categories categories Quality"      id="Quality">Quality</button>' +
+          '<button type="button" class="upper_categories categories Tooling"      id="Tooling">Tooling</button>' +
+        '</td>' +
+      '</tr>'
+    );
+  }
+
+
   $.ajax({
     url         : query_url,
     type        : "POST",
+    data        : JSON.stringify(payload),
     contentType : "application/json",
     processData : false,
     complete    : function(data){
@@ -912,8 +947,9 @@ function Pull_Data(id, disabled){
     contentType : "application/json",
     processData : false,
     data        : JSON.stringify(payload),
-    complete    : function(data){      
+    complete    : function(data){ 
       var parsed_data = JSON.parse(data.responseText);
+      var level = Cookies.get('level')
 
       var a_type, date_posted, dept, location, part_num, customer, repeat, issue, cause; //First section
       var t_length, t_descript, responsible, date_start, date_ending, date_completed, email, state, i_id;//Second section
@@ -931,11 +967,49 @@ function Pull_Data(id, disabled){
             issue       = parsed_data[i][j].issue;
             cause       = parsed_data[i][j].cause;
 
+            //************************************************************************
+            // Set Depatment options
+            if(level == "gr_plant" || level == "gr_mixing" || level == "gr_auto"){
+              $('#iqrqc_header').html("iQRQC - Grand Rapids - eLert");
+              $('#department').find('option').remove().end().append(
+                '<option value="gr_plant" >Plant</option>' +
+                '<option value="gr_mixing">Mixing/Cementing</option>' +
+                '<option value="gr_auto"  >Automation</option>').val(dept);
+            }
+            else if(level == "cd_plant" || level == "cd_tooling"){ 
+              $('#iqrqc_header').html("iQRQC - Cadillac - eLert"); 
+              $('#department').find('option').remove().end().append(
+                '<option value="cd_plant"  >Plant</option>' +
+                '<option value="cd_tooling">Tooling</option>').val(dept);
+            }
+
+
+            //************************************************************************
+            // Set Category options
+            if(level == "cd_plant" || level == "gr_plant" || level == "gr_mixing" || level == "gr_auto"){
+              $('#alert_type').find('option').remove().end().append(
+                '<option value="Safety"    class="Safety">Safety/Environment</option>'+
+                '<option value="Quality"   class="Quality">Quality</option>'+
+                '<option value="Activity"  class="Activity">Activity (Sales)</option>'+
+                '<option value="Inventory" class="Inventory">Inventory</option>'+
+                '<option value="Scrap"     class="Scrap">Scrap</option>'+
+                '<option value="Hr"        class="Hr">HR/Labor</option>'+
+                '<option value="Delivery"  class="Delivery">Delivery</option>'+
+                '<option value="Operation" class="Operation">Operations Efficiency</option>'+
+                '<option value="Supply"    class="Supply">Supply Chain</option>'+
+                '<option value="Misc"      class="Misc">Miscellaneaous</option>'+
+                '<option value="Maint"     class="Maint">Maintenance</option>').val(a_type).trigger('change');
+            }
+            else if(level == "cd_tooling"){ 
+              $('#alert_type').find('option').remove().end().append(
+                '<option value="Productivity" class="Productivity">Productivity</option>'+
+                '<option value="Quality"      class="Quality">Quality</option>'+
+                '<option value="Tooling"      class="Tooling">Tooling</option>').val(a_type).trigger('change');
+            }
+
 
             //Output to html
-            $('#alert_type').val(a_type).trigger('change');
             $('#date_initial').val(date_posted);
-            $('#department').val(dept);
             $('#location').val(location);
             $('#part_num').val(part_num);
             $('#customer').val(customer);
@@ -1102,21 +1176,21 @@ function Submit_Data() {
   var post_id, post_url, items_url,
       level = Cookies.get('level');
 
-  if(level == "Plant" || level == "Mixing" || level == "Automation"){
+  if(level == "gr_plant" || level == "gr_mixing" || level == "gr_auto"){
     post_url = "update_post_it";
     items_url = "update_post_it_items";
   }
-  else if(level == "Jim"){
+  else if(level == "gr_exec"){
     post_url = "update_jt_post_it";
     items_url = "update_post_it_items";
   }
-  else if(level == "Cadillac"){
+  else if(level == "cd_plant" || level == "cd_tooling"){
     post_url = "cad_post_it";
     items_url = "cad_post_it_items";
   }
 
   var payload;
-  if(level == "Jim"){
+  if(level == "gr_exec"){
     //Information write to DB
     var a_type    = $('#alert_type').val(),
       date_posted = $('#date_initial').val(),
@@ -1158,8 +1232,8 @@ function Submit_Data() {
       post_id     = $('#id_number').text(),
       active      = 1;
 
-      if(level == 'Cadillac')
-        dept = "CP";
+      // if(level == 'Cadillac')
+      //   dept = "CP";
 
       payload = {
         type        : a_type,
@@ -1241,11 +1315,11 @@ function Submit_Data() {
     for(var i = 0; i < (add_row_counter + 1); i++){
       if(dComplete[i] == ""){
         //If the email hasn't been sent -> send it
-        if(!$('#email_' + i).is(':checked') && level !== "Jim"){
+        if(!$('#email_' + i).is(':checked') && level !== "gr_exec"){
           //Depending on what level is in the cookie call a different format email function
           Format_Email(resp[i], dept, location, part_num, issue, cust, tDesc[i], dEnd[i], level);
         }
-        else if(!$('#email_' + i).is(':checked') && level == "Jim"){
+        else if(!$('#email_' + i).is(':checked') && level == "gr_exec"){
           Format_JT_Email(resp[i], region, location, part_num, issue, cust, tDesc[i], dEnd[i]);
         }
         
@@ -1287,9 +1361,9 @@ function Submit_Data() {
 
 
 function Format_Email(responsible, dept, location, part_num, issue, customer, t_descript, date_ending, level){  
-  if(level == "Cadillac"){
+  if(level == "cd_plant"){
     url = 'get_cad_email';
-	dept = "Plant";
+	  dept = "cd_plant";
   }
   else{
      url = 'get_email';
@@ -1316,7 +1390,6 @@ function Format_Email(responsible, dept, location, part_num, issue, customer, t_
 }//End Format_Email()
 
 function Format_JT_Email(responsible, region, location, part_num, issue, customer, t_descript, date_ending){
-  console.log("IN JT EMAIL");
   var payload3 = {
     owner      : responsible,
     location   : location,
