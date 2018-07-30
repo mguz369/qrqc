@@ -146,12 +146,13 @@ app.post('/login_user', (req, res) => {
     var username = "{user}".format(req.body);
     var password = "{pass}".format(req.body);
     var level = "{level}".format(req.body);
+    var access;
 
     if(level == "{level}" || level == " ")
         level = "Level";
 
     password = md5(password);
-    var validate_user = ("SELECT `" + level + "` as access FROM `login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
+    var validate_user = ("SELECT `" + level + "` as 'access' FROM `login` WHERE `username` = '" + username + "' AND `password` = '" + password + "'").formatSQL(req.body);
 
     console.log(validate_user)
     //   Login disabled
@@ -159,16 +160,23 @@ app.post('/login_user', (req, res) => {
 
     connectionQRQC.query(validate_user, (err, result) => {
         if (err) console.log(err);
-        console.log("Result: ", result[0].access)
-        access = result[0].access;
+    
 
-        //Send response
-        if(access != 0 || access == 'gr_plant' || access == 'gr_mixing' || access == 'gr_auto' || access == 'gr_exec'){
-            res.send(JSON.stringify(access));
-        }
-        else{;
+        if(result.length == 0)
             res.send(JSON.stringify(0));
+        else{
+            console.log("Result: ", result[0].access)
+            access = result[0].access;
+
+            //Send response
+            if(access != 0 || access == 'gr_plant' || access == 'gr_mixing' || access == 'gr_auto' || access == 'gr_exec'){
+                res.send(JSON.stringify(access));
+            }
+            else{;
+                res.send(JSON.stringify(0));
+            }
         }
+        
     });
 });
 
