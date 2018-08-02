@@ -175,9 +175,6 @@ $(document).ready(function () {
       $('#iqrqc_header').html("iQRQC - Cadillac - Tooling");
     }
 
-    // Cookies.set('is_valid', 'invalid');
-    // Cookies.set('level', 'Plant');
-
     // var url = "view?id=";
     // var query_url = "/show_current_alerts"
     if(Cookies.get('level') == "gr_exec")
