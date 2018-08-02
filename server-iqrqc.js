@@ -24,6 +24,25 @@ var Cookies    = require('js-cookie');
 var app = express();
 app.use( bodyParser.json() );
 
+// app.use(function(req, res, next){
+//     res.status(404);
+
+//     //respond with html page
+//     if(req.accepts('html')){
+//         res.render('404', { url: req.ur });
+//         return;
+//     }
+
+//     // respond with json
+//     if (req.accepts('json')) {
+//         res.send({ error: 'Not found' });
+//         return;
+//     }
+
+//     // default to plain-text. send()
+//     res.type('txt').send('Not found');
+// })
+
 //************************************************************************
 // Lotus Notes connection
 //************************************************************************
@@ -182,13 +201,6 @@ app.post('/login_user', (req, res) => {
 
 app.post('/get_participants', (req, res) => {
     var department = "{department}".formatSQL(req.body);
-    // if(department == "Plant")
-    //     department = "gr_plant";
-    // else if(department == "Mixing")
-    //     department = "gr_mixing";
-    // else if(department == "Automation")
-    //     department = "gr_auto";
-
 
     var sql = ("SELECT `name` FROM `owner` WHERE `department` = " + department + ";").formatSQL(req.body);
     connectionQRQC.query(sql, (err, result) => {
@@ -200,15 +212,6 @@ app.post('/get_participants', (req, res) => {
 
 app.post('/get_cad_participants', (req, res) => {
     var department = "{department}".formatSQL(req.body);
-    // if(department == "Plant")
-    //     department = "cd_plant";
-    // else if(department == "Mixing")
-    //     department = "cd_mixing";
-    // else if(department == "Automation")
-    //     department = "cd_auto";
-    // else if(department = "Tooling")
-    //     department = "cd_tooling";
-
 
     var sql = ("SELECT `name` FROM `owner_cad` WHERE `department` = {department};").formatSQL(req.body);
     connectionQRQC.query(sql, (err, result) => {
@@ -230,9 +233,6 @@ app.post('/get_exec_participants', (req, res) => {
 });
 
 app.post('/submit_participants', (req, res) => {
-    // console.log(req.body);
-
-
     var parsed_data = req.body.value;
     var today = GetDate();
     var department = req.body.level;
@@ -1057,7 +1057,7 @@ for (var i = 0; i < each.length; i++){
     app.use('/' + each[i], express.static(path.join(__dirname, dir_path + '/' + each[i])));
 }
 
-app.use(favicon(path.join(__dirname, dir_path + '/images' + '/favicon.ico')));
+app.use(favicon(path.join(__dirname, dir_path + 'images/' + 'favicon.ico')));
 
 app.get('/', (req, res) => {
     if(req.path == '/'){
@@ -1101,6 +1101,9 @@ app.get('/modify_cadillac_parts', (req, res) => { res.sendFile(path.join(__dirna
 app.get('/login_util',            (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'login_utils.html' )); });
 app.get('/forgot_password',       (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'forgot_pass.html' )); });
 app.get('/checkin',               (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'checkin.html' )); });
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname, admin_path + '404.html')); });
 
 //Prototype pdf for Electron
 app.get('/pdf', (req, res) => { res.sendFile(path.join(__dirname, admin_path + 'pdf_test.html')); });
