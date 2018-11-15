@@ -274,7 +274,7 @@ app.post('/show_current_alerts', (req, res) => {
         if(err) throw err;
 
         var now = GetDateTime();
-        console.log("Show GR Plant Alerts at: %s", now);
+        console.log("Show {department} Plant Alerts at: %s", now);
         res.send(JSON.stringify(result));
     });
 });
